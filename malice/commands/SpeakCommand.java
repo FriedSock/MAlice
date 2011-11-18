@@ -7,4 +7,9 @@ public class SpeakCommand implements Command {
     public SpeakCommand(String variableName) {
         this.variableName = variableName;
     }
+
+    @Override
+    public String toString() {
+        return variableName + " spoke";
+    }
 }

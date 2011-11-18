@@ -12,4 +12,8 @@ public class VariableDeclarationCommand implements Command {
         this.type = type;
     }
 
+    @Override
+    public String toString() {
+        return variableName + " was a " + type;
+    }
 }
