@@ -1,5 +1,8 @@
 package malice;
 
+import malice.commands.SpeakCommand;
+import malice.commands.IncrementCommand;
+import malice.commands.DecrementCommand;
 import malice.commands.VariableDeclarationCommand;
 import malice.commands.VariableAssignmentCommand;
 import malice.commands.Command;
@@ -47,14 +50,33 @@ public class Parser {
     
     public Command parseVariableAssignment(Tree tree) {
         String variableName = tree.getChild(0).getText();
-        //TODO - expression
-        Expression expression = new Expression();
+        
+        String expressionText = tree.getChild(1).getText();
+        Expression expression = null;
+        
+        if ('\'' == expressionText.charAt(0)) {
+            // character expression
+            expression = new CharacterExpression(expressionText.charAt(1));
+        } else {
+            // arithmetic expression
+            //TODO
+        }
         
         return new VariableAssignmentCommand(variableName, expression);
     }
     
     public Command parseProcedure(Tree tree) {
-        //TODO
-        return null;
+        String variableName = tree.getChild(0).getText();
+        String procedureName = tree.getChild(1).getText();
+        
+        if ("ate".equals(procedureName)) {
+            return new IncrementCommand(variableName);
+        } else if ("drank".equals(procedureName)) {
+            return new DecrementCommand(variableName);
+        } else if ("spoke".equals(procedureName)) {
+            return new SpeakCommand(variableName);
+        } else {
+            throw new IllegalArgumentException("Illegal procedure name: " + procedureName);
+        }
     }
 }
