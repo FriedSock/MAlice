@@ -11,65 +11,77 @@ import java.util.List;
 import org.antlr.runtime.tree.Tree;
 
 public class Parser {
-    
+
     private List<Command> commands;
 
     public Parser() {
         commands = new ArrayList<Command>();
     }
-    
+
     public void parseProg(Tree tree) {
+        tree = tree.getChild(0);
         for (int i = 0; i < tree.getChildCount(); i++) {
             Tree child = tree.getChild(i);
-            commands.add(parseStatement(child));
+            parseStatement(child);
         }
     }
-    
-    private Command parseStatement(Tree tree) {
+
+    private void parseStatement(Tree tree) {
+        System.out.println("STATEMENT " + tree.toStringTree());
         for (int i = 0; i < tree.getChildCount(); i++) {
             Tree child = tree.getChild(i);
-            String childToken = child.getText();
-            if ("variable_declaration".equals(childToken)) {
-                return parseVariableDeclaration(child);
-            } else if ("variable_assignment".equals(childToken)) {
-                return parseVariableAssignment(child);
-            } else {
-                return parseProcedure(child);
+
+            if ("command".equals(child.getText())) {
+                parseCommand(child);
             }
         }
-        
-        return null;
     }
-    
+
+    private void parseCommand(Tree tree) {
+        Tree commandTree = tree.getChild(0);
+        String commandName = commandTree.getText();
+
+        if ("variable_declaration".equals(commandName)) {
+            commands.add(parseVariableDeclaration(commandTree));
+        } else if ("variable_assignment".equals(commandName)) {
+            commands.add(parseVariableAssignment(commandTree));
+        } else {
+            System.out.println("PROC" + tree + commandName);
+            commands.add(parseProcedure(tree));
+        }
+    }
+
     private Command parseVariableDeclaration(Tree tree) {
         String variableName = tree.getChild(0).getText();
         Type variableType = Type.valueOf(tree.getChild(2).getText());
-        
+
         return new VariableDeclarationCommand(variableName, variableType);
     }
-    
+
     private Command parseVariableAssignment(Tree tree) {
         String variableName = tree.getChild(0).getText();
-        
+
         String expressionText = tree.getChild(1).getText();
         Expression expression = null;
-        
+
         if ('\'' == expressionText.charAt(0)) {
             // character expression
             expression = new CharacterExpression(expressionText.charAt(1));
         } else {
             // arithmetic expression
-            
+
             //TODO
+
+            expression = new ArithmeticExpression("a");
         }
-        
+
         return new VariableAssignmentCommand(variableName, expression);
     }
-    
+
     private Command parseProcedure(Tree tree) {
         String variableName = tree.getChild(0).getText();
         String procedureName = tree.getChild(1).getText();
-        
+
         if ("ate".equals(procedureName)) {
             return new IncrementCommand(variableName);
         } else if ("drank".equals(procedureName)) {
@@ -77,7 +89,8 @@ public class Parser {
         } else if ("spoke".equals(procedureName)) {
             return new SpeakCommand(variableName);
         } else {
-            throw new IllegalArgumentException("Illegal procedure name: " + procedureName);
+            // in case of syntax connectors such as and
+            return null;
         }
     }
 }

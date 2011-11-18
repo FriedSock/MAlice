@@ -2,5 +2,5 @@ package malice;
 
 public enum Type {
 
-    LETTER, NUMBER;
+    letter, number;
 }
