@@ -24,6 +24,7 @@ public class Parser {
             Tree child = tree.getChild(i);
             parseStatement(child);
         }
+                int breakpoint = 1;
     }
 
     private void parseStatement(Tree tree) {
