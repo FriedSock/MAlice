@@ -1,7 +1,5 @@
 package malice;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
@@ -43,13 +41,10 @@ public class MAlice {
         
         ParseTreeBuilder builder = new ParseTreeBuilder("prog");
         
-        MAliceParser parser = new MAliceParser(tokenStream, builder);
+        MAliceParser maliceParser = new MAliceParser(tokenStream, builder);
         try {
             
-            parser.prog();
-            //System.out.println(builder.epsilonNode().toStringTree());
-            
-            //parseStatementTree(builder.getTree());
+            maliceParser.prog();
             
             traverse(builder.getTree(), 0);
         } catch (RecognitionException ex) {
@@ -58,24 +53,10 @@ public class MAlice {
         
         
         
-       /* try {
-            MAliceParser.prog_return prog = parser.prog();
-
-            
-            
-            Tree tree = (Tree) prog.tree;
-
-            traverse(tree, 0);
-
-             String[] a = parser.get
-            for (String b : a) {
-            System.out.println(b);
-            }
-
-            //System.out.println(prog.getTree());
-        } catch (RecognitionException ex) {
-            Logger.getLogger(MAlice.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
+        Parser parser = new Parser();
+        parser.parseProg(builder.getTree());
+        
+        
     }
 
     private static void traverse(Tree tree, int depth) {

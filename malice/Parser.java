@@ -25,7 +25,7 @@ public class Parser {
         }
     }
     
-    public Command parseStatement(Tree tree) {
+    private Command parseStatement(Tree tree) {
         for (int i = 0; i < tree.getChildCount(); i++) {
             Tree child = tree.getChild(i);
             String childToken = child.getText();
@@ -41,14 +41,14 @@ public class Parser {
         return null;
     }
     
-    public Command parseVariableDeclaration(Tree tree) {
+    private Command parseVariableDeclaration(Tree tree) {
         String variableName = tree.getChild(0).getText();
         Type variableType = Type.valueOf(tree.getChild(2).getText());
         
         return new VariableDeclarationCommand(variableName, variableType);
     }
     
-    public Command parseVariableAssignment(Tree tree) {
+    private Command parseVariableAssignment(Tree tree) {
         String variableName = tree.getChild(0).getText();
         
         String expressionText = tree.getChild(1).getText();
@@ -59,13 +59,14 @@ public class Parser {
             expression = new CharacterExpression(expressionText.charAt(1));
         } else {
             // arithmetic expression
+            
             //TODO
         }
         
         return new VariableAssignmentCommand(variableName, expression);
     }
     
-    public Command parseProcedure(Tree tree) {
+    private Command parseProcedure(Tree tree) {
         String variableName = tree.getChild(0).getText();
         String procedureName = tree.getChild(1).getText();
         
