@@ -7,4 +7,9 @@ public class DecrementCommand implements Command {
     public DecrementCommand(String variableName) {
         this.variableName = variableName;
     }
+    
+    @Override
+    public String toString() {
+        return variableName + " drank";
+    }
 }

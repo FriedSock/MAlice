@@ -57,6 +57,9 @@ public class MAlice {
         parser.parseProg(builder.getTree());
         
         
+        System.out.println("TEST");
+        System.out.println(parser);
+        
     }
 
     private static void traverse(Tree tree, int depth) {

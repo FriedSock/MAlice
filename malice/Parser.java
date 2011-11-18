@@ -18,6 +18,16 @@ public class Parser {
         commands = new ArrayList<Command>();
     }
 
+    public String toString() {
+        StringBuilder b = new StringBuilder();
+        for (Command command : commands) {
+            b.append(command);
+            b.append('\n');
+        }
+        
+        return b.toString();
+    }
+    
     public void parseProg(Tree tree) {
         tree = tree.getChild(0);
         for (int i = 0; i < tree.getChildCount(); i++) {
@@ -27,7 +37,6 @@ public class Parser {
     }
 
     private void parseStatement(Tree tree) {
-        System.out.println("STATEMENT " + tree.toStringTree());
         for (int i = 0; i < tree.getChildCount(); i++) {
             Tree child = tree.getChild(i);
 
@@ -46,7 +55,6 @@ public class Parser {
         } else if ("variable_assignment".equals(commandName)) {
             commands.add(parseVariableAssignment(commandTree));
         } else {
-            System.out.println("PROC" + tree + commandName);
             commands.add(parseProcedure(tree));
         }
     }

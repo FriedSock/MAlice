@@ -7,4 +7,9 @@ public class IncrementCommand implements Command {
     public IncrementCommand(String variableName) {
         this.variableName = variableName;
     }
+    
+    @Override
+    public String toString() {
+        return variableName + " ate";
+    }
 }
