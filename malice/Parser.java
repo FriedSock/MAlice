@@ -1,5 +1,8 @@
 package malice;
 
+import malice.commands.VariableDeclarationCommand;
+import malice.commands.VariableAssignmentCommand;
+import malice.commands.Command;
 import java.util.ArrayList;
 import java.util.List;
 import org.antlr.runtime.tree.Tree;
@@ -30,7 +33,6 @@ public class Parser {
             } else {
                 return parseProcedure(child);
             }
-            commands.add(parseStatement(child));
         }
         
         return null;
@@ -38,9 +40,21 @@ public class Parser {
     
     public Command parseVariableDeclaration(Tree tree) {
         String variableName = tree.getChild(0).getText();
+        Type variableType = Type.valueOf(tree.getChild(2).getText());
         
-        return new VariableDeclarationCommand(tree.getChild(0), tree.getChild(2));
+        return new VariableDeclarationCommand(variableName, variableType);
+    }
+    
+    public Command parseVariableAssignment(Tree tree) {
+        String variableName = tree.getChild(0).getText();
+        //TODO - expression
+        Expression expression = new Expression();
         
-        //return null;
+        return new VariableAssignmentCommand(variableName, expression);
+    }
+    
+    public Command parseProcedure(Tree tree) {
+        //TODO
+        return null;
     }
 }

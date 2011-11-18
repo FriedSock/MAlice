@@ -5,6 +5,8 @@
 
 package malice;
 
+import malice.commands.Command;
+
 /**
  *
  * @author jack

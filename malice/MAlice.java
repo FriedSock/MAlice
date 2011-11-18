@@ -29,6 +29,7 @@ public class MAlice {
         } catch (RecognitionException ex) {
             Logger.getLogger(MAlice.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
 
     }
 
