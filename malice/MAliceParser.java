@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g 2011-11-18 14:30:56
+// $ANTLR 3.4 /home/jack/Desktop/MAlice.g 2011-11-18 14:17:49
 
 	package malice;
 
@@ -48,8 +48,8 @@ public class MAliceParser extends DebugParser {
 
 
 public static final String[] ruleNames = new String[] {
-    "invalidRule", "prog", "command", "statement", "variable_assignment", 
-    "factor", "variable_declaration", "term", "expression"
+    "invalidRule", "factor", "statement", "variable_declaration", "command", 
+    "term", "expression", "variable_assignment", "prog"
 };
 
 public static final boolean[] decisionCanBacktrack = new boolean[] {
@@ -107,7 +107,7 @@ public TreeAdaptor getTreeAdaptor() {
 }
 
     public String[] getTokenNames() { return MAliceParser.tokenNames; }
-    public String getGrammarFileName() { return "/Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g"; }
+    public String getGrammarFileName() { return "/home/jack/Desktop/MAlice.g"; }
 
 
     public static class prog_return extends ParserRuleReturnScope {
@@ -117,7 +117,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "prog"
-    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:21:1: prog : ( statement )+ ;
+    // /home/jack/Desktop/MAlice.g:21:1: prog : ( statement )+ ;
     public final MAliceParser.prog_return prog() throws RecognitionException {
         MAliceParser.prog_return retval = new MAliceParser.prog_return();
         retval.start = input.LT(1);
@@ -135,16 +135,16 @@ public TreeAdaptor getTreeAdaptor() {
         dbg.location(21, 0);
 
         try {
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:21:5: ( ( statement )+ )
+            // /home/jack/Desktop/MAlice.g:21:5: ( ( statement )+ )
             dbg.enterAlt(1);
 
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:21:9: ( statement )+
+            // /home/jack/Desktop/MAlice.g:21:9: ( statement )+
             {
             root_0 = (CommonTree)adaptor.nil();
 
 
             dbg.location(21,9);
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:21:9: ( statement )+
+            // /home/jack/Desktop/MAlice.g:21:9: ( statement )+
             int cnt1=0;
             try { dbg.enterSubRule(1);
 
@@ -166,7 +166,7 @@ public TreeAdaptor getTreeAdaptor() {
             	case 1 :
             	    dbg.enterAlt(1);
 
-            	    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:21:9: statement
+            	    // /home/jack/Desktop/MAlice.g:21:9: statement
             	    {
             	    dbg.location(21,9);
             	    pushFollow(FOLLOW_statement_in_prog51);
@@ -232,7 +232,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "statement"
-    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:23:1: statement : command ( CONNECTOR command )* END_OF_LINE ;
+    // /home/jack/Desktop/MAlice.g:23:1: statement : command ( CONNECTOR command )* END_OF_LINE ;
     public final MAliceParser.statement_return statement() throws RecognitionException {
         MAliceParser.statement_return retval = new MAliceParser.statement_return();
         retval.start = input.LT(1);
@@ -256,10 +256,10 @@ public TreeAdaptor getTreeAdaptor() {
         dbg.location(23, 0);
 
         try {
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:23:10: ( command ( CONNECTOR command )* END_OF_LINE )
+            // /home/jack/Desktop/MAlice.g:23:10: ( command ( CONNECTOR command )* END_OF_LINE )
             dbg.enterAlt(1);
 
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:23:13: command ( CONNECTOR command )* END_OF_LINE
+            // /home/jack/Desktop/MAlice.g:23:13: command ( CONNECTOR command )* END_OF_LINE
             {
             root_0 = (CommonTree)adaptor.nil();
 
@@ -272,7 +272,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             adaptor.addChild(root_0, command2.getTree());
             dbg.location(23,21);
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:23:21: ( CONNECTOR command )*
+            // /home/jack/Desktop/MAlice.g:23:21: ( CONNECTOR command )*
             try { dbg.enterSubRule(2);
 
             loop2:
@@ -293,7 +293,7 @@ public TreeAdaptor getTreeAdaptor() {
             	case 1 :
             	    dbg.enterAlt(1);
 
-            	    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:23:22: CONNECTOR command
+            	    // /home/jack/Desktop/MAlice.g:23:22: CONNECTOR command
             	    {
             	    dbg.location(23,22);
             	    CONNECTOR3=(Token)match(input,CONNECTOR,FOLLOW_CONNECTOR_in_statement63); 
@@ -367,7 +367,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "command"
-    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:25:1: command : ( variable_assignment | variable_declaration | ID PROCEDURE );
+    // /home/jack/Desktop/MAlice.g:25:1: command : ( variable_assignment | variable_declaration | ID PROCEDURE );
     public final MAliceParser.command_return command() throws RecognitionException {
         MAliceParser.command_return retval = new MAliceParser.command_return();
         retval.start = input.LT(1);
@@ -391,7 +391,7 @@ public TreeAdaptor getTreeAdaptor() {
         dbg.location(25, 0);
 
         try {
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:25:8: ( variable_assignment | variable_declaration | ID PROCEDURE )
+            // /home/jack/Desktop/MAlice.g:25:8: ( variable_assignment | variable_declaration | ID PROCEDURE )
             int alt3=3;
             try { dbg.enterDecision(3, decisionCanBacktrack[3]);
 
@@ -438,7 +438,7 @@ public TreeAdaptor getTreeAdaptor() {
                 case 1 :
                     dbg.enterAlt(1);
 
-                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:25:11: variable_assignment
+                    // /home/jack/Desktop/MAlice.g:25:11: variable_assignment
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
@@ -456,7 +456,7 @@ public TreeAdaptor getTreeAdaptor() {
                 case 2 :
                     dbg.enterAlt(2);
 
-                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:25:33: variable_declaration
+                    // /home/jack/Desktop/MAlice.g:25:33: variable_declaration
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
@@ -474,7 +474,7 @@ public TreeAdaptor getTreeAdaptor() {
                 case 3 :
                     dbg.enterAlt(3);
 
-                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:25:56: ID PROCEDURE
+                    // /home/jack/Desktop/MAlice.g:25:56: ID PROCEDURE
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
@@ -536,7 +536,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "variable_assignment"
-    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:27:1: variable_assignment : ID ' became ' expression ;
+    // /home/jack/Desktop/MAlice.g:27:1: variable_assignment : ID ' became ' expression ;
     public final MAliceParser.variable_assignment_return variable_assignment() throws RecognitionException {
         MAliceParser.variable_assignment_return retval = new MAliceParser.variable_assignment_return();
         retval.start = input.LT(1);
@@ -558,10 +558,10 @@ public TreeAdaptor getTreeAdaptor() {
         dbg.location(27, 0);
 
         try {
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:27:20: ( ID ' became ' expression )
+            // /home/jack/Desktop/MAlice.g:27:20: ( ID ' became ' expression )
             dbg.enterAlt(1);
 
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:27:22: ID ' became ' expression
+            // /home/jack/Desktop/MAlice.g:27:22: ID ' became ' expression
             {
             root_0 = (CommonTree)adaptor.nil();
 
@@ -628,7 +628,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "variable_declaration"
-    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:29:1: variable_declaration : ID 'was a' TYPE ;
+    // /home/jack/Desktop/MAlice.g:29:1: variable_declaration : ID 'was a' TYPE ;
     public final MAliceParser.variable_declaration_return variable_declaration() throws RecognitionException {
         MAliceParser.variable_declaration_return retval = new MAliceParser.variable_declaration_return();
         retval.start = input.LT(1);
@@ -650,10 +650,10 @@ public TreeAdaptor getTreeAdaptor() {
         dbg.location(29, 0);
 
         try {
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:29:21: ( ID 'was a' TYPE )
+            // /home/jack/Desktop/MAlice.g:29:21: ( ID 'was a' TYPE )
             dbg.enterAlt(1);
 
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:29:23: ID 'was a' TYPE
+            // /home/jack/Desktop/MAlice.g:29:23: ID 'was a' TYPE
             {
             root_0 = (CommonTree)adaptor.nil();
 
@@ -720,7 +720,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "expression"
-    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:31:1: expression : ( term ( '+' term )* | CHAR );
+    // /home/jack/Desktop/MAlice.g:31:1: expression : ( term ( '+' term )* | CHAR );
     public final MAliceParser.expression_return expression() throws RecognitionException {
         MAliceParser.expression_return retval = new MAliceParser.expression_return();
         retval.start = input.LT(1);
@@ -744,7 +744,7 @@ public TreeAdaptor getTreeAdaptor() {
         dbg.location(31, 0);
 
         try {
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:31:11: ( term ( '+' term )* | CHAR )
+            // /home/jack/Desktop/MAlice.g:31:11: ( term ( '+' term )* | CHAR )
             int alt5=2;
             try { dbg.enterDecision(5, decisionCanBacktrack[5]);
 
@@ -770,7 +770,7 @@ public TreeAdaptor getTreeAdaptor() {
                 case 1 :
                     dbg.enterAlt(1);
 
-                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:31:14: term ( '+' term )*
+                    // /home/jack/Desktop/MAlice.g:31:14: term ( '+' term )*
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
@@ -783,7 +783,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                     adaptor.addChild(root_0, term16.getTree());
                     dbg.location(31,19);
-                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:31:19: ( '+' term )*
+                    // /home/jack/Desktop/MAlice.g:31:19: ( '+' term )*
                     try { dbg.enterSubRule(4);
 
                     loop4:
@@ -804,7 +804,7 @@ public TreeAdaptor getTreeAdaptor() {
                     	case 1 :
                     	    dbg.enterAlt(1);
 
-                    	    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:31:20: '+' term
+                    	    // /home/jack/Desktop/MAlice.g:31:20: '+' term
                     	    {
                     	    dbg.location(31,20);
                     	    char_literal17=(Token)match(input,16,FOLLOW_16_in_expression120); 
@@ -836,7 +836,7 @@ public TreeAdaptor getTreeAdaptor() {
                 case 2 :
                     dbg.enterAlt(2);
 
-                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:31:33: CHAR
+                    // /home/jack/Desktop/MAlice.g:31:33: CHAR
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
@@ -891,7 +891,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "term"
-    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:33:1: term : factor ( ( '*' | '/' | '%' | '^' | '&' | '|' ) factor )* ;
+    // /home/jack/Desktop/MAlice.g:33:1: term : factor ( ( '*' | '/' | '%' | '^' | '&' | '|' ) factor )* ;
     public final MAliceParser.term_return term() throws RecognitionException {
         MAliceParser.term_return retval = new MAliceParser.term_return();
         retval.start = input.LT(1);
@@ -913,10 +913,10 @@ public TreeAdaptor getTreeAdaptor() {
         dbg.location(33, 0);
 
         try {
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:33:5: ( factor ( ( '*' | '/' | '%' | '^' | '&' | '|' ) factor )* )
+            // /home/jack/Desktop/MAlice.g:33:5: ( factor ( ( '*' | '/' | '%' | '^' | '&' | '|' ) factor )* )
             dbg.enterAlt(1);
 
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:33:9: factor ( ( '*' | '/' | '%' | '^' | '&' | '|' ) factor )*
+            // /home/jack/Desktop/MAlice.g:33:9: factor ( ( '*' | '/' | '%' | '^' | '&' | '|' ) factor )*
             {
             root_0 = (CommonTree)adaptor.nil();
 
@@ -929,7 +929,7 @@ public TreeAdaptor getTreeAdaptor() {
 
             adaptor.addChild(root_0, factor20.getTree());
             dbg.location(33,16);
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:33:16: ( ( '*' | '/' | '%' | '^' | '&' | '|' ) factor )*
+            // /home/jack/Desktop/MAlice.g:33:16: ( ( '*' | '/' | '%' | '^' | '&' | '|' ) factor )*
             try { dbg.enterSubRule(6);
 
             loop6:
@@ -950,7 +950,7 @@ public TreeAdaptor getTreeAdaptor() {
             	case 1 :
             	    dbg.enterAlt(1);
 
-            	    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:33:17: ( '*' | '/' | '%' | '^' | '&' | '|' ) factor
+            	    // /home/jack/Desktop/MAlice.g:33:17: ( '*' | '/' | '%' | '^' | '&' | '|' ) factor
             	    {
             	    dbg.location(33,17);
             	    set21=(Token)input.LT(1);
@@ -1026,7 +1026,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "factor"
-    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:35:1: factor : ( '~' )? ( ID | ( INT )+ ) ;
+    // /home/jack/Desktop/MAlice.g:35:1: factor : ( '~' )? ( ID | ( INT )+ ) ;
     public final MAliceParser.factor_return factor() throws RecognitionException {
         MAliceParser.factor_return retval = new MAliceParser.factor_return();
         retval.start = input.LT(1);
@@ -1048,16 +1048,16 @@ public TreeAdaptor getTreeAdaptor() {
         dbg.location(35, 0);
 
         try {
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:35:7: ( ( '~' )? ( ID | ( INT )+ ) )
+            // /home/jack/Desktop/MAlice.g:35:7: ( ( '~' )? ( ID | ( INT )+ ) )
             dbg.enterAlt(1);
 
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:35:11: ( '~' )? ( ID | ( INT )+ )
+            // /home/jack/Desktop/MAlice.g:35:11: ( '~' )? ( ID | ( INT )+ )
             {
             root_0 = (CommonTree)adaptor.nil();
 
 
             dbg.location(35,11);
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:35:11: ( '~' )?
+            // /home/jack/Desktop/MAlice.g:35:11: ( '~' )?
             int alt7=2;
             try { dbg.enterSubRule(7);
             try { dbg.enterDecision(7, decisionCanBacktrack[7]);
@@ -1073,7 +1073,7 @@ public TreeAdaptor getTreeAdaptor() {
                 case 1 :
                     dbg.enterAlt(1);
 
-                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:35:12: '~'
+                    // /home/jack/Desktop/MAlice.g:35:12: '~'
                     {
                     dbg.location(35,12);
                     char_literal23=(Token)match(input,21,FOLLOW_21_in_factor176); 
@@ -1090,7 +1090,7 @@ public TreeAdaptor getTreeAdaptor() {
             } finally {dbg.exitSubRule(7);}
 
             dbg.location(35,17);
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:35:17: ( ID | ( INT )+ )
+            // /home/jack/Desktop/MAlice.g:35:17: ( ID | ( INT )+ )
             int alt9=2;
             try { dbg.enterSubRule(9);
             try { dbg.enterDecision(9, decisionCanBacktrack[9]);
@@ -1117,7 +1117,7 @@ public TreeAdaptor getTreeAdaptor() {
                 case 1 :
                     dbg.enterAlt(1);
 
-                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:35:18: ID
+                    // /home/jack/Desktop/MAlice.g:35:18: ID
                     {
                     dbg.location(35,18);
                     ID24=(Token)match(input,ID,FOLLOW_ID_in_factor180); 
@@ -1132,10 +1132,10 @@ public TreeAdaptor getTreeAdaptor() {
                 case 2 :
                     dbg.enterAlt(2);
 
-                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:35:23: ( INT )+
+                    // /home/jack/Desktop/MAlice.g:35:23: ( INT )+
                     {
                     dbg.location(35,23);
-                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:35:23: ( INT )+
+                    // /home/jack/Desktop/MAlice.g:35:23: ( INT )+
                     int cnt8=0;
                     try { dbg.enterSubRule(8);
 
@@ -1157,7 +1157,7 @@ public TreeAdaptor getTreeAdaptor() {
                     	case 1 :
                     	    dbg.enterAlt(1);
 
-                    	    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:35:24: INT
+                    	    // /home/jack/Desktop/MAlice.g:35:24: INT
                     	    {
                     	    dbg.location(35,24);
                     	    INT25=(Token)match(input,INT,FOLLOW_INT_in_factor185); 
