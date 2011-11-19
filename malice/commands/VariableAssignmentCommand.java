@@ -21,6 +21,11 @@ public class VariableAssignmentCommand implements Command {
     }
 
     @Override
+    public void acceptVisitor(CommandVisitor visitor) {
+        visitor.visitVariableAssignment(this);
+    }
+    
+    @Override
     public String toString() {
         return variableName + " became " + expression;
     }

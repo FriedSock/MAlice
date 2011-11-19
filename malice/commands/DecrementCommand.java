@@ -9,6 +9,11 @@ public class DecrementCommand implements Command {
     }
     
     @Override
+    public void acceptVisitor(CommandVisitor visitor) {
+        visitor.visitDecrement(this);
+    }
+    
+    @Override
     public String toString() {
         return variableName + " drank";
     }

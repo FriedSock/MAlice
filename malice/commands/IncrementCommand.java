@@ -9,6 +9,11 @@ public class IncrementCommand implements Command {
     }
     
     @Override
+    public void acceptVisitor(CommandVisitor visitor) {
+        visitor.visitIncrement(this);
+    }
+    
+    @Override
     public String toString() {
         return variableName + " ate";
     }
