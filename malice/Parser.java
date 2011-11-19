@@ -146,9 +146,17 @@ public class Parser {
         } else {
             Tree left = tree.getChild(0);
             if (tree.getChildCount() > 1) {
-                Tree right = tree.getChild(2);
+                /*Tree right = tree.getChild(2);
                 char op = tree.getChild(1).getText().charAt(0);
                 return new ArithmeticExpression(parseArithmeticExpression(left), parseArithmeticExpression(right), op);
+                 *
+                 */
+                Tree exp = tree.getChild(0);
+                ArithmeticExpression exp2 = parseArithmeticExpression(exp);
+                for(int i = 2; i < tree.getChildCount(); i += 2) {
+                    exp = tree.getChild(i);
+                    exp2 = new ArithmeticExpression(exp2,parseArithmeticExpression(exp), tree.getChild(i-1).toString().charAt(0));
+                }
             }
             return parseArithmeticExpression(left);
         }
