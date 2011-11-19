@@ -26,6 +26,12 @@ public class VariableAssignmentCommand implements Command {
     }
     
     @Override
+    public boolean usesVariable(String aVariableName) {
+        //TODO - check for variable in expression
+        return variableName.equals(aVariableName);
+    }
+    
+    @Override
     public String toString() {
         return variableName + " became " + expression;
     }

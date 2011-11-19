@@ -4,7 +4,9 @@ import malice.symbols.SymbolTable;
 import malice.symbols.Register;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import malice.commands.Command;
 import malice.commands.CommandVisitor;
 import malice.commands.DecrementCommand;
@@ -18,15 +20,16 @@ public class CodeGenerator implements CommandVisitor {
     private List<Command> commands;
     private SymbolTable symbolTable;
     private List<String> assemblyCommands;
-    private List<Register> freeRegisters;
+    private Queue<Register> freeRegisters;
     
     public CodeGenerator(List<Command> commands, SymbolTable symbolTable) {
         this.commands = commands;
         this.symbolTable = symbolTable;
         
         assemblyCommands = new ArrayList<String>();
-        freeRegisters = new ArrayList<Register>();
+        freeRegisters = new LinkedList<Register>();
         freeRegisters.addAll(Arrays.asList(Register.values()));
+        freeRegisters.remove();
     }
     
     public List<String> generateCode() {
@@ -55,8 +58,13 @@ public class CodeGenerator implements CommandVisitor {
     
     @Override
     public void visitVariableAssignment(VariableAssignmentCommand command) {
-        //TODO - variable assignment
         Register reg = symbolTable.getVariableRegister(command.getVariableName());
+        if (reg == Register.NONE) {
+            reg = freeRegisters.remove();
+            symbolTable.setVariableRegister(command.getVariableName(), reg);
+        }
+        
+        //TODO - variable assignment
         assemblyCommands.add("mov " + reg + ", 0");
     }
     

@@ -15,6 +15,12 @@ public class VariableDeclarationCommand implements Command {
     public String getVariableName() {
         return variableName;
     }
+    
+    @Override
+    public boolean usesVariable(String aVariableName) {
+        //TODO - check for variable in expression
+        return variableName.equals(aVariableName);
+    }
 
     @Override
     public void acceptVisitor(CommandVisitor visitor) {

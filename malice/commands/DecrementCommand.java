@@ -16,9 +16,15 @@ public class DecrementCommand implements Command {
     public void acceptVisitor(CommandVisitor visitor) {
         visitor.visitDecrement(this);
     }
+
+    @Override
+    public boolean usesVariable(String aVariableName) {
+        return variableName.equals(aVariableName);
+    }
     
     @Override
     public String toString() {
         return variableName + " drank";
     }
+
 }

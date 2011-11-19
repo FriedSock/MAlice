@@ -1,5 +1,6 @@
 package malice;
 
+import java.util.List;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
@@ -38,9 +39,13 @@ public class MAlice {
         System.out.println(parser);
         
         
+        System.out.println("\n\n\n");
+        System.out.println("CODE GEN:");
         CodeGenerator codeGenerator = new CodeGenerator(parser.getCommands(), parser.getSymbolTable());
-        //codeGenerator.generateCode();
-        
+        List<String> assembly = codeGenerator.generateCode();
+        for (String asm : assembly) {
+            System.out.println(asm);
+        }
     }
 
     private static void traverse(Tree tree, int depth) {

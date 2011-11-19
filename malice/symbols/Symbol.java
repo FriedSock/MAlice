@@ -20,6 +20,10 @@ public class Symbol {
         return register;
     }
 
+    public void setRegister(Register register) {
+        this.register = register;
+    }
+
     public boolean isInitialised() {
         return initialised;
     }

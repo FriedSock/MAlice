@@ -184,7 +184,7 @@ public class Parser {
     public static class VariableNotDeclaredException extends RuntimeException {
 
         public VariableNotDeclaredException(String variableName) {
-            super(variableName + " was not declared and therefore cannot be assigned a value");
+            super(variableName + " was not declared");
         }
     }
 
