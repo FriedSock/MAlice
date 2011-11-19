@@ -36,8 +36,11 @@ public class ArithmeticExpression implements Expression {
     @Override
     public String toString() {
         if (right == null) {
+            if (left == null) {
+                return (valueHasBeenSet) ? String.valueOf(value) : variable;
+            }
             return binOp + left.toString();
         }
-        return left.toString() + binOp + right.toString();
+        return "(" + left.toString() + binOp + right.toString() + ")";
     }
 }

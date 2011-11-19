@@ -27,14 +27,14 @@ public class Parser {
     public SymbolTable getSymbolTable() {
         return symbolTable;
     }
-    
+
     public void parseProg(Tree tree) {
         tree = tree.getChild(0);
         for (int i = 0; i < tree.getChildCount(); i++) {
             Tree child = tree.getChild(i);
             parseStatement(child);
         }
-                int breakpoint = 1;
+        int breakpoint = 1;
     }
 
     private void parseStatement(Tree tree) {
@@ -63,11 +63,11 @@ public class Parser {
     private Command parseVariableDeclaration(Tree tree) {
         String variableName = tree.getChild(0).getText();
         Type variableType = Type.valueOf(tree.getChild(2).getText());
-        
+
         if (symbolTable.containsVariable(variableName)) {
             throw new VariableAlreadyDeclaredException(variableName);
         }
-        
+
         symbolTable.addVariable(variableName, variableType);
 
         return new VariableDeclarationCommand(variableName, variableType);
@@ -75,7 +75,7 @@ public class Parser {
 
     private Command parseVariableAssignment(Tree tree) {
         String variableName = tree.getChild(0).getText();
-        
+
         if (!symbolTable.containsVariable(variableName)) {
             throw new VariableNotDeclaredException(variableName);
         }
@@ -122,27 +122,36 @@ public class Parser {
     }
 
     private ArithmeticExpression parseArithmeticExpression(Tree tree) {
-         Tree firstTerm = tree.getChild(0);
 
-         if(firstTerm.getText().equals("factor")) {
-             return new ArithmeticExpression(Integer.parseInt(firstTerm.getChild(0).getText()));
-         } else if (firstTerm.getText().equals("expression")) {
-             Tree Exp = firstTerm.getChild(0);
-             ArithmeticExpression Exp2 = parseArithmeticExpression(Exp);
-             for (int i = 3; i < firstTerm.getChildCount(); i += 2) {
-                Exp = firstTerm.getChild(i);
-                Exp2 = new ArithmeticExpression(Exp2,parseArithmeticExpression(Exp),'+');
-             }
-             return Exp2;
-         } else {
-             Tree left = firstTerm.getChild(0);
-             Tree right = firstTerm.getChild(2);
-             char op = firstTerm.getChild(1).getText().charAt(0);
-             return new ArithmeticExpression(parseArithmeticExpression(left),parseArithmeticExpression(right),op);
-         }
+        if (tree.getText().equals("factor")) {
+            try {
+            int value = Integer.valueOf(tree.getChild(0).getText());
+            return new ArithmeticExpression(value);
+            }
+            catch (Throwable e) {
+                return new ArithmeticExpression(tree.getChild(0).getText());
+            }
+            
+        } else if (tree.getText().equals("expression")) {
+            Tree Exp = tree.getChild(0);
+            ArithmeticExpression Exp2 = parseArithmeticExpression(Exp);
+            for (int i = 2; i < tree.getChildCount(); i += 2) {
+                Exp = tree.getChild(i);
+                Exp2 = new ArithmeticExpression(Exp2, parseArithmeticExpression(Exp), '+');
+            }
+            return Exp2;
+        } else {
+            Tree left = tree.getChild(0);
+            if (tree.getChildCount() > 1) {
+                Tree right = tree.getChild(2);
+                char op = tree.getChild(1).getText().charAt(0);
+                return new ArithmeticExpression(parseArithmeticExpression(left), parseArithmeticExpression(right), op);
+            }
+            return parseArithmeticExpression(left);
+        }
 
     }
-    
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -152,20 +161,23 @@ public class Parser {
         }
         return builder.toString();
     }
-    
+
     public static class VariableAlreadyDeclaredException extends RuntimeException {
+
         public VariableAlreadyDeclaredException(String variableName) {
             super(variableName + " was already declared");
         }
     }
-    
+
     public static class VariableNotDeclaredException extends RuntimeException {
+
         public VariableNotDeclaredException(String variableName) {
             super(variableName + " was not declared and therefore cannot be assigned a value");
         }
     }
-    
+
     public static class IncompatibleTypeException extends RuntimeException {
+
         public IncompatibleTypeException(String variableName, Type type) {
             super(variableName + " can only be assigned a value of type " + type);
         }
