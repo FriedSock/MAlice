@@ -133,7 +133,7 @@ public class Parser {
              return new ArithmeticExpression(Integer.parseInt(firstTerm.getChild(0).getText()));
          } else if (firstTerm.getText().equals("expression")) {
              Tree Exp = firstTerm.getChild(0);
-             ArithmeticExpression Exp2 = new ArithmeticExpression(parseArithmeticExpression(Exp));
+             ArithmeticExpression Exp2 = parseArithmeticExpression(Exp);
              for (int i = 3; i < firstTerm.getChildCount(); i += 2) {
                 Exp = firstTerm.getChild(i);
                 Exp2 = new ArithmeticExpression(Exp2,parseArithmeticExpression(Exp),'+');
