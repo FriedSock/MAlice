@@ -11,6 +11,14 @@ public class VariableAssignmentCommand implements Command {
         this.variableName = variableName;
         this.expression = expression;
     }
+    
+    public String getVariableName() {
+        return variableName;
+    }
+    
+    public Expression getExpression() {
+        return expression;
+    }
 
     @Override
     public String toString() {

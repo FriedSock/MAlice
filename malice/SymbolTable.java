@@ -20,4 +20,8 @@ public class SymbolTable {
     public Type getVariableType(String variableName) {
         return symbolTable.get(variableName).getType();
     }
+    
+    public Register getVariableRegister(String variableName) {
+        return symbolTable.get(variableName).getRegister();
+    }
 }

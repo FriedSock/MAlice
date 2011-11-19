@@ -8,24 +8,6 @@ import org.antlr.runtime.debug.ParseTreeBuilder;
 import org.antlr.runtime.tree.Tree;
 
 public class MAlice {
-
-    /*private static List<Command> parseCommandTree(Tree tree) {
-        List<Command> commands = new ArrayList<Command>();
-        for (int i = 0; i < tree.getChildCount(); i++) {
-            Tree child = tree.getChild(i);
-            String childToken = child.getText();
-            if (childToken.equals("prog")) {
-                return parseCommandTree(child);
-            }
-            if (childToken.equals("statement")) {
-                
-            }
-        }
-        //tree.getChild(childIndex);
-        
-        
-        return commands;
-    }*/
     
     public static void main(String[] args) {
         // TODO - reading from a file
@@ -57,8 +39,12 @@ public class MAlice {
         parser.parseProg(builder.getTree());
         
         
-        System.out.println("TEST");
+        System.out.println("PARSER:");
         System.out.println(parser);
+        
+        
+        /*CodeGenerator codeGenerator = new CodeGenerator(null, null);
+        codeGenerator.generateCode();*/
         
     }
 
@@ -72,7 +58,6 @@ public class MAlice {
             
             System.out.println(child.getText());
             if (child.getChildCount() != 0) {
-               // System.out.println("my arse");
                 traverse(child, depth + 2);
             }
         }

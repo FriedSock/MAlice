@@ -11,6 +11,10 @@ public class VariableDeclarationCommand implements Command {
         this.variableName = variableName;
         this.type = type;
     }
+    
+    public String getVariableName() {
+        return variableName;
+    }
 
     @Override
     public String toString() {
