@@ -157,6 +157,7 @@ public class Parser {
                     exp = tree.getChild(i);
                     exp2 = new ArithmeticExpression(exp2,parseArithmeticExpression(exp), tree.getChild(i-1).toString().charAt(0));
                 }
+                return exp2;
             }
             return parseArithmeticExpression(left);
         }
