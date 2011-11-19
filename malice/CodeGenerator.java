@@ -62,8 +62,6 @@ public class CodeGenerator implements CommandVisitor {
     
     @Override
     public void visitVariableDeclaration(VariableDeclarationCommand command) {
-        //TODO - variable declaration
-        Register reg = symbolTable.getVariableRegister(command.getVariableName());
-        assemblyCommands.add("mov " + reg + ", 0");
+        //TODO - variable declaration?
     }
 }
