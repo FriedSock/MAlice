@@ -8,8 +8,13 @@ public class CharacterExpression implements Expression {
         character = c;
     }
 
-    public char character(){
+    public char getCharacter(){
         return character;
+    }
+    
+    @Override
+    public boolean usesVariable(String aVariableName) {
+        return false;
     }
 
     @Override

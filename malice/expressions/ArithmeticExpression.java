@@ -31,6 +31,17 @@ public class ArithmeticExpression implements Expression {
     }
     
     @Override
+    public boolean usesVariable(String aVariableName) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+    private void tilda(boolean t){
+        if (t) {
+            binOp = '~';
+        }
+    }
+    
+    @Override
     public String toString() {
         if (right == null) {
             if (left == null) {
@@ -39,11 +50,5 @@ public class ArithmeticExpression implements Expression {
             return binOp + left.toString();
         }
         return "(" + left.toString() + binOp + right.toString() + ")";
-    }
-
-    private void tilda(boolean t){
-        if(t){
-            binOp = '~';
-        }
     }
 }
