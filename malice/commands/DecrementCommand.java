@@ -8,6 +8,10 @@ public class DecrementCommand implements Command {
         this.variableName = variableName;
     }
     
+    public String getVariableName() {
+        return variableName;
+    }
+    
     @Override
     public void acceptVisitor(CommandVisitor visitor) {
         visitor.visitDecrement(this);
