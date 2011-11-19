@@ -11,7 +11,7 @@ public class MAlice {
     
     public static void main(String[] args) {
         // TODO - reading from a file
-        CharStream charStream = new ANTLRStringStream("b was a number and b became 10+10*2. b spoke. c was a letter. c became 'f'. b became 10+10+e.");
+        CharStream charStream = new ANTLRStringStream("b was a number and b became 10+10*6^2. b spoke. c was a letter. c became 'f'. b became 10+10+e. b became 5*5/3+1.");
 
         MAliceLexer lexer = new MAliceLexer(charStream);
 

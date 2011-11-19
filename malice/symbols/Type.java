@@ -1,4 +1,4 @@
-package malice;
+package malice.symbols;
 
 public enum Type {
 

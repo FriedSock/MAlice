@@ -1,4 +1,4 @@
-package malice;
+package malice.symbols;
 
 public class Symbol {
 
@@ -7,7 +7,7 @@ public class Symbol {
 
     public Symbol(Type type) {
         this.type = type;
-        register = Register.none;
+        register = Register.NONE;
     }
 
     public Type getType() {

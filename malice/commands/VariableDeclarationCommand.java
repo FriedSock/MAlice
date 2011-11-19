@@ -1,6 +1,6 @@
 package malice.commands;
 
-import malice.Type;
+import malice.symbols.Type;
 
 public class VariableDeclarationCommand implements Command {
     

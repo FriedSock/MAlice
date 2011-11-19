@@ -1,5 +1,10 @@
 package malice;
 
+import malice.symbols.SymbolTable;
+import malice.symbols.Type;
+import malice.expressions.Expression;
+import malice.expressions.CharacterExpression;
+import malice.expressions.ArithmeticExpression;
 import malice.commands.SpeakCommand;
 import malice.commands.IncrementCommand;
 import malice.commands.DecrementCommand;
@@ -97,8 +102,6 @@ public class Parser {
                 throw new IncompatibleTypeException(variableName, variableType);
             }
 
-            //TODO
-
             expression = parseArithmeticExpression(tree.getChild(2));
         }
 
@@ -125,21 +128,21 @@ public class Parser {
 
         if (tree.getText().equals("factor")) {
             try {
-            int value = Integer.valueOf(tree.getChild(0).getText());
-            return new ArithmeticExpression(value);
+                int value = Integer.valueOf(tree.getChild(0).getText());
+                return new ArithmeticExpression(value);
             }
             catch (Throwable e) {
                 return new ArithmeticExpression(tree.getChild(0).getText());
             }
             
         } else if (tree.getText().equals("expression")) {
-            Tree Exp = tree.getChild(0);
-            ArithmeticExpression Exp2 = parseArithmeticExpression(Exp);
+            Tree exp = tree.getChild(0);
+            ArithmeticExpression exp2 = parseArithmeticExpression(exp);
             for (int i = 2; i < tree.getChildCount(); i += 2) {
-                Exp = tree.getChild(i);
-                Exp2 = new ArithmeticExpression(Exp2, parseArithmeticExpression(Exp), '+');
+                exp = tree.getChild(i);
+                exp2 = new ArithmeticExpression(exp2, parseArithmeticExpression(exp), '+');
             }
-            return Exp2;
+            return exp2;
         } else {
             Tree left = tree.getChild(0);
             if (tree.getChildCount() > 1) {

@@ -1,6 +1,6 @@
 package malice.commands;
 
-import malice.Expression;
+import malice.expressions.Expression;
 
 public class VariableAssignmentCommand implements Command {
 

@@ -1,4 +1,4 @@
-package malice;
+package malice.symbols;
 
 import java.util.HashMap;
 import java.util.Map;

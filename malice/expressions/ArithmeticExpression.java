@@ -1,4 +1,4 @@
-package malice;
+package malice.expressions;
 
 public class ArithmeticExpression implements Expression {
 

@@ -1,5 +1,7 @@
 package malice;
 
+import malice.symbols.SymbolTable;
+import malice.symbols.Register;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
