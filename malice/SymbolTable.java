@@ -1,5 +1,6 @@
 package malice;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class SymbolTable {
@@ -7,6 +8,7 @@ public class SymbolTable {
     private Map<String, Symbol> symbolTable;
     
     public SymbolTable() {
+        symbolTable = new HashMap<String, Symbol>();
     }
     
     public void addVariable(String variableName, Type variableType) {
