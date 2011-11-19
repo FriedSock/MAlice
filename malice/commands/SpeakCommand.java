@@ -9,6 +9,11 @@ public class SpeakCommand implements Command {
     }
 
     @Override
+    public void acceptVisitor(CommandVisitor visitor) {
+        visitor.visitSpeak(this);
+    }
+    
+    @Override
     public String toString() {
         return variableName + " spoke";
     }
