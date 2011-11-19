@@ -8,16 +8,17 @@ public class ArithmeticExpression implements Expression {
     private int value;
     private String variable;
     private boolean valueHasBeenSet;
+    private boolean tilda;
 
     public ArithmeticExpression(String variable, boolean tilda) {
         this.variable = variable;
-        tilda(tilda);
+        this.tilda = tilda;
     }
 
     public ArithmeticExpression(int v, boolean tilda) {
         value = v;
         valueHasBeenSet = true;
-        tilda(tilda);
+        this.tilda = tilda;
     }
 
     public ArithmeticExpression(ArithmeticExpression left, ArithmeticExpression right, char op){
@@ -35,17 +36,13 @@ public class ArithmeticExpression implements Expression {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
-    private void tilda(boolean t){
-        if (t) {
-            binOp = '~';
-        }
-    }
     
     @Override
     public String toString() {
         if (right == null) {
             if (left == null) {
-                return (valueHasBeenSet) ? String.valueOf(value) : variable;
+                String out = (valueHasBeenSet) ? String.valueOf(value) : variable;
+                return (tilda) ? "~" + out : out;
             }
             return binOp + left.toString();
         }
