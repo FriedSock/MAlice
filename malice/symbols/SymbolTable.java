@@ -26,4 +26,8 @@ public class SymbolTable {
     public Register getVariableRegister(String variableName) {
         return symbolTable.get(variableName).getRegister();
     }
+    
+    public void initialiseVariable(String variableName) {
+        symbolTable.get(variableName).initialise();
+    }
 }

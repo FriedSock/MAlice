@@ -4,10 +4,12 @@ public class Symbol {
 
     private final Type type;
     private Register register;
+    private boolean initialised;
 
     public Symbol(Type type) {
         this.type = type;
         register = Register.NONE;
+        initialised = false;
     }
 
     public Type getType() {
@@ -16,5 +18,13 @@ public class Symbol {
     
     public Register getRegister() {
         return register;
+    }
+
+    public boolean isInitialised() {
+        return initialised;
+    }
+    
+    public void initialise() {
+        initialised = true;
     }
 }
