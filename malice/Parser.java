@@ -125,6 +125,28 @@ public class Parser {
             return null;
         }
     }
+
+    private ArithmeticExpression parseArithmeticExpression(Tree tree) {
+         Tree firstTerm = tree.getChild(0);
+
+         if(firstTerm.getText().equals("factor")) {
+             return new ArithmeticExpression(Integer.parseInt(firstTerm.getChild(0).getText()));
+         } else if (firstTerm.getText().equals("expression")) {
+             Tree Exp = firstTerm.getChild(0);
+             ArithmeticExpression Exp2 = new ArithmeticExpression(parseArithmeticExpression(Exp));
+             for (int i = 3; i < firstTerm.getChildCount(); i += 2) {
+                Exp = firstTerm.getChild(i);
+                Exp2 = new ArithmeticExpression(Exp2,parseArithmeticExpression(Exp),'+');
+             }
+             return Exp2;
+         } else {
+             Tree left = firstTerm.getChild(0);
+             Tree right = firstTerm.getChild(2);
+             char op = firstTerm.getChild(1).getText().charAt(0);
+             return new ArithmeticExpression(parseArithmeticExpression(left),parseArithmeticExpression(right),op);
+         }
+
+    }
     
     public static class VariableAlreadyDeclaredException extends RuntimeException {
         public VariableAlreadyDeclaredException(String variableName) {
