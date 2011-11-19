@@ -127,39 +127,34 @@ public class Parser {
     private ArithmeticExpression parseArithmeticExpression(Tree tree) {
 
         if (tree.getText().equals("factor")) {
+            boolean tilda = false;
+            String first = tree.getChild(0).getText();
+            String terminal;
+            if(first.equals("~")) {
+                tilda = true;
+                terminal = tree.getChild(1).getText();
+            } else {
+                terminal = tree.getChild(0).getText();
+            }
             try {
-                int value = Integer.valueOf(tree.getChild(0).getText());
-                return new ArithmeticExpression(value);
+                int value = Integer.valueOf(terminal);
+                return new ArithmeticExpression(value,tilda);
             }
             catch (Throwable e) {
-                return new ArithmeticExpression(tree.getChild(0).getText());
+                return new ArithmeticExpression(terminal,tilda);
             }
             
-        } else if (tree.getText().equals("expression")) {
-            Tree exp = tree.getChild(0);
-            ArithmeticExpression exp2 = parseArithmeticExpression(exp);
-            for (int i = 2; i < tree.getChildCount(); i += 2) {
-                exp = tree.getChild(i);
-                exp2 = new ArithmeticExpression(exp2, parseArithmeticExpression(exp), '+');
-            }
-            return exp2;
         } else {
-            Tree left = tree.getChild(0);
+            Tree leftExp = tree.getChild(0);
             if (tree.getChildCount() > 1) {
-                /*Tree right = tree.getChild(2);
-                char op = tree.getChild(1).getText().charAt(0);
-                return new ArithmeticExpression(parseArithmeticExpression(left), parseArithmeticExpression(right), op);
-                 *
-                 */
-                Tree exp = tree.getChild(0);
-                ArithmeticExpression exp2 = parseArithmeticExpression(exp);
+                ArithmeticExpression rightExp = parseArithmeticExpression(leftExp);
                 for(int i = 2; i < tree.getChildCount(); i += 2) {
-                    exp = tree.getChild(i);
-                    exp2 = new ArithmeticExpression(exp2,parseArithmeticExpression(exp), tree.getChild(i-1).toString().charAt(0));
+                    leftExp = tree.getChild(i);
+                    rightExp = new ArithmeticExpression(rightExp,parseArithmeticExpression(leftExp), tree.getChild(i-1).toString().charAt(0));
                 }
-                return exp2;
+                return rightExp;
             }
-            return parseArithmeticExpression(left);
+            return parseArithmeticExpression(leftExp);
         }
 
     }
