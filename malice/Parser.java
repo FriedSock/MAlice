@@ -78,8 +78,12 @@ public class Parser {
 
     private Command parseVariableAssignment(Tree tree) {
         String variableName = tree.getChild(0).getText();
+        
+        if (!symbolTable.containsKey(variableName)) {
+            throw new VariableNotDeclaredException(variableName);
+        }
 
-        String expressionText = tree.getChild(1).getText();
+        String expressionText = tree.getChild(2).getChild(0).getText();
         Expression expression = null;
 
         if ('\'' == expressionText.charAt(0)) {
@@ -124,6 +128,12 @@ public class Parser {
     public static class VariableAlreadyDeclaredException extends RuntimeException {
         public VariableAlreadyDeclaredException(String variableName) {
             super(variableName + " was already declared");
+        }
+    }
+    
+    public static class VariableNotDeclaredException extends RuntimeException {
+        public VariableNotDeclaredException(String variableName) {
+            super(variableName + " was not declared and therefore cannot be assigned a value");
         }
     }
     
