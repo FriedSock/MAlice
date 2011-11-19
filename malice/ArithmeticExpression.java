@@ -18,9 +18,9 @@ public class ArithmeticExpression implements Expression {
         this.variable = variable;
     }
 
-    //Don't need to pass in operator as the only unary operator is ~
-    public ArithmeticExpression(ArithmeticExpression n){
+    public ArithmeticExpression(ArithmeticExpression n, char op){
         left = n;
+        binOp = op;
     }
 
     public ArithmeticExpression(ArithmeticExpression left, ArithmeticExpression right, char op){
@@ -33,4 +33,11 @@ public class ArithmeticExpression implements Expression {
     public void reduce() {   
     }
     
+    @Override
+    public String toString() {
+        if (right == null) {
+            return binOp + left.toString();
+        }
+        return left.toString() + binOp + right.toString();
+    }
 }
