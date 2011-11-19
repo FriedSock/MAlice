@@ -31,6 +31,10 @@ public class SymbolTable {
         symbolTable.get(variableName).setRegister(register);
     }
     
+    public boolean isInitialisedVariable(String variableName) {
+        return symbolTable.get(variableName).isInitialised();
+    }
+    
     public void initialiseVariable(String variableName) {
         symbolTable.get(variableName).initialise();
     }

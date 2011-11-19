@@ -29,7 +29,15 @@ public class CodeGenerator implements CommandVisitor {
         assemblyCommands = new ArrayList<String>();
         freeRegisters = new LinkedList<Register>();
         freeRegisters.addAll(Arrays.asList(Register.values()));
-        freeRegisters.remove();
+        freeRegisters.remove(); // removes Register.NONE
+        
+        findLiveRanges();
+    }
+    
+    private void findLiveRanges() {
+        for (Command command : commands) {
+            
+        }
     }
     
     public List<String> generateCode() {

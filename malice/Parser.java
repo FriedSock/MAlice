@@ -104,12 +104,22 @@ public class Parser {
 
             expression = parseArithmeticExpression(tree.getChild(2));
         }
+        
+        symbolTable.initialiseVariable(variableName);
 
         return new VariableAssignmentCommand(variableName, expression);
     }
 
     private Command parseProcedure(Tree tree) {
         String variableName = tree.getChild(0).getText();
+        
+        if (!symbolTable.containsVariable(variableName)) {
+            throw new VariableNotDeclaredException(variableName);
+        }
+        if (!symbolTable.isInitialisedVariable(variableName)) {
+            throw new VariableNotInitialisedException(variableName);
+        }
+        
         String procedureName = tree.getChild(1).getText();
 
         if ("ate".equals(procedureName)) {
@@ -182,7 +192,14 @@ public class Parser {
             super(variableName + " was not declared");
         }
     }
+    
+    public static class VariableNotInitialisedException extends RuntimeException {
 
+        public VariableNotInitialisedException(String variableName) {
+            super(variableName + " was not initialised");
+        }
+    }
+    
     public static class IncompatibleTypeException extends RuntimeException {
 
         public IncompatibleTypeException(String variableName, Type type) {

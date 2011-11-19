@@ -1,5 +1,8 @@
 package malice.commands;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import malice.symbols.Type;
 
 public class VariableDeclarationCommand implements Command {
@@ -17,8 +20,12 @@ public class VariableDeclarationCommand implements Command {
     }
     
     @Override
+    public Set<String> getUsedVariables() {
+        return new HashSet<String>(Arrays.asList(variableName));
+    }
+    
+    @Override
     public boolean usesVariable(String aVariableName) {
-        //TODO - check for variable in expression
         return variableName.equals(aVariableName);
     }
 

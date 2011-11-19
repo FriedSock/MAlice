@@ -1,5 +1,8 @@
 package malice.commands;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import malice.expressions.Expression;
 
 public class VariableAssignmentCommand implements Command {
@@ -26,9 +29,15 @@ public class VariableAssignmentCommand implements Command {
     }
     
     @Override
+    public Set<String> getUsedVariables() {
+        Set<String> usedVariables = new HashSet<String>(Arrays.asList(variableName));
+        usedVariables.addAll(expression.getUsedVariables());
+        return usedVariables;
+    }
+    
+    @Override
     public boolean usesVariable(String aVariableName) {
-        //TODO - check for variable in expression
-        return variableName.equals(aVariableName);
+        return variableName.equals(aVariableName) || expression.usesVariable(aVariableName);
     }
     
     @Override
