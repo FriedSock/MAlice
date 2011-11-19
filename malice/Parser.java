@@ -99,7 +99,7 @@ public class Parser {
 
             //TODO
 
-            expression = new ArithmeticExpression("a");
+            expression = parseArithmeticExpression(tree.getChild(2));
         }
 
         return new VariableAssignmentCommand(variableName, expression);
