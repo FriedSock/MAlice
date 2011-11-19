@@ -9,7 +9,7 @@ public class SymbolTable {
     public SymbolTable() {
     }
     
-    public void add(String variableName, Type variableType) {
+    public void addVariable(String variableName, Type variableType) {
         symbolTable.put(variableName, new Symbol(variableType));
     }
     

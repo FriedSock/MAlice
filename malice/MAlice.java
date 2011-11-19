@@ -43,8 +43,8 @@ public class MAlice {
         System.out.println(parser);
         
         
-        /*CodeGenerator codeGenerator = new CodeGenerator(null, null);
-        codeGenerator.generateCode();*/
+        CodeGenerator codeGenerator = new CodeGenerator(parser.getCommands(), parser.getSymbolTable());
+        //codeGenerator.generateCode();
         
     }
 

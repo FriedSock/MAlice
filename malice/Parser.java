@@ -7,29 +7,25 @@ import malice.commands.VariableDeclarationCommand;
 import malice.commands.VariableAssignmentCommand;
 import malice.commands.Command;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.antlr.runtime.tree.Tree;
 
 public class Parser {
 
     private List<Command> commands;
-    private Map<String, Symbol> symbolTable;
+    private SymbolTable symbolTable;
 
     public Parser() {
         commands = new ArrayList<Command>();
-        symbolTable = new HashMap<String, Symbol>();
+        symbolTable = new SymbolTable();
     }
 
-    @Override
-    public String toString() {
-        StringBuilder b = new StringBuilder();
-        for (Command command : commands) {
-            b.append(command);
-            b.append('\n');
-        }
-        return b.toString();
+    public List<Command> getCommands() {
+        return commands;
+    }
+
+    public SymbolTable getSymbolTable() {
+        return symbolTable;
     }
     
     public void parseProg(Tree tree) {
@@ -68,11 +64,11 @@ public class Parser {
         String variableName = tree.getChild(0).getText();
         Type variableType = Type.valueOf(tree.getChild(2).getText());
         
-        if (symbolTable.containsKey(variableName)) {
+        if (symbolTable.containsVariable(variableName)) {
             throw new VariableAlreadyDeclaredException(variableName);
         }
         
-        symbolTable.put(variableName, new Symbol(variableType));
+        symbolTable.addVariable(variableName, variableType);
 
         return new VariableDeclarationCommand(variableName, variableType);
     }
@@ -80,16 +76,16 @@ public class Parser {
     private Command parseVariableAssignment(Tree tree) {
         String variableName = tree.getChild(0).getText();
         
-        if (!symbolTable.containsKey(variableName)) {
+        if (!symbolTable.containsVariable(variableName)) {
             throw new VariableNotDeclaredException(variableName);
         }
 
         String expressionText = tree.getChild(2).getChild(0).getText();
         Expression expression = null;
 
+        Type variableType = symbolTable.getVariableType(variableName);
         if ('\'' == expressionText.charAt(0)) {
             // character expression
-            Type variableType = symbolTable.get(variableName).getType();
             if (Type.letter != variableType) {
                 throw new IncompatibleTypeException(variableName, variableType);
             }
@@ -97,7 +93,6 @@ public class Parser {
             expression = new CharacterExpression(expressionText.charAt(1));
         } else {
             // arithmetic expression
-            Type variableType = symbolTable.get(variableName).getType();
             if (Type.number != variableType) {
                 throw new IncompatibleTypeException(variableName, variableType);
             }
@@ -146,6 +141,16 @@ public class Parser {
              return new ArithmeticExpression(parseArithmeticExpression(left),parseArithmeticExpression(right),op);
          }
 
+    }
+    
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        for (Command command : commands) {
+            builder.append(command);
+            builder.append('\n');
+        }
+        return builder.toString();
     }
     
     public static class VariableAlreadyDeclaredException extends RuntimeException {
