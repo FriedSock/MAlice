@@ -5,65 +5,85 @@ import java.util.Set;
 
 public class ArithmeticExpression implements Expression {
 
-    private ArithmeticExpression left;
-    private ArithmeticExpression right;
+    private ArithmeticExpression left, right;
     private char binOp;
     private int value;
     private String variableName;
-    private boolean isImmediateValue;
-    private boolean tilde;
-    private boolean isValue;
+    private boolean hasTilde, isImmediateValue, isValue;
 
-    public ArithmeticExpression(String variableName, boolean tilde) {
+    public ArithmeticExpression(String variableName, boolean hasTilde) {
         this.variableName = variableName;
-        this.tilde = tilde;
+        this.hasTilde = hasTilde;
         isImmediateValue = false;
         isValue = true;
+        reduce();
     }
 
-    public ArithmeticExpression(int value, boolean tilde) {
+    public ArithmeticExpression(int value, boolean hasTilde) {
         this.value = value;
-        this.tilde = tilde;
+        this.hasTilde = hasTilde;
         isImmediateValue = true;
         isValue = true;
+        reduce();
     }
 
-    public ArithmeticExpression(ArithmeticExpression left, ArithmeticExpression right, char op) {
+    public ArithmeticExpression(ArithmeticExpression left, ArithmeticExpression right, char binOp) {
         this.left = left;
         this.right = right;
-        binOp = op;
+        this.binOp = binOp;
+        isImmediateValue = false;
+        isValue = false;
+        reduce();
     }
-    
-    //TODO Optimisation - Collapse arithmetic parse tree
-    public void reduce() {   
+
+    public void reduce() {
+        reduce(this);
     }
-    
-    @Override
-    public Set<String> getUsedVariables() {
-        Set<String> usedVariables = new HashSet<String>();
+
+    private void reduce(ArithmeticExpression exp) {
+        if (exp.left == null || exp.right == null) {
+            return;
+        }
+
+        reduce(exp.left);
+        reduce(exp.right);
+
+        if (!exp.left.isImmediateValue() || !exp.right.isImmediateValue()) {
+            return;
+        }
+
+        switch (exp.binOp) {
+            case '+':
+                exp.value = exp.left.value + exp.right.value;
+                break;
+            case '*':
+                exp.value = exp.left.value * exp.right.value;
+                break;
+            case '/':
+                if (exp.right.value == 0) {
+                    // division by zero gives an undefined value
+                    break;
+                }
+                exp.value = exp.left.value / exp.right.value;
+                break;
+            case '%':
+                exp.value = exp.left.value % exp.right.value;
+                break;
+            case '&':
+                exp.value = exp.left.value & exp.right.value;
+                break;
+            case '|':
+                exp.value = exp.left.value | exp.right.value;
+                break;
+            case '^':
+                exp.value = exp.left.value ^ exp.right.value;
+                break;
+        }
         
-        if (!isImmediateValue && isValue) {
-            usedVariables.add(variableName);
-        }
-        if (left != null) {
-            usedVariables.addAll(left.getUsedVariables());
-        }
-        if (right != null) {
-            usedVariables.addAll(right.getUsedVariables());
-        }
-        
-        return usedVariables;
-    }
-    
-    @Override
-    public boolean usesVariable(String aVariableName) {
-        // is a variable identified and used
-        return !isImmediateValue && isValue && variableName.equals(aVariableName);
-    }
-    
-    @Override
-    public boolean isArithmeticExpression() {
-        return true;
+        exp.isImmediateValue = true;
+        exp.isValue = true;
+        exp.left = null;
+        exp.right = null;
     }
 
     public boolean isValue() {
@@ -74,20 +94,48 @@ public class ArithmeticExpression implements Expression {
         return isImmediateValue;
     }
 
-    public ArithmeticExpression left() {
+    public ArithmeticExpression getLeft() {
         return left;
     }
 
-    public ArithmeticExpression right() {
+    public ArithmeticExpression getRight() {
         return right;
     }
 
-    public char binOp() {
+    public char getBinOp() {
         return binOp;
     }
 
     public boolean tilde() {
-        return tilde;
+        return hasTilde;
+    }
+
+    @Override
+    public Set<String> getUsedVariables() {
+        Set<String> usedVariables = new HashSet<String>();
+
+        if (!isImmediateValue && isValue) {
+            usedVariables.add(variableName);
+        }
+        if (left != null) {
+            usedVariables.addAll(left.getUsedVariables());
+        }
+        if (right != null) {
+            usedVariables.addAll(right.getUsedVariables());
+        }
+
+        return usedVariables;
+    }
+
+    @Override
+    public boolean usesVariable(String aVariableName) {
+        // is a variable identified and used
+        return !isImmediateValue && isValue && variableName.equals(aVariableName);
+    }
+
+    @Override
+    public boolean isArithmeticExpression() {
+        return true;
     }
 
     @Override
@@ -95,7 +143,7 @@ public class ArithmeticExpression implements Expression {
         if (right == null) {
             if (left == null) {
                 String out = (isImmediateValue) ? String.valueOf(value) : variableName;
-                return (tilde) ? "~" + out : out;
+                return (hasTilde) ? "~" + out : out;
             }
             return binOp + left.toString();
         }

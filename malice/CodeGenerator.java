@@ -68,6 +68,7 @@ public class CodeGenerator implements CommandVisitor {
                     freeRegisters.add(symbolTable.getVariableRegister(entry.getKey()));
                 }
             }
+            System.out.println("freeRegs: " + freeRegisters.size());
         }
         return assemblyCommands;
     }
@@ -139,8 +140,8 @@ public class CodeGenerator implements CommandVisitor {
             }
         } else {
             //There is a binOp
-            List<String> leftExp = generateExpressionCode(exp.left());
-            List<String> rightExp = generateExpressionCode(exp.right());
+            List<String> leftExp = generateExpressionCode(exp.getLeft());
+            List<String> rightExp = generateExpressionCode(exp.getRight());
             String leftVal = leftExp.remove(0);
             String rightVal = rightExp.remove(0);
 
@@ -152,7 +153,7 @@ public class CodeGenerator implements CommandVisitor {
             returnValue.addAll(leftExp);
             returnValue.addAll(rightExp);
 
-            char binop = exp.binOp();
+            char binop = exp.getBinOp();
             String regs = leftVal + ", " + rightVal;
             switch (binop) {
                 case '+':
