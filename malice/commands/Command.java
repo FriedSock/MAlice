@@ -8,5 +8,7 @@ public interface Command {
     
     Set<String> getUsedVariables();
     
+    boolean updatesVariable(String aVariableName);
+    
     boolean usesVariable(String aVariableName);
 }

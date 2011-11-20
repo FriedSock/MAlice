@@ -57,7 +57,8 @@ public class ArithmeticExpression implements Expression {
     
     @Override
     public boolean usesVariable(String aVariableName) {
-        return !isImmediateValue && variableName.equals(aVariableName);
+        // is a variable identified and used
+        return !isImmediateValue && isValue && variableName.equals(aVariableName);
     }
     
     @Override
