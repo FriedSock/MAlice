@@ -68,7 +68,9 @@ public class CodeGenerator implements CommandVisitor {
                     freeRegisters.add(symbolTable.getVariableRegister(entry.getKey()));
                 }
             }
-            System.out.println("freeRegs: " + freeRegisters.size());
+            
+            //TODO - remove
+            //System.out.println("freeRegs: " + freeRegisters.size());
         }
         return assemblyCommands;
     }
@@ -129,7 +131,7 @@ public class CodeGenerator implements CommandVisitor {
 
         if (exp.isValue()) {
             //TODO - Refactoring
-            if (exp.tilde()) {
+            if (exp.hasTilde()) {
                 returnValue.addAll(tildeCode(exp));
             } else {
                 if (exp.isImmediateValue()) {

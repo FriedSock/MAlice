@@ -106,7 +106,7 @@ public class ArithmeticExpression implements Expression {
         return binOp;
     }
 
-    public boolean tilde() {
+    public boolean hasTilde() {
         return hasTilde;
     }
 
