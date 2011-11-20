@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /home/jack/Desktop/MAlice.g 2011-11-18 14:17:49
+// $ANTLR 3.4 /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g 2011-11-20 15:32:56
 
 	package malice;
 
@@ -43,15 +43,15 @@ public class MAliceLexer extends Lexer {
     public MAliceLexer(CharStream input, RecognizerSharedState state) {
         super(input,state);
     }
-    public String getGrammarFileName() { return "/home/jack/Desktop/MAlice.g"; }
+    public String getGrammarFileName() { return "/Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g"; }
 
     // $ANTLR start "T__12"
     public final void mT__12() throws RecognitionException {
         try {
             int _type = T__12;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/jack/Desktop/MAlice.g:6:7: ( ' became ' )
-            // /home/jack/Desktop/MAlice.g:6:9: ' became '
+            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:6:7: ( ' became ' )
+            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:6:9: ' became '
             {
             match(" became "); 
 
@@ -73,8 +73,8 @@ public class MAliceLexer extends Lexer {
         try {
             int _type = T__13;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/jack/Desktop/MAlice.g:7:7: ( '%' )
-            // /home/jack/Desktop/MAlice.g:7:9: '%'
+            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:7:7: ( '%' )
+            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:7:9: '%'
             {
             match('%'); 
 
@@ -94,8 +94,8 @@ public class MAliceLexer extends Lexer {
         try {
             int _type = T__14;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/jack/Desktop/MAlice.g:8:7: ( '&' )
-            // /home/jack/Desktop/MAlice.g:8:9: '&'
+            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:8:7: ( '&' )
+            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:8:9: '&'
             {
             match('&'); 
 
@@ -115,8 +115,8 @@ public class MAliceLexer extends Lexer {
         try {
             int _type = T__15;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/jack/Desktop/MAlice.g:9:7: ( '*' )
-            // /home/jack/Desktop/MAlice.g:9:9: '*'
+            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:9:7: ( '*' )
+            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:9:9: '*'
             {
             match('*'); 
 
@@ -136,8 +136,8 @@ public class MAliceLexer extends Lexer {
         try {
             int _type = T__16;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/jack/Desktop/MAlice.g:10:7: ( '+' )
-            // /home/jack/Desktop/MAlice.g:10:9: '+'
+            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:10:7: ( '+' )
+            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:10:9: '+'
             {
             match('+'); 
 
@@ -157,8 +157,8 @@ public class MAliceLexer extends Lexer {
         try {
             int _type = T__17;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/jack/Desktop/MAlice.g:11:7: ( '/' )
-            // /home/jack/Desktop/MAlice.g:11:9: '/'
+            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:11:7: ( '/' )
+            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:11:9: '/'
             {
             match('/'); 
 
@@ -178,8 +178,8 @@ public class MAliceLexer extends Lexer {
         try {
             int _type = T__18;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/jack/Desktop/MAlice.g:12:7: ( '^' )
-            // /home/jack/Desktop/MAlice.g:12:9: '^'
+            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:12:7: ( '^' )
+            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:12:9: '^'
             {
             match('^'); 
 
@@ -199,8 +199,8 @@ public class MAliceLexer extends Lexer {
         try {
             int _type = T__19;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/jack/Desktop/MAlice.g:13:7: ( 'was a' )
-            // /home/jack/Desktop/MAlice.g:13:9: 'was a'
+            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:13:7: ( 'was a' )
+            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:13:9: 'was a'
             {
             match("was a"); 
 
@@ -222,8 +222,8 @@ public class MAliceLexer extends Lexer {
         try {
             int _type = T__20;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/jack/Desktop/MAlice.g:14:7: ( '|' )
-            // /home/jack/Desktop/MAlice.g:14:9: '|'
+            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:14:7: ( '|' )
+            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:14:9: '|'
             {
             match('|'); 
 
@@ -243,8 +243,8 @@ public class MAliceLexer extends Lexer {
         try {
             int _type = T__21;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/jack/Desktop/MAlice.g:15:7: ( '~' )
-            // /home/jack/Desktop/MAlice.g:15:9: '~'
+            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:15:7: ( '~' )
+            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:15:9: '~'
             {
             match('~'); 
 
@@ -264,7 +264,7 @@ public class MAliceLexer extends Lexer {
         try {
             int _type = PROCEDURE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/jack/Desktop/MAlice.g:39:10: ( 'drank' | 'ate' | 'spoke' )
+            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:39:10: ( 'drank' | 'ate' | 'spoke' )
             int alt1=3;
             switch ( input.LA(1) ) {
             case 'd':
@@ -292,7 +292,7 @@ public class MAliceLexer extends Lexer {
 
             switch (alt1) {
                 case 1 :
-                    // /home/jack/Desktop/MAlice.g:39:13: 'drank'
+                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:39:13: 'drank'
                     {
                     match("drank"); 
 
@@ -301,7 +301,7 @@ public class MAliceLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /home/jack/Desktop/MAlice.g:39:23: 'ate'
+                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:39:23: 'ate'
                     {
                     match("ate"); 
 
@@ -310,7 +310,7 @@ public class MAliceLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // /home/jack/Desktop/MAlice.g:39:31: 'spoke'
+                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:39:31: 'spoke'
                     {
                     match("spoke"); 
 
@@ -334,7 +334,7 @@ public class MAliceLexer extends Lexer {
         try {
             int _type = TYPE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/jack/Desktop/MAlice.g:41:5: ( 'number' | 'letter' )
+            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:41:5: ( 'number' | 'letter' )
             int alt2=2;
             int LA2_0 = input.LA(1);
 
@@ -353,7 +353,7 @@ public class MAliceLexer extends Lexer {
             }
             switch (alt2) {
                 case 1 :
-                    // /home/jack/Desktop/MAlice.g:41:9: 'number'
+                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:41:9: 'number'
                     {
                     match("number"); 
 
@@ -362,7 +362,7 @@ public class MAliceLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /home/jack/Desktop/MAlice.g:41:20: 'letter'
+                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:41:20: 'letter'
                     {
                     match("letter"); 
 
@@ -386,7 +386,7 @@ public class MAliceLexer extends Lexer {
         try {
             int _type = CONNECTOR;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/jack/Desktop/MAlice.g:43:10: ( ' and' ( ' ' )? | ' but' ( ' ' )? | ' then' ( ' ' )? | ',' ( ' ' )? )
+            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:43:10: ( ' and' ( ' ' )? | ' but' ( ' ' )? | ' then' ( ' ' )? | ',' ( ' ' )? )
             int alt7=4;
             int LA7_0 = input.LA(1);
 
@@ -428,13 +428,13 @@ public class MAliceLexer extends Lexer {
             }
             switch (alt7) {
                 case 1 :
-                    // /home/jack/Desktop/MAlice.g:43:13: ' and' ( ' ' )?
+                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:43:13: ' and' ( ' ' )?
                     {
                     match(" and"); 
 
 
 
-                    // /home/jack/Desktop/MAlice.g:43:19: ( ' ' )?
+                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:43:19: ( ' ' )?
                     int alt3=2;
                     int LA3_0 = input.LA(1);
 
@@ -443,7 +443,7 @@ public class MAliceLexer extends Lexer {
                     }
                     switch (alt3) {
                         case 1 :
-                            // /home/jack/Desktop/MAlice.g:43:20: ' '
+                            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:43:20: ' '
                             {
                             match(' '); 
 
@@ -456,13 +456,13 @@ public class MAliceLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /home/jack/Desktop/MAlice.g:43:28: ' but' ( ' ' )?
+                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:43:28: ' but' ( ' ' )?
                     {
                     match(" but"); 
 
 
 
-                    // /home/jack/Desktop/MAlice.g:43:34: ( ' ' )?
+                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:43:34: ( ' ' )?
                     int alt4=2;
                     int LA4_0 = input.LA(1);
 
@@ -471,7 +471,7 @@ public class MAliceLexer extends Lexer {
                     }
                     switch (alt4) {
                         case 1 :
-                            // /home/jack/Desktop/MAlice.g:43:35: ' '
+                            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:43:35: ' '
                             {
                             match(' '); 
 
@@ -484,13 +484,13 @@ public class MAliceLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // /home/jack/Desktop/MAlice.g:43:43: ' then' ( ' ' )?
+                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:43:43: ' then' ( ' ' )?
                     {
                     match(" then"); 
 
 
 
-                    // /home/jack/Desktop/MAlice.g:43:50: ( ' ' )?
+                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:43:50: ( ' ' )?
                     int alt5=2;
                     int LA5_0 = input.LA(1);
 
@@ -499,7 +499,7 @@ public class MAliceLexer extends Lexer {
                     }
                     switch (alt5) {
                         case 1 :
-                            // /home/jack/Desktop/MAlice.g:43:51: ' '
+                            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:43:51: ' '
                             {
                             match(' '); 
 
@@ -512,11 +512,11 @@ public class MAliceLexer extends Lexer {
                     }
                     break;
                 case 4 :
-                    // /home/jack/Desktop/MAlice.g:43:59: ',' ( ' ' )?
+                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:43:59: ',' ( ' ' )?
                     {
                     match(','); 
 
-                    // /home/jack/Desktop/MAlice.g:43:62: ( ' ' )?
+                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:43:62: ( ' ' )?
                     int alt6=2;
                     int LA6_0 = input.LA(1);
 
@@ -525,7 +525,7 @@ public class MAliceLexer extends Lexer {
                     }
                     switch (alt6) {
                         case 1 :
-                            // /home/jack/Desktop/MAlice.g:43:63: ' '
+                            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:43:63: ' '
                             {
                             match(' '); 
 
@@ -553,7 +553,7 @@ public class MAliceLexer extends Lexer {
         try {
             int _type = END_OF_LINE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/jack/Desktop/MAlice.g:45:12: ( '.' | ' too.' | CONNECTOR )
+            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:45:12: ( '.' | ' too.' | CONNECTOR )
             int alt8=3;
             switch ( input.LA(1) ) {
             case '.':
@@ -609,14 +609,14 @@ public class MAliceLexer extends Lexer {
 
             switch (alt8) {
                 case 1 :
-                    // /home/jack/Desktop/MAlice.g:45:15: '.'
+                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:45:15: '.'
                     {
                     match('.'); 
 
                     }
                     break;
                 case 2 :
-                    // /home/jack/Desktop/MAlice.g:45:21: ' too.'
+                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:45:21: ' too.'
                     {
                     match(" too."); 
 
@@ -625,7 +625,7 @@ public class MAliceLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // /home/jack/Desktop/MAlice.g:45:31: CONNECTOR
+                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:45:31: CONNECTOR
                     {
                     mCONNECTOR(); 
 
@@ -648,10 +648,10 @@ public class MAliceLexer extends Lexer {
         try {
             int _type = INT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/jack/Desktop/MAlice.g:47:4: ( ( '0' .. '9' )+ )
-            // /home/jack/Desktop/MAlice.g:47:8: ( '0' .. '9' )+
+            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:47:4: ( ( '0' .. '9' )+ )
+            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:47:8: ( '0' .. '9' )+
             {
-            // /home/jack/Desktop/MAlice.g:47:8: ( '0' .. '9' )+
+            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:47:8: ( '0' .. '9' )+
             int cnt9=0;
             loop9:
             do {
@@ -665,7 +665,7 @@ public class MAliceLexer extends Lexer {
 
                 switch (alt9) {
             	case 1 :
-            	    // /home/jack/Desktop/MAlice.g:
+            	    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:
             	    {
             	    if ( (input.LA(1) >= '0' && input.LA(1) <= '9') ) {
             	        input.consume();
@@ -706,8 +706,8 @@ public class MAliceLexer extends Lexer {
         try {
             int _type = CHAR;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/jack/Desktop/MAlice.g:49:5: ( '\\'' ( 'a' .. 'z' ) '\\'' )
-            // /home/jack/Desktop/MAlice.g:49:9: '\\'' ( 'a' .. 'z' ) '\\''
+            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:49:5: ( '\\'' ( 'a' .. 'z' ) '\\'' )
+            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:49:9: '\\'' ( 'a' .. 'z' ) '\\''
             {
             match('\''); 
 
@@ -739,8 +739,8 @@ public class MAliceLexer extends Lexer {
         try {
             int _type = ID;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/jack/Desktop/MAlice.g:51:3: ( ( 'a' .. 'z' ) ( 'a' .. 'z' | '_' )* )
-            // /home/jack/Desktop/MAlice.g:51:7: ( 'a' .. 'z' ) ( 'a' .. 'z' | '_' )*
+            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:51:3: ( ( 'a' .. 'z' ) ( 'a' .. 'z' | '_' )* )
+            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:51:7: ( 'a' .. 'z' ) ( 'a' .. 'z' | '_' )*
             {
             if ( (input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
                 input.consume();
@@ -752,7 +752,7 @@ public class MAliceLexer extends Lexer {
             }
 
 
-            // /home/jack/Desktop/MAlice.g:51:17: ( 'a' .. 'z' | '_' )*
+            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:51:17: ( 'a' .. 'z' | '_' )*
             loop10:
             do {
                 int alt10=2;
@@ -765,7 +765,7 @@ public class MAliceLexer extends Lexer {
 
                 switch (alt10) {
             	case 1 :
-            	    // /home/jack/Desktop/MAlice.g:
+            	    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:
             	    {
             	    if ( input.LA(1)=='_'||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
             	        input.consume();
@@ -802,8 +802,8 @@ public class MAliceLexer extends Lexer {
         try {
             int _type = WS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/jack/Desktop/MAlice.g:55:3: ( ( ' ' | '\\t' | '\\r' | '\\n' ) )
-            // /home/jack/Desktop/MAlice.g:55:7: ( ' ' | '\\t' | '\\r' | '\\n' )
+            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:55:3: ( ( ' ' | '\\t' | '\\r' | '\\n' ) )
+            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:55:7: ( ' ' | '\\t' | '\\r' | '\\n' )
             {
             if ( (input.LA(1) >= '\t' && input.LA(1) <= '\n')||input.LA(1)=='\r'||input.LA(1)==' ' ) {
                 input.consume();
@@ -829,12 +829,12 @@ public class MAliceLexer extends Lexer {
     // $ANTLR end "WS"
 
     public void mTokens() throws RecognitionException {
-        // /home/jack/Desktop/MAlice.g:1:8: ( T__12 | T__13 | T__14 | T__15 | T__16 | T__17 | T__18 | T__19 | T__20 | T__21 | PROCEDURE | TYPE | CONNECTOR | END_OF_LINE | INT | CHAR | ID | WS )
+        // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:1:8: ( T__12 | T__13 | T__14 | T__15 | T__16 | T__17 | T__18 | T__19 | T__20 | T__21 | PROCEDURE | TYPE | CONNECTOR | END_OF_LINE | INT | CHAR | ID | WS )
         int alt11=18;
         alt11 = dfa11.predict(input);
         switch (alt11) {
             case 1 :
-                // /home/jack/Desktop/MAlice.g:1:10: T__12
+                // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:1:10: T__12
                 {
                 mT__12(); 
 
@@ -842,7 +842,7 @@ public class MAliceLexer extends Lexer {
                 }
                 break;
             case 2 :
-                // /home/jack/Desktop/MAlice.g:1:16: T__13
+                // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:1:16: T__13
                 {
                 mT__13(); 
 
@@ -850,7 +850,7 @@ public class MAliceLexer extends Lexer {
                 }
                 break;
             case 3 :
-                // /home/jack/Desktop/MAlice.g:1:22: T__14
+                // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:1:22: T__14
                 {
                 mT__14(); 
 
@@ -858,7 +858,7 @@ public class MAliceLexer extends Lexer {
                 }
                 break;
             case 4 :
-                // /home/jack/Desktop/MAlice.g:1:28: T__15
+                // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:1:28: T__15
                 {
                 mT__15(); 
 
@@ -866,7 +866,7 @@ public class MAliceLexer extends Lexer {
                 }
                 break;
             case 5 :
-                // /home/jack/Desktop/MAlice.g:1:34: T__16
+                // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:1:34: T__16
                 {
                 mT__16(); 
 
@@ -874,7 +874,7 @@ public class MAliceLexer extends Lexer {
                 }
                 break;
             case 6 :
-                // /home/jack/Desktop/MAlice.g:1:40: T__17
+                // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:1:40: T__17
                 {
                 mT__17(); 
 
@@ -882,7 +882,7 @@ public class MAliceLexer extends Lexer {
                 }
                 break;
             case 7 :
-                // /home/jack/Desktop/MAlice.g:1:46: T__18
+                // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:1:46: T__18
                 {
                 mT__18(); 
 
@@ -890,7 +890,7 @@ public class MAliceLexer extends Lexer {
                 }
                 break;
             case 8 :
-                // /home/jack/Desktop/MAlice.g:1:52: T__19
+                // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:1:52: T__19
                 {
                 mT__19(); 
 
@@ -898,7 +898,7 @@ public class MAliceLexer extends Lexer {
                 }
                 break;
             case 9 :
-                // /home/jack/Desktop/MAlice.g:1:58: T__20
+                // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:1:58: T__20
                 {
                 mT__20(); 
 
@@ -906,7 +906,7 @@ public class MAliceLexer extends Lexer {
                 }
                 break;
             case 10 :
-                // /home/jack/Desktop/MAlice.g:1:64: T__21
+                // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:1:64: T__21
                 {
                 mT__21(); 
 
@@ -914,7 +914,7 @@ public class MAliceLexer extends Lexer {
                 }
                 break;
             case 11 :
-                // /home/jack/Desktop/MAlice.g:1:70: PROCEDURE
+                // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:1:70: PROCEDURE
                 {
                 mPROCEDURE(); 
 
@@ -922,7 +922,7 @@ public class MAliceLexer extends Lexer {
                 }
                 break;
             case 12 :
-                // /home/jack/Desktop/MAlice.g:1:80: TYPE
+                // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:1:80: TYPE
                 {
                 mTYPE(); 
 
@@ -930,7 +930,7 @@ public class MAliceLexer extends Lexer {
                 }
                 break;
             case 13 :
-                // /home/jack/Desktop/MAlice.g:1:85: CONNECTOR
+                // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:1:85: CONNECTOR
                 {
                 mCONNECTOR(); 
 
@@ -938,7 +938,7 @@ public class MAliceLexer extends Lexer {
                 }
                 break;
             case 14 :
-                // /home/jack/Desktop/MAlice.g:1:95: END_OF_LINE
+                // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:1:95: END_OF_LINE
                 {
                 mEND_OF_LINE(); 
 
@@ -946,7 +946,7 @@ public class MAliceLexer extends Lexer {
                 }
                 break;
             case 15 :
-                // /home/jack/Desktop/MAlice.g:1:107: INT
+                // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:1:107: INT
                 {
                 mINT(); 
 
@@ -954,7 +954,7 @@ public class MAliceLexer extends Lexer {
                 }
                 break;
             case 16 :
-                // /home/jack/Desktop/MAlice.g:1:111: CHAR
+                // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:1:111: CHAR
                 {
                 mCHAR(); 
 
@@ -962,7 +962,7 @@ public class MAliceLexer extends Lexer {
                 }
                 break;
             case 17 :
-                // /home/jack/Desktop/MAlice.g:1:116: ID
+                // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:1:116: ID
                 {
                 mID(); 
 
@@ -970,7 +970,7 @@ public class MAliceLexer extends Lexer {
                 }
                 break;
             case 18 :
-                // /home/jack/Desktop/MAlice.g:1:119: WS
+                // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:1:119: WS
                 {
                 mWS(); 
 
