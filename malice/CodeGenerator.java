@@ -120,7 +120,11 @@ public class CodeGenerator implements CommandVisitor {
             if (exp.valueHasBeenSet()) {
                 returnValue.add(exp.toString());
             } else {
+                try{
                 returnValue.add(symbolTable.getVariableRegister(exp.toString()).toString());
+                } catch (Throwable e) {
+                    System.out.println(exp.toString());
+                }
             }
         } else {
             //There is a binOp
@@ -134,13 +138,8 @@ public class CodeGenerator implements CommandVisitor {
             returnValue.add(one.toString());
 
 
-            while (!leftExp.isEmpty() || !rightExp.isEmpty()) {
-                if (leftExp.isEmpty()) {
-                    returnValue.add(leftExp.remove(leftExp.size() - 1));
-                } else {
-                    returnValue.add(rightExp.remove(rightExp.size() - 1));
-                }
-            }
+            returnValue.addAll(leftExp);
+            returnValue.addAll(rightExp);
 
             char binop = exp.binOp();
             String regs = leftVal + ", " + rightVal;
@@ -184,7 +183,20 @@ public class CodeGenerator implements CommandVisitor {
                     returnValue.add("mov " + one + ", " + leftVal);
                     break;
             }
+
+        try{
+            Register r = Register.valueOf(leftVal);
+            freeRegisters.add(r);
+        }catch (Throwable e) {
         }
+        try{
+            Register r = Register.valueOf(rightVal);
+            freeRegisters.add(r);
+        }catch (Throwable e) {
+
+        }
+        }
+
         
         return returnValue;
     }
