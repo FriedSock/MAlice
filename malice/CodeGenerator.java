@@ -69,8 +69,10 @@ public class CodeGenerator implements CommandVisitor {
 
     @Override
     public void visitSpeak(SpeakCommand command) {
-        //TODO - speak
-        //Spec says we should use exit(1) command
+        Register reg = symbolTable.getVariableRegister(command.variable());
+        assemblyCommands.add("mov ebx, " + reg );
+        assemblyCommands.add("mov eax, 1");
+        assemblyCommands.add("int 0x80");
     }
 
     @Override
