@@ -10,21 +10,21 @@ public class ArithmeticExpression implements Expression {
     private char binOp;
     private int value;
     private String variableName;
-    private boolean valueHasBeenSet;
-    private boolean tilda;
+    private boolean isImmediateValue;
+    private boolean tilde;
     private boolean isValue;
 
-    public ArithmeticExpression(String variableName, boolean tilda) {
+    public ArithmeticExpression(String variableName, boolean tilde) {
         this.variableName = variableName;
-        this.tilda = tilda;
+        this.tilde = tilde;
+        isImmediateValue = false;
         isValue = true;
-        valueHasBeenSet = false;
     }
 
-    public ArithmeticExpression(int value, boolean tilda) {
+    public ArithmeticExpression(int value, boolean tilde) {
         this.value = value;
-        valueHasBeenSet = true;
-        this.tilda = tilda;
+        this.tilde = tilde;
+        isImmediateValue = true;
         isValue = true;
     }
 
@@ -41,7 +41,8 @@ public class ArithmeticExpression implements Expression {
     @Override
     public Set<String> getUsedVariables() {
         Set<String> usedVariables = new HashSet<String>();
-        if (!valueHasBeenSet) {
+        
+        if (!isImmediateValue && isValue) {
             usedVariables.add(variableName);
         }
         if (left != null) {
@@ -50,12 +51,13 @@ public class ArithmeticExpression implements Expression {
         if (right != null) {
             usedVariables.addAll(right.getUsedVariables());
         }
+        
         return usedVariables;
     }
     
     @Override
     public boolean usesVariable(String aVariableName) {
-        return !valueHasBeenSet && variableName.equals(aVariableName);
+        return !isImmediateValue && variableName.equals(aVariableName);
     }
     
     @Override
@@ -67,8 +69,8 @@ public class ArithmeticExpression implements Expression {
         return isValue;
     }
 
-    public boolean valueHasBeenSet() {
-        return valueHasBeenSet;
+    public boolean isImmediateValue() {
+        return isImmediateValue;
     }
 
     public ArithmeticExpression left() {
@@ -79,20 +81,20 @@ public class ArithmeticExpression implements Expression {
         return right;
     }
 
-    public char binOp(){
+    public char binOp() {
         return binOp;
     }
 
-    public boolean tilda(){
-        return tilda;
+    public boolean tilde() {
+        return tilde;
     }
 
     @Override
     public String toString() {
         if (right == null) {
             if (left == null) {
-                String out = (valueHasBeenSet) ? String.valueOf(value) : variableName;
-                return (tilda) ? "~" + out : out;
+                String out = (isImmediateValue) ? String.valueOf(value) : variableName;
+                return (tilde) ? "~" + out : out;
             }
             return binOp + left.toString();
         }

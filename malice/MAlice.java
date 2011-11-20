@@ -15,7 +15,7 @@ public class MAlice {
         
         //File programFile = new File(args[0]);
         
-        CharStream charStream = new ANTLRStringStream("b was a number and b became 0+10*6^2+0. b became 5+5. b spoke. c was a letter. c became 'f'. e was a number. e became 10 . b became 10+10+e. b became 5*5/3+1. b became ~3.");
+        CharStream charStream = new ANTLRStringStream("b was a number and b became 0+10*6^2+2. b became 5+5. b spoke. c was a letter. c became 'f'. e was a number. e became 10 . b became 10+10+e. b became 5*5/3+1. b became ~3.");
         MAliceLexer lexer = new MAliceLexer(charStream);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
 
@@ -29,15 +29,7 @@ public class MAlice {
             
             System.out.println("Original tree: " + ((Tree) r.tree).toStringTree());
             
-            /*CommonTreeNodeStream nodes = new CommonTreeNodeStream((Tree) r.tree);
-            nodes.setTokenStream(tokenStream);
-            Simplify s = new Simplify(nodes);
-            Simplify.malice_return r2 = s.malice();
-            System.out.println("Original tree: " + ((Tree) r2.tree).toStringTree());*/
-                 
-            //traverse(tree, 0);
-            //System.out.println(((Tree) r).toStringTree());
-            //traverse(builder.getTree(), 0);traverse(builder.getTree(), 0);
+            //traverse(builder.getTree(), 0);
         } catch (RecognitionException ex) {
             ex.printStackTrace();
         }
@@ -46,7 +38,13 @@ public class MAlice {
         
         
         Parser parser = new Parser();
-        parser.parseProg(builder.getTree());
+        try {
+            parser.parseProg(builder.getTree());
+        } catch (RuntimeException e) {
+            System.out.println("Build failed with following exception:");
+            e.printStackTrace();
+            return;
+        }
         
         
         System.out.println("PARSER:");

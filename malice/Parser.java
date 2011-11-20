@@ -1,5 +1,6 @@
 package malice;
 
+import java.text.ParseException;
 import malice.symbols.SymbolTable;
 import malice.symbols.Type;
 import malice.expressions.Expression;
@@ -107,13 +108,12 @@ public class Parser {
             
             Set<String> variablesUsed = expression.getUsedVariables();
             for (String variableUsed : variablesUsed) {
-                System.out.println("XXX - " + variableUsed + " " + expression);
-            }
-            
-            
-            for (String variableUsed : variablesUsed) {
                 if (!symbolTable.containsVariable(variableUsed)) {
-                    throw new VariableNotDeclaredException(variableUsed + variableName);
+                    throw new VariableNotDeclaredException(variableUsed);
+                }
+                if (Type.number != symbolTable.getVariableType(variableUsed)) {
+                    throw new IncompatibleTypeException(variableUsed +
+                            " is not a number and therefore cannot be in an arithmetic expression");
                 }
                 if (!symbolTable.isInitialisedVariable(variableUsed) && !variableName.equals(variableUsed)) {
                     throw new VariableNotInitialisedException(variableUsed);
@@ -151,12 +151,14 @@ public class Parser {
     }
 
     private ArithmeticExpression parseArithmeticExpression(Tree tree) {
-
         if (tree.getText().equals("factor")) {
             boolean tilda = false;
             String first = tree.getChild(0).getText();
+            if (first.startsWith("MismatchedSetException")) {
+                throw new IllegalArgumentException("Invalid arithmetic expression: " + tree.toStringTree());
+            }
             String terminal;
-            if(first.equals("~")) {
+            if ("~".equals(first)) {
                 tilda = true;
                 terminal = tree.getChild(1).getText();
             } else {
@@ -164,10 +166,9 @@ public class Parser {
             }
             try {
                 int value = Integer.valueOf(terminal);
-                return new ArithmeticExpression(value,tilda);
-            }
-            catch (Throwable e) {
-                return new ArithmeticExpression(terminal,tilda);
+                return new ArithmeticExpression(value, tilda);
+            } catch (NumberFormatException e) {
+                return new ArithmeticExpression(terminal, tilda);
             }
             
         } else {
@@ -182,7 +183,6 @@ public class Parser {
             }
             return parseArithmeticExpression(leftExp);
         }
-
     }
 
     @Override
@@ -220,6 +220,10 @@ public class Parser {
 
         public IncompatibleTypeException(String variableName, Type type) {
             super(variableName + " can only be assigned a value of type " + type);
+        }
+        
+        public IncompatibleTypeException(String message) {
+            super(message);
         }
     }
 }

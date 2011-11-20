@@ -91,7 +91,6 @@ public class CodeGenerator implements CommandVisitor {
 
     @Override
     public void visitVariableDeclaration(VariableDeclarationCommand command) {
-        //TODO - variable declaration?
     }
 
     private void generateExpressionCode(Register destReg, CharacterExpression exp) {
@@ -99,9 +98,9 @@ public class CodeGenerator implements CommandVisitor {
     }
 
     private void generateExpressionCode(Register destReg, ArithmeticExpression exp) {
-        List<String> commands = generateExpressionCode(exp);
-        String register = commands.remove(0);
-        assemblyCommands.addAll(commands);
+        List<String> expressionCodeCommands = generateExpressionCode(exp);
+        String register = expressionCodeCommands.remove(0);
+        assemblyCommands.addAll(expressionCodeCommands);
         assemblyCommands.add("mov " + destReg + ", " + register);
     }
 
@@ -110,22 +109,15 @@ public class CodeGenerator implements CommandVisitor {
     private List<String> generateExpressionCode(ArithmeticExpression exp) {
         List<String> returnValue = new ArrayList<String>();
 
-
-        //TODO - Preserve registers
-
         if (exp.isValue()) {
             //TODO - Refactoring
-            if (exp.tilda()) {
+            if (exp.tilde()) {
                 returnValue.addAll(tildeCode(exp));
             } else {
-                if (exp.valueHasBeenSet()) {
+                if (exp.isImmediateValue()) {
                     returnValue.add(exp.toString());
                 } else {
-                    try {
-                        returnValue.add(symbolTable.getVariableRegister(exp.toString()).toString());
-                    } catch (Throwable e) {
-                        System.out.println("variable - " + exp.toString() + " has not been declared.");
-                    }
+                    returnValue.add(symbolTable.getVariableRegister(exp.toString()).toString());
                 }
             }
         } else {
@@ -189,12 +181,12 @@ public class CodeGenerator implements CommandVisitor {
             try {
                 Register r = Register.valueOf(leftVal);
                 freeRegisters.add(r);
-            } catch (Throwable e) {
+            } catch (IllegalArgumentException e) {
             }
             try {
                 Register r = Register.valueOf(rightVal);
                 freeRegisters.add(r);
-            } catch (Throwable e) {
+            } catch (IllegalArgumentException e) {
             }
         }
 
@@ -209,17 +201,13 @@ public class CodeGenerator implements CommandVisitor {
 
         String removeTilde = exp.toString().substring(1);
 
-        if (exp.valueHasBeenSet()) {
+        if (exp.isImmediateValue()) {
             returnValue.add("mov " + one + ", " + removeTilde);
             returnValue.add("not " + one);
         } else {
-            try {
-                Register reg = symbolTable.getVariableRegister(removeTilde);
-                returnValue.add(removeTilde);
-                returnValue.add("not " + reg);
-            } catch (Throwable e) {
-                System.out.println("variable - " + removeTilde + " has not been declared.");
-            }
+            Register reg = symbolTable.getVariableRegister(removeTilde);
+            returnValue.add(removeTilde);
+            returnValue.add("not " + reg);
         }
         return returnValue;
     }
