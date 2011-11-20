@@ -36,4 +36,8 @@ public class SpeakCommand implements Command {
     public String toString() {
         return variableName + " spoke";
     }
+
+    public String variable(){
+        return variableName;
+    }
 }
