@@ -13,6 +13,7 @@ import malice.commands.VariableAssignmentCommand;
 import malice.commands.Command;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import org.antlr.runtime.tree.Tree;
 
 public class Parser {
@@ -103,6 +104,21 @@ public class Parser {
             }
 
             expression = parseArithmeticExpression(tree.getChild(2));
+            
+            Set<String> variablesUsed = expression.getUsedVariables();
+            for (String variableUsed : variablesUsed) {
+                System.out.println("XXX - " + variableUsed + " " + expression);
+            }
+            
+            
+            for (String variableUsed : variablesUsed) {
+                if (!symbolTable.containsVariable(variableUsed)) {
+                    throw new VariableNotDeclaredException(variableUsed + variableName);
+                }
+                if (!symbolTable.isInitialisedVariable(variableUsed) && !variableName.equals(variableUsed)) {
+                    throw new VariableNotInitialisedException(variableUsed);
+                }
+            }
         }
         
         symbolTable.initialiseVariable(variableName);
