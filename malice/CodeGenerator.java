@@ -4,9 +4,11 @@ import malice.symbols.SymbolTable;
 import malice.symbols.Register;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 import malice.commands.Command;
 import malice.commands.CommandVisitor;
 import malice.commands.DecrementCommand;
@@ -30,7 +32,18 @@ public class CodeGenerator implements CommandVisitor {
         assemblyCommands = new ArrayList<String>();
         freeRegisters = new LinkedList<Register>();
         freeRegisters.addAll(Arrays.asList(Register.values()));
-        freeRegisters.remove();
+        freeRegisters.remove(); // removes Register.NONE
+        
+        findLiveRanges();
+    }
+    
+    private void findLiveRanges() {
+        Set<String> allVariables = new HashSet<String>();
+        for (Command command : commands) {
+            allVariables.addAll(command.getUsedVariables());
+        }
+        
+        
     }
 
     public List<String> generateCode() {

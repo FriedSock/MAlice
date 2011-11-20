@@ -1,5 +1,9 @@
 package malice.commands;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 public class SpeakCommand implements Command {
 
     private String variableName;
@@ -11,6 +15,11 @@ public class SpeakCommand implements Command {
     @Override
     public void acceptVisitor(CommandVisitor visitor) {
         visitor.visitSpeak(this);
+    }
+    
+    @Override
+    public Set<String> getUsedVariables() {
+        return new HashSet<String>(Arrays.asList(variableName));
     }
     
     @Override

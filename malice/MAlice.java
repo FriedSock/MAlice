@@ -12,7 +12,10 @@ public class MAlice {
     
     public static void main(String[] args) {
         // TODO - reading from a file
-        CharStream charStream = new ANTLRStringStream("b was a number and b became 10+10*6^2. b spoke. c was a letter. c became 'f'. b became 10+10+e. b became 5*5/3+1. b became ~3");
+        
+        //File programFile = new File(args[0]);
+        
+        CharStream charStream = new ANTLRStringStream("b was a number and b became 0+10*6^2+0. b became 5+5. b spoke. c was a letter. c became 'f'. b became 10+10+e. b became 5*5/3+1. b became ~3.");
         MAliceLexer lexer = new MAliceLexer(charStream);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
 
@@ -22,12 +25,23 @@ public class MAlice {
         MAliceParser maliceParser = new MAliceParser(tokenStream, builder);
         try {
             
-            maliceParser.prog();
+            MAliceParser.prog_return r = maliceParser.prog();
             
-            traverse(builder.getTree(), 0);
+            System.out.println("Original tree: " + ((Tree) r.tree).toStringTree());
+            
+            /*CommonTreeNodeStream nodes = new CommonTreeNodeStream((Tree) r.tree);
+            nodes.setTokenStream(tokenStream);
+            Simplify s = new Simplify(nodes);
+            Simplify.malice_return r2 = s.malice();
+            System.out.println("Original tree: " + ((Tree) r2.tree).toStringTree());*/
+                 
+            //traverse(tree, 0);
+            //System.out.println(((Tree) r).toStringTree());
+            //traverse(builder.getTree(), 0);traverse(builder.getTree(), 0);
         } catch (RecognitionException ex) {
             ex.printStackTrace();
         }
+        
         
         
         
@@ -56,7 +70,7 @@ public class MAlice {
                 System.out.print(" ");
             }
             
-            System.out.println(child.getText());
+            System.out.println(child.toStringTree());
             if (child.getChildCount() != 0) {
                 traverse(child, depth + 2);
             }

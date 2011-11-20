@@ -1,5 +1,9 @@
 package malice.commands;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 public class IncrementCommand implements Command {
     
     private String variableName;
@@ -15,6 +19,11 @@ public class IncrementCommand implements Command {
     @Override
     public void acceptVisitor(CommandVisitor visitor) {
         visitor.visitIncrement(this);
+    }
+    
+    @Override
+    public Set<String> getUsedVariables() {
+        return new HashSet<String>(Arrays.asList(variableName));
     }
     
     @Override
