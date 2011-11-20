@@ -4,9 +4,11 @@ import malice.symbols.SymbolTable;
 import malice.symbols.Register;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import malice.commands.Command;
@@ -26,6 +28,7 @@ public class CodeGenerator implements CommandVisitor {
     private SymbolTable symbolTable;
     private List<String> assemblyCommands;
     private Queue<Register> freeRegisters;
+    private Map<String, Command> variablesUsedLastInCommand;
 
     public CodeGenerator(List<Command> commands, SymbolTable symbolTable) {
         this.commands = commands;
@@ -35,7 +38,8 @@ public class CodeGenerator implements CommandVisitor {
         freeRegisters = new LinkedList<Register>();
         freeRegisters.addAll(Arrays.asList(Register.values()));
         freeRegisters.remove(); // removes Register.NONE
-
+        variablesUsedLastInCommand = new HashMap<String, Command>();
+        
         findLiveRanges();
     }
 
@@ -45,12 +49,26 @@ public class CodeGenerator implements CommandVisitor {
             allVariables.addAll(command.getUsedVariables());
         }
 
-
+        for (Command command : commands) {
+            for (String variableName : allVariables) {
+                if (command.usesVariable(variableName)) {
+                    variablesUsedLastInCommand.put(variableName, command);
+                }
+            }
+        }
     }
 
     public List<String> generateCode() {
         for (Command command : commands) {
             command.acceptVisitor(this);
+            
+            // free registers which are not used in later commands
+            for (Map.Entry<String, Command> entry : variablesUsedLastInCommand.entrySet()) {
+                if (command == entry.getValue()) {
+                    freeRegisters.add(symbolTable.getVariableRegister(entry.getKey()));
+                }
+            }
+            System.out.println("freeRegs: " + freeRegisters.size());
         }
         return assemblyCommands;
     }
@@ -124,8 +142,8 @@ public class CodeGenerator implements CommandVisitor {
             }
         } else {
             //There is a binOp
-            List<String> leftExp = generateExpressionCode(exp.left());
-            List<String> rightExp = generateExpressionCode(exp.right());
+            List<String> leftExp = generateExpressionCode(exp.getLeft());
+            List<String> rightExp = generateExpressionCode(exp.getRight());
             String leftVal = leftExp.remove(0);
             String rightVal = rightExp.remove(0);
 
@@ -137,7 +155,7 @@ public class CodeGenerator implements CommandVisitor {
             returnValue.addAll(leftExp);
             returnValue.addAll(rightExp);
 
-            char binop = exp.binOp();
+            char binop = exp.getBinOp();
             String regs = leftVal + ", " + rightVal;
             switch (binop) {
                 case '+':

@@ -55,7 +55,6 @@ public class MAlice {
         System.out.println("CODE GEN:");
         CodeGenerator codeGenerator = new CodeGenerator(parser.getCommands(), parser.getSymbolTable());
         List<String> assembly = codeGenerator.generateCode();
-        System.out.println(assembly.size());
         for (String asm : assembly) {
             System.out.println(asm);
         }
