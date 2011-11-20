@@ -17,6 +17,8 @@ import malice.commands.SpeakCommand;
 import malice.commands.VariableAssignmentCommand;
 import malice.commands.VariableDeclarationCommand;
 import malice.expressions.ArithmeticExpression;
+import malice.expressions.CharacterExpression;
+import malice.expressions.Expression;
 
 public class CodeGenerator implements CommandVisitor {
 
@@ -78,16 +80,33 @@ public class CodeGenerator implements CommandVisitor {
             reg = freeRegisters.remove();
             symbolTable.setVariableRegister(command.getVariableName(), reg);
         }
-
-        //TODO - variable assignment
-        assemblyCommands.add("mov " + reg + ", 0");
+        
+        Expression exp = command.getExpression();
+        if (exp.isArithmeticExpression()) {
+            generateExpressionCode(reg, (ArithmeticExpression) exp);
+        } else {
+            generateExpressionCode(reg, (CharacterExpression) exp);
+        }
     }
 
     @Override
     public void visitVariableDeclaration(VariableDeclarationCommand command) {
         //TODO - variable declaration?
     }
+    
+    
+    
+    private void generateExpressionCode(Register destReg, CharacterExpression exp) {
+        assemblyCommands.add("mov " + destReg + ", " + (int) exp.getCharacter());
+    }
 
+    private void generateExpressionCode(Register destReg, ArithmeticExpression exp) {
+        List<String> commands = generateExpressionCode(exp);
+        String register = commands.remove(0);
+        assemblyCommands.addAll(commands);
+        assemblyCommands.add("mov " + destReg + ", " + register);
+    }
+    
     //Returns a list of instructions to evaluate an expression. The name
     //of the register that the result is stored in is at the head of the list
     private List<String> generateExpressionCode(ArithmeticExpression exp) {
@@ -100,8 +119,9 @@ public class CodeGenerator implements CommandVisitor {
             //TODO - Tilda
             if (exp.valueHasBeenSet()) {
                 returnValue.add(exp.toString());
+            } else {
+                returnValue.add(symbolTable.getVariableRegister(exp.toString()).toString());
             }
-            returnValue.add(symbolTable.getVariableRegister(exp.toString()).toString());
         } else {
             //There is a binOp
             List<String> leftExp = generateExpressionCode(exp.left());
@@ -165,6 +185,7 @@ public class CodeGenerator implements CommandVisitor {
                     break;
             }
         }
+        
         return returnValue;
     }
 }

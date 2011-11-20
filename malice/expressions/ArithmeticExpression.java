@@ -18,6 +18,7 @@ public class ArithmeticExpression implements Expression {
         this.variableName = variableName;
         this.tilda = tilda;
         isValue = true;
+        valueHasBeenSet = false;
     }
 
     public ArithmeticExpression(int value, boolean tilda) {
@@ -57,17 +58,9 @@ public class ArithmeticExpression implements Expression {
         return !valueHasBeenSet && variableName.equals(aVariableName);
     }
     
-    
     @Override
-    public String toString() {
-        if (right == null) {
-            if (left == null) {
-                String out = (valueHasBeenSet) ? String.valueOf(value) : variableName;
-                return (tilda) ? "~" + out : out;
-            }
-            return binOp + left.toString();
-        }
-        return "(" + left.toString() + binOp + right.toString() + ")";
+    public boolean isArithmeticExpression() {
+        return true;
     }
 
     public boolean isValue() {
@@ -88,5 +81,17 @@ public class ArithmeticExpression implements Expression {
 
     public char binOp(){
         return binOp;
+    }
+
+    @Override
+    public String toString() {
+        if (right == null) {
+            if (left == null) {
+                String out = (valueHasBeenSet) ? String.valueOf(value) : variableName;
+                return (tilda) ? "~" + out : out;
+            }
+            return binOp + left.toString();
+        }
+        return "(" + left.toString() + binOp + right.toString() + ")";
     }
 }

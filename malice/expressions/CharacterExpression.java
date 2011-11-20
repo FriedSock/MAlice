@@ -7,7 +7,7 @@ public class CharacterExpression implements Expression {
 
     private char character;
 
-    public CharacterExpression(char c){
+    public CharacterExpression(char c) {
         character = c;
     }
 
@@ -25,6 +25,11 @@ public class CharacterExpression implements Expression {
         return false;
     }
 
+    @Override
+    public boolean isArithmeticExpression() {
+        return false;
+    }
+    
     @Override
     public String toString() {
         return "'" + character + "'";

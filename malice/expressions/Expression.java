@@ -7,4 +7,6 @@ public interface Expression {
     Set<String> getUsedVariables();
     
     boolean usesVariable(String aVariableName);
+    
+    boolean isArithmeticExpression();
 }
