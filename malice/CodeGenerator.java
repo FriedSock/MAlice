@@ -35,17 +35,17 @@ public class CodeGenerator implements CommandVisitor {
         freeRegisters = new LinkedList<Register>();
         freeRegisters.addAll(Arrays.asList(Register.values()));
         freeRegisters.remove(); // removes Register.NONE
-        
+
         findLiveRanges();
     }
-    
+
     private void findLiveRanges() {
         Set<String> allVariables = new HashSet<String>();
         for (Command command : commands) {
             allVariables.addAll(command.getUsedVariables());
         }
-        
-        
+
+
     }
 
     public List<String> generateCode() {
@@ -80,7 +80,7 @@ public class CodeGenerator implements CommandVisitor {
             reg = freeRegisters.remove();
             symbolTable.setVariableRegister(command.getVariableName(), reg);
         }
-        
+
         Expression exp = command.getExpression();
         if (exp.isArithmeticExpression()) {
             generateExpressionCode(reg, (ArithmeticExpression) exp);
@@ -93,9 +93,7 @@ public class CodeGenerator implements CommandVisitor {
     public void visitVariableDeclaration(VariableDeclarationCommand command) {
         //TODO - variable declaration?
     }
-    
-    
-    
+
     private void generateExpressionCode(Register destReg, CharacterExpression exp) {
         assemblyCommands.add("mov " + destReg + ", " + (int) exp.getCharacter());
     }
@@ -106,7 +104,7 @@ public class CodeGenerator implements CommandVisitor {
         assemblyCommands.addAll(commands);
         assemblyCommands.add("mov " + destReg + ", " + register);
     }
-    
+
     //Returns a list of instructions to evaluate an expression. The name
     //of the register that the result is stored in is at the head of the list
     private List<String> generateExpressionCode(ArithmeticExpression exp) {
@@ -116,14 +114,18 @@ public class CodeGenerator implements CommandVisitor {
         //TODO - Preserve registers
 
         if (exp.isValue()) {
-            //TODO - Tilda
-            if (exp.valueHasBeenSet()) {
-                returnValue.add(exp.toString());
+            //TODO - Refactoring
+            if (exp.tilda()) {
+                returnValue.addAll(tildeCode(exp));
             } else {
-                try{
-                returnValue.add(symbolTable.getVariableRegister(exp.toString()).toString());
-                } catch (Throwable e) {
-                    System.out.println(exp.toString());
+                if (exp.valueHasBeenSet()) {
+                    returnValue.add(exp.toString());
+                } else {
+                    try {
+                        returnValue.add(symbolTable.getVariableRegister(exp.toString()).toString());
+                    } catch (Throwable e) {
+                        System.out.println("variable - " + exp.toString() + " has not been declared.");
+                    }
                 }
             }
         } else {
@@ -184,20 +186,41 @@ public class CodeGenerator implements CommandVisitor {
                     break;
             }
 
-        try{
-            Register r = Register.valueOf(leftVal);
-            freeRegisters.add(r);
-        }catch (Throwable e) {
+            try {
+                Register r = Register.valueOf(leftVal);
+                freeRegisters.add(r);
+            } catch (Throwable e) {
+            }
+            try {
+                Register r = Register.valueOf(rightVal);
+                freeRegisters.add(r);
+            } catch (Throwable e) {
+            }
         }
-        try{
-            Register r = Register.valueOf(rightVal);
-            freeRegisters.add(r);
-        }catch (Throwable e) {
 
-        }
-        }
 
-        
+        return returnValue;
+    }
+
+    private List<String> tildeCode(ArithmeticExpression exp) {
+        List<String> returnValue = new ArrayList<String>();
+        Register one = freeRegisters.remove();
+        returnValue.add(one.toString());
+
+        String removeTilde = exp.toString().substring(1);
+
+        if (exp.valueHasBeenSet()) {
+            returnValue.add("mov " + one + ", " + removeTilde);
+            returnValue.add("not " + one);
+        } else {
+            try {
+                Register reg = symbolTable.getVariableRegister(removeTilde);
+                returnValue.add(removeTilde);
+                returnValue.add("not " + reg);
+            } catch (Throwable e) {
+                System.out.println("variable - " + removeTilde + " has not been declared.");
+            }
+        }
         return returnValue;
     }
 }

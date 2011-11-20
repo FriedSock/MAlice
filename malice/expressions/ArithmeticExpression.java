@@ -83,6 +83,10 @@ public class ArithmeticExpression implements Expression {
         return binOp;
     }
 
+    public boolean tilda(){
+        return tilda;
+    }
+
     @Override
     public String toString() {
         if (right == null) {
