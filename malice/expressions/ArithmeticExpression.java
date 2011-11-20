@@ -9,16 +9,19 @@ public class ArithmeticExpression implements Expression {
     private String variable;
     private boolean valueHasBeenSet;
     private boolean tilda;
+    private boolean isValue;
 
     public ArithmeticExpression(String variable, boolean tilda) {
         this.variable = variable;
         this.tilda = tilda;
+        isValue = true;
     }
 
     public ArithmeticExpression(int v, boolean tilda) {
         value = v;
         valueHasBeenSet = true;
         this.tilda = tilda;
+        isValue = true;
     }
 
     public ArithmeticExpression(ArithmeticExpression left, ArithmeticExpression right, char op){
@@ -47,5 +50,25 @@ public class ArithmeticExpression implements Expression {
             return binOp + left.toString();
         }
         return "(" + left.toString() + binOp + right.toString() + ")";
+    }
+
+    public boolean isValue() {
+        return isValue;
+    }
+
+    public boolean valueHasBeenSet() {
+        return valueHasBeenSet;
+    }
+
+    public ArithmeticExpression left() {
+        return left;
+    }
+
+    public ArithmeticExpression right() {
+        return right;
+    }
+
+    public char binOp(){
+        return binOp;
     }
 }
