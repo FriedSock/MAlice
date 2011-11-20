@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 import org.antlr.runtime.tree.Tree;
 
+//TODO - speak only once - at the end
 public class Parser {
 
     private List<Command> commands;

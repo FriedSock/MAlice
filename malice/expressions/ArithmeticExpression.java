@@ -105,6 +105,14 @@ public class ArithmeticExpression implements Expression {
     public char getBinOp() {
         return binOp;
     }
+    
+    public int getValue() {
+        return value;
+    }
+    
+    public String getVariableName() {
+        return variableName;
+    }
 
     public boolean hasTilde() {
         return hasTilde;
