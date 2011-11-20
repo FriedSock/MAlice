@@ -11,6 +11,10 @@ public class SpeakCommand implements Command {
     public SpeakCommand(String variableName) {
         this.variableName = variableName;
     }
+    
+    public String getVariableName(){
+        return variableName;
+    }
 
     @Override
     public void acceptVisitor(CommandVisitor visitor) {
@@ -37,7 +41,4 @@ public class SpeakCommand implements Command {
         return variableName + " spoke";
     }
 
-    public String variable(){
-        return variableName;
-    }
 }

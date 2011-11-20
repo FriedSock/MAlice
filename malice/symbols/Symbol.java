@@ -3,12 +3,12 @@ package malice.symbols;
 public class Symbol {
 
     private final Type type;
-    private Register register;
+    private Storage storage;
     private boolean initialised;
 
     public Symbol(Type type) {
         this.type = type;
-        register = Register.NONE;
+        storage = Register.NONE;
         initialised = false;
     }
 
@@ -16,12 +16,12 @@ public class Symbol {
         return type;
     }
     
-    public Register getRegister() {
-        return register;
+    public Storage getStorage() {
+        return storage;
     }
 
-    public void setRegister(Register register) {
-        this.register = register;
+    public void setStorage(Storage storage) {
+        this.storage = storage;
     }
 
     public boolean isInitialised() {

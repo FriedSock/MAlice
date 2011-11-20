@@ -21,6 +21,7 @@ import malice.commands.VariableDeclarationCommand;
 import malice.expressions.ArithmeticExpression;
 import malice.expressions.CharacterExpression;
 import malice.expressions.Expression;
+import malice.symbols.Storage;
 
 public class CodeGenerator implements CommandVisitor {
 
@@ -65,7 +66,10 @@ public class CodeGenerator implements CommandVisitor {
             // free registers which are not used in later commands
             for (Map.Entry<String, Command> entry : variablesUsedLastInCommand.entrySet()) {
                 if (command == entry.getValue()) {
-                    freeRegisters.add(symbolTable.getVariableRegister(entry.getKey()));
+                    Storage storage = symbolTable.getVariableStorage(entry.getKey());
+                    if (storage.isRegister()) {
+                        freeRegisters.add((Register) storage);
+                    }
                 }
             }
             
@@ -77,37 +81,37 @@ public class CodeGenerator implements CommandVisitor {
 
     @Override
     public void visitDecrement(DecrementCommand command) {
-        Register reg = symbolTable.getVariableRegister(command.getVariableName());
-        assemblyCommands.add("dec " + reg);
+        Storage storage = symbolTable.getVariableStorage(command.getVariableName());
+        assemblyCommands.add("dec " + storage);
     }
 
     @Override
     public void visitIncrement(IncrementCommand command) {
-        Register reg = symbolTable.getVariableRegister(command.getVariableName());
-        assemblyCommands.add("inc " + reg);
+        Storage storage = symbolTable.getVariableStorage(command.getVariableName());
+        assemblyCommands.add("inc " + storage);
     }
 
     @Override
     public void visitSpeak(SpeakCommand command) {
-        Register reg = symbolTable.getVariableRegister(command.variable());
-        assemblyCommands.add("mov ebx, " + reg );
+        Storage storage = symbolTable.getVariableStorage(command.getVariableName());
+        assemblyCommands.add("mov ebx, " + storage );
         assemblyCommands.add("mov eax, 1");
         assemblyCommands.add("int 0x80");
     }
 
     @Override
     public void visitVariableAssignment(VariableAssignmentCommand command) {
-        Register reg = symbolTable.getVariableRegister(command.getVariableName());
-        if (reg == Register.NONE) {
-            reg = freeRegisters.remove();
-            symbolTable.setVariableRegister(command.getVariableName(), reg);
+        Storage storage = symbolTable.getVariableStorage(command.getVariableName());
+        if (storage == Register.NONE) {
+            storage = freeRegisters.remove();
+            symbolTable.setVariableStorage(command.getVariableName(), storage);
         }
 
         Expression exp = command.getExpression();
         if (exp.isArithmeticExpression()) {
-            generateExpressionCode(reg, (ArithmeticExpression) exp);
+            generateExpressionCode(storage, (ArithmeticExpression) exp);
         } else {
-            generateExpressionCode(reg, (CharacterExpression) exp);
+            generateExpressionCode(storage, (CharacterExpression) exp);
         }
     }
 
@@ -115,15 +119,15 @@ public class CodeGenerator implements CommandVisitor {
     public void visitVariableDeclaration(VariableDeclarationCommand command) {
     }
 
-    private void generateExpressionCode(Register destReg, CharacterExpression exp) {
-        assemblyCommands.add("mov " + destReg + ", " + (int) exp.getCharacter());
+    private void generateExpressionCode(Storage destStorage, CharacterExpression exp) {
+        assemblyCommands.add("mov " + destStorage + ", " + (int) exp.getCharacter());
     }
 
-    private void generateExpressionCode(Register destReg, ArithmeticExpression exp) {
+    private void generateExpressionCode(Storage destStorage, ArithmeticExpression exp) {
         List<String> expressionCodeCommands = generateExpressionCode(exp);
         String register = expressionCodeCommands.remove(0);
         assemblyCommands.addAll(expressionCodeCommands);
-        assemblyCommands.add("mov " + destReg + ", " + register);
+        assemblyCommands.add("mov " + destStorage + ", " + register);
     }
 
     //Returns a list of instructions to evaluate an expression. The name
@@ -139,7 +143,7 @@ public class CodeGenerator implements CommandVisitor {
                 if (exp.isImmediateValue()) {
                     returnValue.add(exp.toString());
                 } else {
-                    returnValue.add(symbolTable.getVariableRegister(exp.toString()).toString());
+                    returnValue.add(symbolTable.getVariableStorage(exp.toString()).toString());
                 }
             }
         } else {
@@ -227,9 +231,9 @@ public class CodeGenerator implements CommandVisitor {
             returnValue.add("mov " + one + ", " + removeTilde);
             returnValue.add("not " + one);
         } else {
-            Register reg = symbolTable.getVariableRegister(removeTilde);
+            Storage storage = symbolTable.getVariableStorage(removeTilde);
             returnValue.add(removeTilde);
-            returnValue.add("not " + reg);
+            returnValue.add("not " + storage);
         }
         return returnValue;
     }

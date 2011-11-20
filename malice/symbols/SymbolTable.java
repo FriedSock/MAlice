@@ -23,12 +23,12 @@ public class SymbolTable {
         return symbolTable.get(variableName).getType();
     }
     
-    public Register getVariableRegister(String variableName) {
-        return symbolTable.get(variableName).getRegister();
+    public Storage getVariableStorage(String variableName) {
+        return symbolTable.get(variableName).getStorage();
     }
     
-    public void setVariableRegister(String variableName, Register register) {
-        symbolTable.get(variableName).setRegister(register);
+    public void setVariableStorage(String variableName, Storage storage) {
+        symbolTable.get(variableName).setStorage(storage);
     }
     
     public boolean isInitialisedVariable(String variableName) {
