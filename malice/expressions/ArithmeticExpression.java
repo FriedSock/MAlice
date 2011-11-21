@@ -86,15 +86,8 @@ public class ArithmeticExpression implements Expression {
             case '%':
                 exp.value = exp.left.value % exp.right.value;
                 break;
-            case '&':
-                exp.value = exp.left.value & exp.right.value;
-                break;
-            case '|':
-                exp.value = exp.left.value | exp.right.value;
-                break;
-            case '^':
-                exp.value = exp.left.value ^ exp.right.value;
-                break;
+            default:
+                return;
         }
         
         exp.isImmediateValue = true;

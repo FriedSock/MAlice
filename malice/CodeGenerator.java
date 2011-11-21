@@ -96,8 +96,11 @@ public class CodeGenerator implements CommandVisitor {
     public void visitSpeak(SpeakCommand command) {
         // No need to push and pop ebx and eax as this is the end of the program
         generateExpressionCode(Register.rbx, command.getExpression());
-        assemblyCommands.add("mov rbx, rbx");
-        assemblyCommands.add("mov rax, 1");
+        // If the last command just does rbx=rbx remove it
+        if (("mov " + Register.rbx + ", " + Register.rbx).equals(assemblyCommands.get(assemblyCommands.size() - 1))) {
+            assemblyCommands.remove(assemblyCommands.size() - 1);
+        }
+        assemblyCommands.add("mov " + Register.rax + ", 1");
         assemblyCommands.add("int 0x80");
     }
 
@@ -128,13 +131,16 @@ public class CodeGenerator implements CommandVisitor {
     private void generateExpressionCode(Storage destStorage, ArithmeticExpression exp) {
         if (!exp.isImmediateValue() && !exp.isValue()) {
             // binOp
-            generateExpressionCode(destStorage, exp.getLeft());
-            Storage moreStorage = allocateStorage();
-            generateExpressionCode(moreStorage, exp.getRight());
-
-            generateBinOpCode(exp.getBinOp(), destStorage, moreStorage);
-
-            freeStorage(moreStorage);
+            Storage leftStorage = allocateStorage();
+            Storage rightStorage = allocateStorage();
+            
+            generateExpressionCode(leftStorage, exp.getLeft());
+            generateExpressionCode(rightStorage, exp.getRight());
+            generateBinOpCode(exp.getBinOp(), leftStorage, rightStorage);
+            assemblyCommands.add("mov " + destStorage + ", " + leftStorage);
+            
+            freeStorage(leftStorage);
+            freeStorage(rightStorage);
         } else {
             if (!exp.isImmediateValue()) {
                 // variable
@@ -180,7 +186,7 @@ public class CodeGenerator implements CommandVisitor {
                 assemblyCommands.add("and " + destStorage + ", " + moreStorage);
                 break;
             case '*':
-                assemblyCommands.add("mul " + destStorage + ", " + moreStorage);
+                assemblyCommands.add("imul " + destStorage + ", " + moreStorage);
                 break;
             case '%':
                 assemblyCommands.add("push " + Register.rax);
