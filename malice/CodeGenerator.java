@@ -96,8 +96,8 @@ public class CodeGenerator implements CommandVisitor {
     public void visitSpeak(SpeakCommand command) {
         // No need to push and pop ebx and eax as this is the end of the program
         generateExpressionCode(Register.rbx, command.getExpression());
-        assemblyCommands.add("mov ebx, rbx");
-        assemblyCommands.add("mov eax, 1");
+        assemblyCommands.add("mov rbx, rbx");
+        assemblyCommands.add("mov rax, 1");
         assemblyCommands.add("int 0x80");
     }
 
