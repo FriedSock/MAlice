@@ -6,9 +6,13 @@ public interface Command {
 
     void acceptVisitor(CommandVisitor visitor);
     
+    /**
+     * @return all variable identifiers used by the command.
+     */
     Set<String> getUsedVariables();
     
-    boolean updatesVariable(String aVariableName);
-    
+    /**
+     * @return true, if given variable identifier is used by the command.
+     */
     boolean usesVariable(String aVariableName);
 }

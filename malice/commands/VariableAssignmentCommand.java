@@ -29,11 +29,6 @@ public class VariableAssignmentCommand implements Command {
     }
     
     @Override
-    public boolean updatesVariable(String aVariableName) {
-        return variableName.equals(aVariableName);
-    }
-    
-    @Override
     public Set<String> getUsedVariables() {
         Set<String> usedVariables = new HashSet<String>(Arrays.asList(variableName));
         usedVariables.addAll(expression.getUsedVariables());

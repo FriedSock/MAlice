@@ -27,7 +27,7 @@ public class MAlice {
         try {
             maliceParser.prog();
         } catch (RecognitionException ex) {
-            System.out.println("Parser failed with following exception:");
+            System.out.println("Parser failed with the following exception:");
             ex.printStackTrace();
             System.exit(1);
         }
@@ -36,7 +36,7 @@ public class MAlice {
         try {
             parser.parseProg(builder.getTree());
         } catch (RuntimeException e) {
-            System.out.println("Build failed with following exception:");
+            System.out.println("Build failed with the following exception:");
             e.printStackTrace();
             System.exit(1);
         }

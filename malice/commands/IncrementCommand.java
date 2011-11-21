@@ -27,11 +27,6 @@ public class IncrementCommand implements Command {
     }
     
     @Override
-    public boolean updatesVariable(String aVariableName) {
-        return variableName.equals(aVariableName);
-    }
-    
-    @Override
     public boolean usesVariable(String aVariableName) {
         return variableName.equals(aVariableName);
     }

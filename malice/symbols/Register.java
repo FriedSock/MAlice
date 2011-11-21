@@ -23,17 +23,6 @@ public class Register implements Storage {
         return VALUES;
     }
     
-    public static Register valueOf(String registerName) {
-        //TODO - should be removed (not needed by other code)
-        for (Register register : VALUES) {
-            if (register.name.equals(registerName)) {
-                return register;
-            }
-        }
-        
-        throw new IllegalArgumentException("Register " + registerName + " does not exist");
-    }
-    
     @Override
     public boolean isRegister() {
         return true;

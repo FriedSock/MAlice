@@ -16,7 +16,6 @@ public class ArithmeticExpression implements Expression {
         this.hasTilde = hasTilde;
         isImmediateValue = false;
         isValue = true;
-        reduce();
     }
 
     public ArithmeticExpression(int value, boolean hasTilde) {
@@ -24,7 +23,6 @@ public class ArithmeticExpression implements Expression {
         this.hasTilde = hasTilde;
         isImmediateValue = true;
         isValue = true;
-        reduce();
     }
 
     public ArithmeticExpression(ArithmeticExpression left, ArithmeticExpression right, char binOp) {
@@ -33,13 +31,12 @@ public class ArithmeticExpression implements Expression {
         this.binOp = binOp;
         isImmediateValue = false;
         isValue = false;
-        reduce();
-    }
-
-    public void reduce() {
         reduce(this);
     }
 
+    /**
+     * Reduces given arithmetic expression.
+     */
     private void reduce(ArithmeticExpression exp) {
         if (exp.left == null || exp.right == null) {
             return;
@@ -137,8 +134,15 @@ public class ArithmeticExpression implements Expression {
 
     @Override
     public boolean usesVariable(String aVariableName) {
-        // is a variable identified and used
-        return !isImmediateValue && isValue && variableName.equals(aVariableName);
+        if (isImmediateValue && isValue) {
+            return false;
+        }
+    
+        if (!isImmediateValue && isValue) {
+            return variableName.equals(aVariableName);
+        }
+        return (left != null && left.usesVariable(aVariableName))
+                || (right != null && right.usesVariable(aVariableName));
     }
 
     @Override

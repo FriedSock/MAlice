@@ -25,11 +25,6 @@ public class VariableDeclarationCommand implements Command {
     }
     
     @Override
-    public boolean updatesVariable(String aVariableName) {
-        return false;
-    }
-    
-    @Override
     public boolean usesVariable(String aVariableName) {
         return variableName.equals(aVariableName);
     }
