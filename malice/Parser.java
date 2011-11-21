@@ -18,6 +18,12 @@ import org.antlr.runtime.tree.Tree;
 
 public class Parser {
 
+    private static final String COMMAND = "command";
+    private static final String VARIABLE_DECLARATION = "variable_declaration";
+    private static final String VARIABLE_ASSIGNMENT = "variable_assignment";
+    private static final String ATE = "ate";
+    private static final String DRANK = "drank";
+    private static final String SPOKE = "spoke";
     private List<Command> commands;
     private SymbolTable symbolTable;
 
@@ -47,7 +53,7 @@ public class Parser {
         for (int i = 0; i < tree.getChildCount(); i++) {
             Tree child = tree.getChild(i);
 
-            if ("command".equals(child.getText())) {
+            if (COMMAND.equals(child.getText())) {
                 parseCommand(child);
             }
         }
@@ -57,9 +63,9 @@ public class Parser {
         Tree commandTree = tree.getChild(0);
         String commandName = commandTree.getText();
 
-        if ("variable_declaration".equals(commandName)) {
+        if (VARIABLE_DECLARATION.equals(commandName)) {
             commands.add(parseVariableDeclaration(commandTree));
-        } else if ("variable_assignment".equals(commandName)) {
+        } else if (VARIABLE_ASSIGNMENT.equals(commandName)) {
             commands.add(parseVariableAssignment(commandTree));
         } else {
             commands.add(parseProcedure(tree));
@@ -104,22 +110,22 @@ public class Parser {
             }
 
             expression = parseArithmeticExpression(tree.getChild(2));
-            
+
             Set<String> variablesUsed = expression.getUsedVariables();
             for (String variableUsed : variablesUsed) {
                 if (!symbolTable.containsVariable(variableUsed)) {
                     throw new VariableNotDeclaredException(variableUsed);
                 }
                 if (Type.number != symbolTable.getVariableType(variableUsed)) {
-                    throw new IncompatibleTypeException(variableUsed +
-                            " is not a number and therefore cannot be in an arithmetic expression");
+                    throw new IncompatibleTypeException(variableUsed
+                            + " is not a number and therefore cannot be in an arithmetic expression");
                 }
                 if (!symbolTable.isInitialisedVariable(variableUsed) && !variableName.equals(variableUsed)) {
                     throw new VariableNotInitialisedException(variableUsed);
                 }
             }
         }
-        
+
         symbolTable.initialiseVariable(variableName);
 
         return new VariableAssignmentCommand(variableName, expression);
@@ -127,21 +133,21 @@ public class Parser {
 
     private Command parseProcedure(Tree tree) {
         String variableName = tree.getChild(0).getText();
-        
+
         if (!symbolTable.containsVariable(variableName)) {
             throw new VariableNotDeclaredException(variableName);
         }
         if (!symbolTable.isInitialisedVariable(variableName)) {
             throw new VariableNotInitialisedException(variableName);
         }
-        
+
         String procedureName = tree.getChild(1).getText();
 
-        if ("ate".equals(procedureName)) {
+        if (ATE.equals(procedureName)) {
             return new IncrementCommand(variableName);
-        } else if ("drank".equals(procedureName)) {
+        } else if (DRANK.equals(procedureName)) {
             return new DecrementCommand(variableName);
-        } else if ("spoke".equals(procedureName)) {
+        } else if (SPOKE.equals(procedureName)) {
             return new SpeakCommand(variableName);
         } else {
             // in case of syntax connectors such as and
@@ -169,14 +175,14 @@ public class Parser {
             } catch (NumberFormatException e) {
                 return new ArithmeticExpression(terminal, tilda);
             }
-            
+
         } else {
             Tree leftExp = tree.getChild(0);
             if (tree.getChildCount() > 1) {
                 ArithmeticExpression rightExp = parseArithmeticExpression(leftExp);
-                for(int i = 2; i < tree.getChildCount(); i += 2) {
+                for (int i = 2; i < tree.getChildCount(); i += 2) {
                     leftExp = tree.getChild(i);
-                    rightExp = new ArithmeticExpression(rightExp,parseArithmeticExpression(leftExp), tree.getChild(i-1).toString().charAt(0));
+                    rightExp = new ArithmeticExpression(rightExp, parseArithmeticExpression(leftExp), tree.getChild(i - 1).toString().charAt(0));
                 }
                 return rightExp;
             }
@@ -207,20 +213,20 @@ public class Parser {
             super(variableName + " was not declared");
         }
     }
-    
+
     public static class VariableNotInitialisedException extends RuntimeException {
 
         public VariableNotInitialisedException(String variableName) {
             super(variableName + " was not initialised");
         }
     }
-    
+
     public static class IncompatibleTypeException extends RuntimeException {
 
         public IncompatibleTypeException(String variableName, Type type) {
             super(variableName + " can only be assigned a value of type " + type);
         }
-        
+
         public IncompatibleTypeException(String message) {
             super(message);
         }

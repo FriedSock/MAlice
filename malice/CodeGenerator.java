@@ -72,15 +72,9 @@ public class CodeGenerator implements CommandVisitor {
             for (Map.Entry<String, Command> entry : variablesUsedLastInCommand.entrySet()) {
                 if (command == entry.getValue()) {
                     Storage storage = symbolTable.getVariableStorage(entry.getKey());
-                    /*if (storage.isRegister()) {
-                    freeRegisters.add((Register) storage);
-                    }*/
                     freeStorage(storage);
                 }
             }
-
-            //TODO - remove
-            System.out.println("freeRegs: " + freeRegisters.size());
         }
 
         return assemblyCommands;
@@ -201,7 +195,7 @@ public class CodeGenerator implements CommandVisitor {
         }
 
         MemoryLocation memoryLocation = new MemoryLocation(nextFreeMemoryAddress);
-        nextFreeMemoryAddress += 8;
+        nextFreeMemoryAddress += 4;
         return memoryLocation;
     }
 
