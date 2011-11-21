@@ -134,19 +134,38 @@ public class CodeGenerator implements CommandVisitor {
             generateBinOpCode(exp.getBinOp(), destStorage, moreStorage);
 
             freeStorage(moreStorage);
-        } else if (!exp.isImmediateValue()) {
-            // variable
-            assemblyCommands.add("mov " + destStorage + ", "
-                    + symbolTable.getVariableStorage(exp.getVariableName()));
-            if (exp.hasTilde()) {
-                assemblyCommands.add("not " + destStorage);
-            }
         } else {
-            // immediate value
-            //TODO - use register when saving to memory
-            assemblyCommands.add("mov " + destStorage + ", " + exp.getValue());
-            if (exp.hasTilde()) {
-                assemblyCommands.add("not " + destStorage);
+            if (!exp.isImmediateValue()) {
+                // variable
+                assemblyCommands.add("mov " + destStorage + ", "
+                        + symbolTable.getVariableStorage(exp.getVariableName()));
+            } else {
+                // immediate value
+                assemblyCommands.add("mov " + destStorage + ", " + exp.getValue());
+            }
+
+            String unaryOperators = exp.getUnaryOperators();
+            for (int i = 0; i < unaryOperators.length(); i++) {
+                if ('~' == unaryOperators.charAt(i)) {
+                    assemblyCommands.add("not " + destStorage);
+                } else {
+                    if (Register.eax == destStorage) {
+                        assemblyCommands.add("push ebx");
+                        assemblyCommands.add("mov ebx, 0");
+                        assemblyCommands.add("sub ebx, " + destStorage);
+                        assemblyCommands.add("mov " + destStorage + ", ebx");
+                        assemblyCommands.add("pop ebx");
+                    } else {
+                        assemblyCommands.add("push eax");
+                        assemblyCommands.add("mov eax, 0");
+                        assemblyCommands.add("sub eax, " + destStorage);
+                        assemblyCommands.add("mov " + destStorage + ", eax");
+                        assemblyCommands.add("pop eax");
+                    }
+                    
+                    assemblyCommands.add("not " + destStorage);
+                    assemblyCommands.add("not " + destStorage);
+                }
             }
         }
     }

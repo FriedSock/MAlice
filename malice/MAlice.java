@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 import org.antlr.runtime.ANTLRFileStream;
+import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.debug.ParseTreeBuilder;
@@ -13,7 +14,7 @@ import org.antlr.runtime.debug.ParseTreeBuilder;
 public class MAlice {
 
     public static void main(String[] args) {
-        if (args.length == 0) {
+        /*if (args.length == 0) {
             die("Please provide a file name of an Alice file as an argument to this program");
         }
 
@@ -30,7 +31,9 @@ public class MAlice {
             die("Build", ex);
         }
 
-        MAliceLexer lexer = new MAliceLexer(fileStream);
+        MAliceLexer lexer = new MAliceLexer(fileStream);*/
+        
+        MAliceLexer lexer = new MAliceLexer(new ANTLRStringStream("a was a number. a became -3. a became --~-~~~-3."));
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         ParseTreeBuilder builder = new ParseTreeBuilder("prog");
         MAliceParser maliceParser = new MAliceParser(tokenStream, builder);
@@ -50,8 +53,11 @@ public class MAlice {
         System.out.println("Generating assembly code");
         CodeGenerator codeGenerator = new CodeGenerator(parser.getCommands(), parser.getSymbolTable());
         List<String> assembly = codeGenerator.generateCode();
+        for (String asm : assembly) {
+            System.out.println(asm);
+        }
         
-        String baseFileName = maliceFileName.replaceAll(".alice$", "");
+        /*String baseFileName = maliceFileName.replaceAll(".alice$", "");
         String assemblyFileName = baseFileName + ".asm";
 
         try {
@@ -65,7 +71,7 @@ public class MAlice {
             buildAssembly(assemblyFileName, baseFileName);
         } catch (Exception ex) {
             die("Assembly build", ex);
-        }
+        }*/
     }
 
     private static void writeAssembly(String assemblyFileName, List<String> assembly) throws IOException {

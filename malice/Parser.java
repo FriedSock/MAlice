@@ -157,25 +157,24 @@ public class Parser {
 
     private ArithmeticExpression parseArithmeticExpression(Tree tree) {
         if (tree.getText().equals("factor")) {
-            boolean tilda = false;
-            String first = tree.getChild(0).getText();
-            if (first.startsWith("MismatchedSetException")) {
+            String firstChildText = tree.getChild(0).getText();
+            if (firstChildText.startsWith("MismatchedSetException")) {
                 throw new IllegalArgumentException("Invalid arithmetic expression: " + tree.toStringTree());
             }
-            String terminal;
-            if ("~".equals(first)) {
-                tilda = true;
-                terminal = tree.getChild(1).getText();
-            } else {
-                terminal = tree.getChild(0).getText();
+            
+            int childCount = tree.getChildCount();
+            String terminal = tree.getChild(childCount - 1).getText();
+            String unaryOperators = "";
+            for (int i = 0; i < childCount - 1; i++) {
+                unaryOperators += tree.getChild(i).getText();
             }
             try {
+                // to decide if there is an identifier or an immediate value
                 int value = Integer.valueOf(terminal);
-                return new ArithmeticExpression(value, tilda);
+                return new ArithmeticExpression(value, unaryOperators);
             } catch (NumberFormatException e) {
-                return new ArithmeticExpression(terminal, tilda);
+                return new ArithmeticExpression(terminal, unaryOperators);
             }
-
         } else {
             Tree leftExp = tree.getChild(0);
             if (tree.getChildCount() > 1) {

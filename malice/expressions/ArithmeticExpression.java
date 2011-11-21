@@ -1,6 +1,8 @@
 package malice.expressions;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class ArithmeticExpression implements Expression {
@@ -9,31 +11,47 @@ public class ArithmeticExpression implements Expression {
     private char binOp;
     private int value;
     private String variableName;
-    private boolean hasTilde, isImmediateValue, isValue;
+    private boolean isImmediateValue, isValue;
+    private String unaryOperators;
 
-    public ArithmeticExpression(String variableName, boolean hasTilde) {
+    public ArithmeticExpression(String variableName, String unaryOperators) {
         this.variableName = variableName;
-        this.hasTilde = hasTilde;
+        this.unaryOperators = unaryOperators;
         isImmediateValue = false;
         isValue = true;
+        
+        reduceUnaryOperators();
     }
 
-    public ArithmeticExpression(int value, boolean hasTilde) {
+    public ArithmeticExpression(int value, String unaryOperators) {
         this.value = value;
-        this.hasTilde = hasTilde;
+        this.unaryOperators = unaryOperators;
         isImmediateValue = true;
         isValue = true;
+        
+        reduceUnaryOperators();
     }
 
     public ArithmeticExpression(ArithmeticExpression left, ArithmeticExpression right, char binOp) {
         this.left = left;
         this.right = right;
         this.binOp = binOp;
+        this.unaryOperators = "";
         isImmediateValue = false;
         isValue = false;
+        
         reduce(this);
     }
 
+    private void reduceUnaryOperators() {
+        int oldLength;
+        do {
+            oldLength = unaryOperators.length();
+            unaryOperators = unaryOperators.replaceAll("~~", "");
+            unaryOperators = unaryOperators.replaceAll("--", "");
+        } while (oldLength != unaryOperators.length());
+    }
+    
     /**
      * Reduces given arithmetic expression.
      */
@@ -112,10 +130,10 @@ public class ArithmeticExpression implements Expression {
         return variableName;
     }
 
-    public boolean hasTilde() {
-        return hasTilde;
+    public String getUnaryOperators() {
+        return unaryOperators;
     }
-
+    
     @Override
     public Set<String> getUsedVariables() {
         Set<String> usedVariables = new HashSet<String>();
@@ -156,7 +174,7 @@ public class ArithmeticExpression implements Expression {
         if (right == null) {
             if (left == null) {
                 String out = (isImmediateValue) ? String.valueOf(value) : variableName;
-                return (hasTilde) ? "~" + out : out;
+                return unaryOperators + out;
             }
             return binOp + left.toString();
         }
