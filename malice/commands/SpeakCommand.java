@@ -1,21 +1,20 @@
 package malice.commands;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
+import malice.expressions.ArithmeticExpression;
 
 public class SpeakCommand implements Command {
 
-    private String variableName;
+    private ArithmeticExpression expression;
 
-    public SpeakCommand(String variableName) {
-        this.variableName = variableName;
+    public SpeakCommand(ArithmeticExpression expression) {
+        this.expression = expression;
+    }
+
+    public ArithmeticExpression getExpression() {
+        return expression;
     }
     
-    public String getVariableName(){
-        return variableName;
-    }
-
     @Override
     public void acceptVisitor(CommandVisitor visitor) {
         visitor.visitSpeak(this);
@@ -23,17 +22,17 @@ public class SpeakCommand implements Command {
     
     @Override
     public Set<String> getUsedVariables() {
-        return new HashSet<String>(Arrays.asList(variableName));
+        return expression.getUsedVariables();
     }
     
     @Override
     public boolean usesVariable(String aVariableName) {
-        return variableName.equals(aVariableName);
+        return expression.usesVariable(aVariableName);
     }
     
     @Override
     public String toString() {
-        return variableName + " spoke";
+        return expression + " spoke";
     }
 
 }

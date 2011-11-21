@@ -21,9 +21,9 @@ public class Parser {
     private static final String COMMAND = "command";
     private static final String VARIABLE_DECLARATION = "variable_declaration";
     private static final String VARIABLE_ASSIGNMENT = "variable_assignment";
+    private static final String EXPRESSION_SPOKE = "expression_spoke";
     private static final String ATE = "ate";
     private static final String DRANK = "drank";
-    private static final String SPOKE = "spoke";
     private List<Command> commands;
     private SymbolTable symbolTable;
 
@@ -67,6 +67,8 @@ public class Parser {
             commands.add(parseVariableDeclaration(commandTree));
         } else if (VARIABLE_ASSIGNMENT.equals(commandName)) {
             commands.add(parseVariableAssignment(commandTree));
+        } else if (EXPRESSION_SPOKE.equals(commandName)) {
+            commands.add(parseExpressionSpoke(commandTree));
         } else {
             commands.add(parseProcedure(tree));
         }
@@ -131,6 +133,12 @@ public class Parser {
         return new VariableAssignmentCommand(variableName, expression);
     }
 
+    private Command parseExpressionSpoke(Tree tree) {
+        // Only an arithmetic expression or a variable can speak - not a character
+        ArithmeticExpression expression = parseArithmeticExpression(tree.getChild(0));
+        return new SpeakCommand(expression);
+    }
+    
     private Command parseProcedure(Tree tree) {
         String variableName = tree.getChild(0).getText();
 
@@ -147,8 +155,6 @@ public class Parser {
             return new IncrementCommand(variableName);
         } else if (DRANK.equals(procedureName)) {
             return new DecrementCommand(variableName);
-        } else if (SPOKE.equals(procedureName)) {
-            return new SpeakCommand(variableName);
         } else {
             // in case of syntax connectors such as and
             return null;

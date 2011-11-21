@@ -94,8 +94,8 @@ public class CodeGenerator implements CommandVisitor {
 
     @Override
     public void visitSpeak(SpeakCommand command) {
-        Storage storage = symbolTable.getVariableStorage(command.getVariableName());
-        assemblyCommands.add("mov ebx, " + storage);
+        // No need to push and pop ebx and eax as this is the end of the program
+        generateExpressionCode(Register.ebx, command.getExpression());
         assemblyCommands.add("mov eax, 1");
         assemblyCommands.add("int 0x80");
     }
