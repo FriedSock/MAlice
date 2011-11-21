@@ -136,9 +136,24 @@ public class Parser {
     private Command parseExpressionSpoke(Tree tree) {
         // Only an arithmetic expression or a variable can speak - not a character
         ArithmeticExpression expression = parseArithmeticExpression(tree.getChild(0));
+
+        Set<String> variablesUsed = expression.getUsedVariables();
+        for (String variableUsed : variablesUsed) {
+            if (!symbolTable.containsVariable(variableUsed)) {
+                throw new VariableNotDeclaredException(variableUsed);
+            }
+            if (Type.number != symbolTable.getVariableType(variableUsed)) {
+                throw new IncompatibleTypeException(variableUsed
+                        + " is not a number and therefore cannot be in an arithmetic expression");
+            }
+            if (!symbolTable.isInitialisedVariable(variableUsed)) {
+                throw new VariableNotInitialisedException(variableUsed);
+            }
+        }
+
         return new SpeakCommand(expression);
     }
-    
+
     private Command parseProcedure(Tree tree) {
         String variableName = tree.getChild(0).getText();
 
@@ -167,7 +182,7 @@ public class Parser {
             if (firstChildText.startsWith("MismatchedSetException")) {
                 throw new IllegalArgumentException("Invalid arithmetic expression: " + tree.toStringTree());
             }
-            
+
             int childCount = tree.getChildCount();
             String terminal = tree.getChild(childCount - 1).getText();
             String unaryOperators = "";

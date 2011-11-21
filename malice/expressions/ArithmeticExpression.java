@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 public class ArithmeticExpression implements Expression {
-
+    
     private ArithmeticExpression left, right;
     private char binOp;
     private int value;
@@ -63,7 +63,8 @@ public class ArithmeticExpression implements Expression {
         reduce(exp.left);
         reduce(exp.right);
 
-        if (!exp.left.isImmediateValue() || !exp.right.isImmediateValue()) {
+        if (!exp.left.isImmediateValue() || !exp.right.isImmediateValue() 
+                || exp.left.unaryOperators != "" || exp.right.unaryOperators != "") {
             return;
         }
 

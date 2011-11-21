@@ -95,7 +95,8 @@ public class CodeGenerator implements CommandVisitor {
     @Override
     public void visitSpeak(SpeakCommand command) {
         // No need to push and pop ebx and eax as this is the end of the program
-        generateExpressionCode(Register.ebx, command.getExpression());
+        generateExpressionCode(Register.rbx, command.getExpression());
+        assemblyCommands.add("mov ebx, rbx");
         assemblyCommands.add("mov eax, 1");
         assemblyCommands.add("int 0x80");
     }
@@ -149,18 +150,18 @@ public class CodeGenerator implements CommandVisitor {
                 if ('~' == unaryOperators.charAt(i)) {
                     assemblyCommands.add("not " + destStorage);
                 } else {
-                    if (Register.eax == destStorage) {
-                        assemblyCommands.add("push ebx");
-                        assemblyCommands.add("mov ebx, 0");
-                        assemblyCommands.add("sub ebx, " + destStorage);
-                        assemblyCommands.add("mov " + destStorage + ", ebx");
-                        assemblyCommands.add("pop ebx");
+                    if (Register.rax == destStorage) {
+                        assemblyCommands.add("push " + Register.rbx);
+                        assemblyCommands.add("mov " + Register.rbx + ", 0");
+                        assemblyCommands.add("sub " + Register.rbx + ", " + destStorage);
+                        assemblyCommands.add("mov " + destStorage + ", " + Register.rbx);
+                        assemblyCommands.add("pop " + Register.rbx);
                     } else {
-                        assemblyCommands.add("push eax");
-                        assemblyCommands.add("mov eax, 0");
-                        assemblyCommands.add("sub eax, " + destStorage);
-                        assemblyCommands.add("mov " + destStorage + ", eax");
-                        assemblyCommands.add("pop eax");
+                        assemblyCommands.add("push " + Register.rax);
+                        assemblyCommands.add("mov " + Register.rax + ", 0");
+                        assemblyCommands.add("sub " + Register.rax +", " + destStorage);
+                        assemblyCommands.add("mov " + destStorage + ", " + Register.rax);
+                        assemblyCommands.add("pop " + Register.rax);
                     }
                     
                     assemblyCommands.add("not " + destStorage);
@@ -182,22 +183,22 @@ public class CodeGenerator implements CommandVisitor {
                 assemblyCommands.add("mul " + destStorage + ", " + moreStorage);
                 break;
             case '%':
-                assemblyCommands.add("push eax");
-                assemblyCommands.add("push edx");
-                assemblyCommands.add("mov " + "eax, " + destStorage);
+                assemblyCommands.add("push " + Register.rax);
+                assemblyCommands.add("push " + Register.rdx);
+                assemblyCommands.add("mov " + Register.rax + ", " + destStorage);
                 assemblyCommands.add("idiv " + moreStorage);
-                assemblyCommands.add("mov " + destStorage + ", eax");
-                assemblyCommands.add("pop edx");
-                assemblyCommands.add("pop eax");
+                assemblyCommands.add("mov " + destStorage + ", " + Register.rax);
+                assemblyCommands.add("pop " + Register.rdx);
+                assemblyCommands.add("pop " + Register.rax);
                 break;
             case '/':
-                assemblyCommands.add("push eax");
-                assemblyCommands.add("push edx");
-                assemblyCommands.add("mov " + "eax, " + destStorage);
+                assemblyCommands.add("push " + Register.rax);
+                assemblyCommands.add("push " + Register.rdx);
+                assemblyCommands.add("mov " + Register.rax + ", " + destStorage);
                 assemblyCommands.add("idiv " + moreStorage);
-                assemblyCommands.add("mov " + destStorage + ", edx");
-                assemblyCommands.add("pop edx");
-                assemblyCommands.add("pop eax");
+                assemblyCommands.add("mov " + destStorage + ", " + Register.rdx);
+                assemblyCommands.add("pop " + Register.rdx);
+                assemblyCommands.add("pop " + Register.rax);
                 break;
             case '|':
                 assemblyCommands.add("or " + destStorage + ", " + moreStorage);

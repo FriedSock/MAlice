@@ -3,15 +3,15 @@ package malice.symbols;
 public class Register implements Storage {
     
     public static final Register NONE = new Register("NONE");
-    public static final Register eax = new Register("eax");
-    public static final Register ebx = new Register("ebx");
-    public static final Register ecx = new Register("ecx");
-    public static final Register edx = new Register("edx");
-    public static final Register esi = new Register("esi");
-    public static final Register edi = new Register("edi");
-    public static final Register ebp = new Register("ebp");
-    public static final Register esp = new Register("esp");
-    private static final Register[] VALUES = {eax, ebx, ecx, edx, esi, edi, ebp, esp};
+    public static final Register rax = new Register("rax");
+    public static final Register rbx = new Register("rbx");
+    public static final Register rcx = new Register("rcx");
+    public static final Register rdx = new Register("rdx");
+    public static final Register rsi = new Register("rsi");
+    public static final Register rdi = new Register("rdi");
+    public static final Register rbp = new Register("rbp");
+    public static final Register rsp = new Register("rsp");
+    private static final Register[] VALUES = {rax, rbx, rcx, rdx, rsi, rdi, rbp, rsp};
     
     private final String name;
     
