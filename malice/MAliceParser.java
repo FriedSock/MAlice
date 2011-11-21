@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g 2011-11-20 15:32:56
+// $ANTLR 3.4 /home/jack/Desktop/MAlice.g 2011-11-21 18:35:38
 
 	package malice;
 
@@ -16,7 +16,7 @@ import org.antlr.runtime.tree.*;
 @SuppressWarnings({"all", "warnings", "unchecked"})
 public class MAliceParser extends DebugParser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "CHAR", "CONNECTOR", "END_OF_LINE", "ID", "INT", "PROCEDURE", "TYPE", "WS", "' became '", "'%'", "'&'", "'*'", "'+'", "'/'", "'^'", "'was a'", "'|'", "'~'"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "CHAR", "CONNECTOR", "END_OF_LINE", "ID", "INT", "PROCEDURE", "TYPE", "WS", "'%'", "'&'", "'*'", "'+'", "'-'", "'/'", "'^'", "'became'", "'spoke'", "'was a'", "'|'", "'~'"
     };
 
     public static final int EOF=-1;
@@ -30,6 +30,8 @@ public class MAliceParser extends DebugParser {
     public static final int T__19=19;
     public static final int T__20=20;
     public static final int T__21=21;
+    public static final int T__22=22;
+    public static final int T__23=23;
     public static final int CHAR=4;
     public static final int CONNECTOR=5;
     public static final int END_OF_LINE=6;
@@ -48,13 +50,13 @@ public class MAliceParser extends DebugParser {
 
 
 public static final String[] ruleNames = new String[] {
-    "invalidRule", "prog", "term", "expression", "statement", "factor", 
-    "command", "variable_declaration", "variable_assignment"
+    "invalidRule", "command", "expression", "statement", "expression_spoke", 
+    "factor", "term", "prog", "variable_declaration", "variable_assignment"
 };
 
 public static final boolean[] decisionCanBacktrack = new boolean[] {
     false, // invalid decision
-    false, false, false, false, false, false, false
+    false, false, false, false, false, false, false, false, false
 };
 
  
@@ -107,7 +109,7 @@ public TreeAdaptor getTreeAdaptor() {
 }
 
     public String[] getTokenNames() { return MAliceParser.tokenNames; }
-    public String getGrammarFileName() { return "/Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g"; }
+    public String getGrammarFileName() { return "/home/jack/Desktop/MAlice.g"; }
 
 
     public static class prog_return extends ParserRuleReturnScope {
@@ -117,7 +119,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "prog"
-    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:21:1: prog : ( statement )+ ;
+    // /home/jack/Desktop/MAlice.g:21:1: prog : ( statement )* ;
     public final MAliceParser.prog_return prog() throws RecognitionException {
         MAliceParser.prog_return retval = new MAliceParser.prog_return();
         retval.start = input.LT(1);
@@ -135,17 +137,16 @@ public TreeAdaptor getTreeAdaptor() {
         dbg.location(21, 0);
 
         try {
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:21:5: ( ( statement )+ )
+            // /home/jack/Desktop/MAlice.g:21:5: ( ( statement )* )
             dbg.enterAlt(1);
 
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:21:9: ( statement )+
+            // /home/jack/Desktop/MAlice.g:21:8: ( statement )*
             {
             root_0 = (CommonTree)adaptor.nil();
 
 
-            dbg.location(21,9);
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:21:9: ( statement )+
-            int cnt1=0;
+            dbg.location(21,8);
+            // /home/jack/Desktop/MAlice.g:21:8: ( statement )*
             try { dbg.enterSubRule(1);
 
             loop1:
@@ -155,7 +156,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 int LA1_0 = input.LA(1);
 
-                if ( (LA1_0==ID) ) {
+                if ( (LA1_0==CHAR||(LA1_0 >= ID && LA1_0 <= INT)||LA1_0==16||LA1_0==23) ) {
                     alt1=1;
                 }
 
@@ -166,10 +167,10 @@ public TreeAdaptor getTreeAdaptor() {
             	case 1 :
             	    dbg.enterAlt(1);
 
-            	    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:21:9: statement
+            	    // /home/jack/Desktop/MAlice.g:21:8: statement
             	    {
-            	    dbg.location(21,9);
-            	    pushFollow(FOLLOW_statement_in_prog51);
+            	    dbg.location(21,8);
+            	    pushFollow(FOLLOW_statement_in_prog50);
             	    statement1=statement();
 
             	    state._fsp--;
@@ -180,14 +181,8 @@ public TreeAdaptor getTreeAdaptor() {
             	    break;
 
             	default :
-            	    if ( cnt1 >= 1 ) break loop1;
-                        EarlyExitException eee =
-                            new EarlyExitException(1, input);
-                        dbg.recognitionException(eee);
-
-                        throw eee;
+            	    break loop1;
                 }
-                cnt1++;
             } while (true);
             } finally {dbg.exitSubRule(1);}
 
@@ -211,7 +206,7 @@ public TreeAdaptor getTreeAdaptor() {
         finally {
         	// do for sure before leaving
         }
-        dbg.location(21, 18);
+        dbg.location(21, 17);
 
         }
         finally {
@@ -232,7 +227,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "statement"
-    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:23:1: statement : command ( CONNECTOR command )* END_OF_LINE ;
+    // /home/jack/Desktop/MAlice.g:23:1: statement : command ( CONNECTOR command )* END_OF_LINE ;
     public final MAliceParser.statement_return statement() throws RecognitionException {
         MAliceParser.statement_return retval = new MAliceParser.statement_return();
         retval.start = input.LT(1);
@@ -256,23 +251,23 @@ public TreeAdaptor getTreeAdaptor() {
         dbg.location(23, 0);
 
         try {
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:23:10: ( command ( CONNECTOR command )* END_OF_LINE )
+            // /home/jack/Desktop/MAlice.g:23:10: ( command ( CONNECTOR command )* END_OF_LINE )
             dbg.enterAlt(1);
 
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:23:13: command ( CONNECTOR command )* END_OF_LINE
+            // /home/jack/Desktop/MAlice.g:23:13: command ( CONNECTOR command )* END_OF_LINE
             {
             root_0 = (CommonTree)adaptor.nil();
 
 
             dbg.location(23,13);
-            pushFollow(FOLLOW_command_in_statement60);
+            pushFollow(FOLLOW_command_in_statement59);
             command2=command();
 
             state._fsp--;
 
             adaptor.addChild(root_0, command2.getTree());
             dbg.location(23,21);
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:23:21: ( CONNECTOR command )*
+            // /home/jack/Desktop/MAlice.g:23:21: ( CONNECTOR command )*
             try { dbg.enterSubRule(2);
 
             loop2:
@@ -293,17 +288,17 @@ public TreeAdaptor getTreeAdaptor() {
             	case 1 :
             	    dbg.enterAlt(1);
 
-            	    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:23:22: CONNECTOR command
+            	    // /home/jack/Desktop/MAlice.g:23:22: CONNECTOR command
             	    {
             	    dbg.location(23,22);
-            	    CONNECTOR3=(Token)match(input,CONNECTOR,FOLLOW_CONNECTOR_in_statement63); 
+            	    CONNECTOR3=(Token)match(input,CONNECTOR,FOLLOW_CONNECTOR_in_statement62); 
             	    CONNECTOR3_tree = 
             	    (CommonTree)adaptor.create(CONNECTOR3)
             	    ;
             	    adaptor.addChild(root_0, CONNECTOR3_tree);
 
             	    dbg.location(23,32);
-            	    pushFollow(FOLLOW_command_in_statement65);
+            	    pushFollow(FOLLOW_command_in_statement64);
             	    command4=command();
 
             	    state._fsp--;
@@ -320,7 +315,7 @@ public TreeAdaptor getTreeAdaptor() {
             } finally {dbg.exitSubRule(2);}
 
             dbg.location(23,42);
-            END_OF_LINE5=(Token)match(input,END_OF_LINE,FOLLOW_END_OF_LINE_in_statement69); 
+            END_OF_LINE5=(Token)match(input,END_OF_LINE,FOLLOW_END_OF_LINE_in_statement68); 
             END_OF_LINE5_tree = 
             (CommonTree)adaptor.create(END_OF_LINE5)
             ;
@@ -367,7 +362,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "command"
-    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:25:1: command : ( variable_assignment | variable_declaration | ID PROCEDURE );
+    // /home/jack/Desktop/MAlice.g:25:1: command : ( variable_assignment | variable_declaration | ID PROCEDURE | expression_spoke );
     public final MAliceParser.command_return command() throws RecognitionException {
         MAliceParser.command_return retval = new MAliceParser.command_return();
         retval.start = input.LT(1);
@@ -381,6 +376,8 @@ public TreeAdaptor getTreeAdaptor() {
 
         MAliceParser.variable_declaration_return variable_declaration7 =null;
 
+        MAliceParser.expression_spoke_return expression_spoke10 =null;
+
 
         CommonTree ID8_tree=null;
         CommonTree PROCEDURE9_tree=null;
@@ -391,20 +388,20 @@ public TreeAdaptor getTreeAdaptor() {
         dbg.location(25, 0);
 
         try {
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:25:8: ( variable_assignment | variable_declaration | ID PROCEDURE )
-            int alt3=3;
+            // /home/jack/Desktop/MAlice.g:25:8: ( variable_assignment | variable_declaration | ID PROCEDURE | expression_spoke )
+            int alt3=4;
             try { dbg.enterDecision(3, decisionCanBacktrack[3]);
 
             int LA3_0 = input.LA(1);
 
             if ( (LA3_0==ID) ) {
                 switch ( input.LA(2) ) {
-                case 12:
+                case 19:
                     {
                     alt3=1;
                     }
                     break;
-                case 19:
+                case 21:
                     {
                     alt3=2;
                     }
@@ -412,6 +409,18 @@ public TreeAdaptor getTreeAdaptor() {
                 case PROCEDURE:
                     {
                     alt3=3;
+                    }
+                    break;
+                case 12:
+                case 13:
+                case 14:
+                case 15:
+                case 17:
+                case 18:
+                case 20:
+                case 22:
+                    {
+                    alt3=4;
                     }
                     break;
                 default:
@@ -423,6 +432,9 @@ public TreeAdaptor getTreeAdaptor() {
 
                 }
 
+            }
+            else if ( (LA3_0==CHAR||LA3_0==INT||LA3_0==16||LA3_0==23) ) {
+                alt3=4;
             }
             else {
                 NoViableAltException nvae =
@@ -438,13 +450,13 @@ public TreeAdaptor getTreeAdaptor() {
                 case 1 :
                     dbg.enterAlt(1);
 
-                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:25:11: variable_assignment
+                    // /home/jack/Desktop/MAlice.g:25:11: variable_assignment
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
 
                     dbg.location(25,11);
-                    pushFollow(FOLLOW_variable_assignment_in_command77);
+                    pushFollow(FOLLOW_variable_assignment_in_command76);
                     variable_assignment6=variable_assignment();
 
                     state._fsp--;
@@ -456,13 +468,13 @@ public TreeAdaptor getTreeAdaptor() {
                 case 2 :
                     dbg.enterAlt(2);
 
-                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:25:33: variable_declaration
+                    // /home/jack/Desktop/MAlice.g:25:33: variable_declaration
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
 
                     dbg.location(25,33);
-                    pushFollow(FOLLOW_variable_declaration_in_command81);
+                    pushFollow(FOLLOW_variable_declaration_in_command80);
                     variable_declaration7=variable_declaration();
 
                     state._fsp--;
@@ -474,25 +486,43 @@ public TreeAdaptor getTreeAdaptor() {
                 case 3 :
                     dbg.enterAlt(3);
 
-                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:25:56: ID PROCEDURE
+                    // /home/jack/Desktop/MAlice.g:25:56: ID PROCEDURE
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
 
                     dbg.location(25,56);
-                    ID8=(Token)match(input,ID,FOLLOW_ID_in_command85); 
+                    ID8=(Token)match(input,ID,FOLLOW_ID_in_command84); 
                     ID8_tree = 
                     (CommonTree)adaptor.create(ID8)
                     ;
                     adaptor.addChild(root_0, ID8_tree);
 
                     dbg.location(25,59);
-                    PROCEDURE9=(Token)match(input,PROCEDURE,FOLLOW_PROCEDURE_in_command87); 
+                    PROCEDURE9=(Token)match(input,PROCEDURE,FOLLOW_PROCEDURE_in_command86); 
                     PROCEDURE9_tree = 
                     (CommonTree)adaptor.create(PROCEDURE9)
                     ;
                     adaptor.addChild(root_0, PROCEDURE9_tree);
 
+
+                    }
+                    break;
+                case 4 :
+                    dbg.enterAlt(4);
+
+                    // /home/jack/Desktop/MAlice.g:25:71: expression_spoke
+                    {
+                    root_0 = (CommonTree)adaptor.nil();
+
+
+                    dbg.location(25,71);
+                    pushFollow(FOLLOW_expression_spoke_in_command90);
+                    expression_spoke10=expression_spoke();
+
+                    state._fsp--;
+
+                    adaptor.addChild(root_0, expression_spoke10.getTree());
 
                     }
                     break;
@@ -515,7 +545,7 @@ public TreeAdaptor getTreeAdaptor() {
         finally {
         	// do for sure before leaving
         }
-        dbg.location(25, 67);
+        dbg.location(25, 86);
 
         }
         finally {
@@ -536,7 +566,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "variable_assignment"
-    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:27:1: variable_assignment : ID ' became ' expression ;
+    // /home/jack/Desktop/MAlice.g:27:1: variable_assignment : ID 'became' expression ;
     public final MAliceParser.variable_assignment_return variable_assignment() throws RecognitionException {
         MAliceParser.variable_assignment_return retval = new MAliceParser.variable_assignment_return();
         retval.start = input.LT(1);
@@ -544,13 +574,13 @@ public TreeAdaptor getTreeAdaptor() {
 
         CommonTree root_0 = null;
 
-        Token ID10=null;
-        Token string_literal11=null;
-        MAliceParser.expression_return expression12 =null;
+        Token ID11=null;
+        Token string_literal12=null;
+        MAliceParser.expression_return expression13 =null;
 
 
-        CommonTree ID10_tree=null;
-        CommonTree string_literal11_tree=null;
+        CommonTree ID11_tree=null;
+        CommonTree string_literal12_tree=null;
 
         try { dbg.enterRule(getGrammarFileName(), "variable_assignment");
         if ( getRuleLevel()==0 ) {dbg.commence();}
@@ -558,35 +588,35 @@ public TreeAdaptor getTreeAdaptor() {
         dbg.location(27, 0);
 
         try {
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:27:20: ( ID ' became ' expression )
+            // /home/jack/Desktop/MAlice.g:27:20: ( ID 'became' expression )
             dbg.enterAlt(1);
 
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:27:22: ID ' became ' expression
+            // /home/jack/Desktop/MAlice.g:27:22: ID 'became' expression
             {
             root_0 = (CommonTree)adaptor.nil();
 
 
             dbg.location(27,22);
-            ID10=(Token)match(input,ID,FOLLOW_ID_in_variable_assignment94); 
-            ID10_tree = 
-            (CommonTree)adaptor.create(ID10)
+            ID11=(Token)match(input,ID,FOLLOW_ID_in_variable_assignment97); 
+            ID11_tree = 
+            (CommonTree)adaptor.create(ID11)
             ;
-            adaptor.addChild(root_0, ID10_tree);
+            adaptor.addChild(root_0, ID11_tree);
 
             dbg.location(27,25);
-            string_literal11=(Token)match(input,12,FOLLOW_12_in_variable_assignment96); 
-            string_literal11_tree = 
-            (CommonTree)adaptor.create(string_literal11)
+            string_literal12=(Token)match(input,19,FOLLOW_19_in_variable_assignment99); 
+            string_literal12_tree = 
+            (CommonTree)adaptor.create(string_literal12)
             ;
-            adaptor.addChild(root_0, string_literal11_tree);
+            adaptor.addChild(root_0, string_literal12_tree);
 
-            dbg.location(27,36);
-            pushFollow(FOLLOW_expression_in_variable_assignment98);
-            expression12=expression();
+            dbg.location(27,34);
+            pushFollow(FOLLOW_expression_in_variable_assignment101);
+            expression13=expression();
 
             state._fsp--;
 
-            adaptor.addChild(root_0, expression12.getTree());
+            adaptor.addChild(root_0, expression13.getTree());
 
             }
 
@@ -607,7 +637,7 @@ public TreeAdaptor getTreeAdaptor() {
         finally {
         	// do for sure before leaving
         }
-        dbg.location(27, 45);
+        dbg.location(27, 43);
 
         }
         finally {
@@ -628,7 +658,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "variable_declaration"
-    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:29:1: variable_declaration : ID 'was a' TYPE ;
+    // /home/jack/Desktop/MAlice.g:29:1: variable_declaration : ID 'was a' TYPE ;
     public final MAliceParser.variable_declaration_return variable_declaration() throws RecognitionException {
         MAliceParser.variable_declaration_return retval = new MAliceParser.variable_declaration_return();
         retval.start = input.LT(1);
@@ -636,13 +666,13 @@ public TreeAdaptor getTreeAdaptor() {
 
         CommonTree root_0 = null;
 
-        Token ID13=null;
-        Token string_literal14=null;
-        Token TYPE15=null;
+        Token ID14=null;
+        Token string_literal15=null;
+        Token TYPE16=null;
 
-        CommonTree ID13_tree=null;
-        CommonTree string_literal14_tree=null;
-        CommonTree TYPE15_tree=null;
+        CommonTree ID14_tree=null;
+        CommonTree string_literal15_tree=null;
+        CommonTree TYPE16_tree=null;
 
         try { dbg.enterRule(getGrammarFileName(), "variable_declaration");
         if ( getRuleLevel()==0 ) {dbg.commence();}
@@ -650,34 +680,34 @@ public TreeAdaptor getTreeAdaptor() {
         dbg.location(29, 0);
 
         try {
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:29:21: ( ID 'was a' TYPE )
+            // /home/jack/Desktop/MAlice.g:29:21: ( ID 'was a' TYPE )
             dbg.enterAlt(1);
 
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:29:23: ID 'was a' TYPE
+            // /home/jack/Desktop/MAlice.g:29:23: ID 'was a' TYPE
             {
             root_0 = (CommonTree)adaptor.nil();
 
 
             dbg.location(29,23);
-            ID13=(Token)match(input,ID,FOLLOW_ID_in_variable_declaration105); 
-            ID13_tree = 
-            (CommonTree)adaptor.create(ID13)
+            ID14=(Token)match(input,ID,FOLLOW_ID_in_variable_declaration108); 
+            ID14_tree = 
+            (CommonTree)adaptor.create(ID14)
             ;
-            adaptor.addChild(root_0, ID13_tree);
+            adaptor.addChild(root_0, ID14_tree);
 
             dbg.location(29,26);
-            string_literal14=(Token)match(input,19,FOLLOW_19_in_variable_declaration107); 
-            string_literal14_tree = 
-            (CommonTree)adaptor.create(string_literal14)
+            string_literal15=(Token)match(input,21,FOLLOW_21_in_variable_declaration110); 
+            string_literal15_tree = 
+            (CommonTree)adaptor.create(string_literal15)
             ;
-            adaptor.addChild(root_0, string_literal14_tree);
+            adaptor.addChild(root_0, string_literal15_tree);
 
             dbg.location(29,34);
-            TYPE15=(Token)match(input,TYPE,FOLLOW_TYPE_in_variable_declaration109); 
-            TYPE15_tree = 
-            (CommonTree)adaptor.create(TYPE15)
+            TYPE16=(Token)match(input,TYPE,FOLLOW_TYPE_in_variable_declaration112); 
+            TYPE16_tree = 
+            (CommonTree)adaptor.create(TYPE16)
             ;
-            adaptor.addChild(root_0, TYPE15_tree);
+            adaptor.addChild(root_0, TYPE16_tree);
 
 
             }
@@ -720,7 +750,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "expression"
-    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:31:1: expression : ( term ( '+' term )* | CHAR );
+    // /home/jack/Desktop/MAlice.g:31:1: expression : ( term ( '+' term )* | CHAR );
     public final MAliceParser.expression_return expression() throws RecognitionException {
         MAliceParser.expression_return retval = new MAliceParser.expression_return();
         retval.start = input.LT(1);
@@ -728,15 +758,15 @@ public TreeAdaptor getTreeAdaptor() {
 
         CommonTree root_0 = null;
 
-        Token char_literal17=null;
-        Token CHAR19=null;
-        MAliceParser.term_return term16 =null;
+        Token char_literal18=null;
+        Token CHAR20=null;
+        MAliceParser.term_return term17 =null;
 
-        MAliceParser.term_return term18 =null;
+        MAliceParser.term_return term19 =null;
 
 
-        CommonTree char_literal17_tree=null;
-        CommonTree CHAR19_tree=null;
+        CommonTree char_literal18_tree=null;
+        CommonTree CHAR20_tree=null;
 
         try { dbg.enterRule(getGrammarFileName(), "expression");
         if ( getRuleLevel()==0 ) {dbg.commence();}
@@ -744,13 +774,13 @@ public TreeAdaptor getTreeAdaptor() {
         dbg.location(31, 0);
 
         try {
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:31:11: ( term ( '+' term )* | CHAR )
+            // /home/jack/Desktop/MAlice.g:31:11: ( term ( '+' term )* | CHAR )
             int alt5=2;
             try { dbg.enterDecision(5, decisionCanBacktrack[5]);
 
             int LA5_0 = input.LA(1);
 
-            if ( ((LA5_0 >= ID && LA5_0 <= INT)||LA5_0==21) ) {
+            if ( ((LA5_0 >= ID && LA5_0 <= INT)||LA5_0==16||LA5_0==23) ) {
                 alt5=1;
             }
             else if ( (LA5_0==CHAR) ) {
@@ -770,20 +800,20 @@ public TreeAdaptor getTreeAdaptor() {
                 case 1 :
                     dbg.enterAlt(1);
 
-                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:31:14: term ( '+' term )*
+                    // /home/jack/Desktop/MAlice.g:31:14: term ( '+' term )*
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
 
                     dbg.location(31,14);
-                    pushFollow(FOLLOW_term_in_expression117);
-                    term16=term();
+                    pushFollow(FOLLOW_term_in_expression120);
+                    term17=term();
 
                     state._fsp--;
 
-                    adaptor.addChild(root_0, term16.getTree());
+                    adaptor.addChild(root_0, term17.getTree());
                     dbg.location(31,19);
-                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:31:19: ( '+' term )*
+                    // /home/jack/Desktop/MAlice.g:31:19: ( '+' term )*
                     try { dbg.enterSubRule(4);
 
                     loop4:
@@ -793,7 +823,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                         int LA4_0 = input.LA(1);
 
-                        if ( (LA4_0==16) ) {
+                        if ( (LA4_0==15) ) {
                             alt4=1;
                         }
 
@@ -804,22 +834,22 @@ public TreeAdaptor getTreeAdaptor() {
                     	case 1 :
                     	    dbg.enterAlt(1);
 
-                    	    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:31:20: '+' term
+                    	    // /home/jack/Desktop/MAlice.g:31:20: '+' term
                     	    {
                     	    dbg.location(31,20);
-                    	    char_literal17=(Token)match(input,16,FOLLOW_16_in_expression120); 
-                    	    char_literal17_tree = 
-                    	    (CommonTree)adaptor.create(char_literal17)
+                    	    char_literal18=(Token)match(input,15,FOLLOW_15_in_expression123); 
+                    	    char_literal18_tree = 
+                    	    (CommonTree)adaptor.create(char_literal18)
                     	    ;
-                    	    adaptor.addChild(root_0, char_literal17_tree);
+                    	    adaptor.addChild(root_0, char_literal18_tree);
 
                     	    dbg.location(31,24);
-                    	    pushFollow(FOLLOW_term_in_expression122);
-                    	    term18=term();
+                    	    pushFollow(FOLLOW_term_in_expression125);
+                    	    term19=term();
 
                     	    state._fsp--;
 
-                    	    adaptor.addChild(root_0, term18.getTree());
+                    	    adaptor.addChild(root_0, term19.getTree());
 
                     	    }
                     	    break;
@@ -836,17 +866,17 @@ public TreeAdaptor getTreeAdaptor() {
                 case 2 :
                     dbg.enterAlt(2);
 
-                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:31:33: CHAR
+                    // /home/jack/Desktop/MAlice.g:31:33: CHAR
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
 
                     dbg.location(31,33);
-                    CHAR19=(Token)match(input,CHAR,FOLLOW_CHAR_in_expression128); 
-                    CHAR19_tree = 
-                    (CommonTree)adaptor.create(CHAR19)
+                    CHAR20=(Token)match(input,CHAR,FOLLOW_CHAR_in_expression131); 
+                    CHAR20_tree = 
+                    (CommonTree)adaptor.create(CHAR20)
                     ;
-                    adaptor.addChild(root_0, CHAR19_tree);
+                    adaptor.addChild(root_0, CHAR20_tree);
 
 
                     }
@@ -891,7 +921,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "term"
-    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:33:1: term : factor ( ( '*' | '/' | '%' | '^' | '&' | '|' ) factor )* ;
+    // /home/jack/Desktop/MAlice.g:33:1: term : factor ( ( '*' | '/' | '%' | '^' | '&' | '|' ) factor )* ;
     public final MAliceParser.term_return term() throws RecognitionException {
         MAliceParser.term_return retval = new MAliceParser.term_return();
         retval.start = input.LT(1);
@@ -899,13 +929,13 @@ public TreeAdaptor getTreeAdaptor() {
 
         CommonTree root_0 = null;
 
-        Token set21=null;
-        MAliceParser.factor_return factor20 =null;
+        Token set22=null;
+        MAliceParser.factor_return factor21 =null;
 
-        MAliceParser.factor_return factor22 =null;
+        MAliceParser.factor_return factor23 =null;
 
 
-        CommonTree set21_tree=null;
+        CommonTree set22_tree=null;
 
         try { dbg.enterRule(getGrammarFileName(), "term");
         if ( getRuleLevel()==0 ) {dbg.commence();}
@@ -913,23 +943,23 @@ public TreeAdaptor getTreeAdaptor() {
         dbg.location(33, 0);
 
         try {
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:33:5: ( factor ( ( '*' | '/' | '%' | '^' | '&' | '|' ) factor )* )
+            // /home/jack/Desktop/MAlice.g:33:5: ( factor ( ( '*' | '/' | '%' | '^' | '&' | '|' ) factor )* )
             dbg.enterAlt(1);
 
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:33:9: factor ( ( '*' | '/' | '%' | '^' | '&' | '|' ) factor )*
+            // /home/jack/Desktop/MAlice.g:33:8: factor ( ( '*' | '/' | '%' | '^' | '&' | '|' ) factor )*
             {
             root_0 = (CommonTree)adaptor.nil();
 
 
-            dbg.location(33,9);
-            pushFollow(FOLLOW_factor_in_term137);
-            factor20=factor();
+            dbg.location(33,8);
+            pushFollow(FOLLOW_factor_in_term139);
+            factor21=factor();
 
             state._fsp--;
 
-            adaptor.addChild(root_0, factor20.getTree());
-            dbg.location(33,16);
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:33:16: ( ( '*' | '/' | '%' | '^' | '&' | '|' ) factor )*
+            adaptor.addChild(root_0, factor21.getTree());
+            dbg.location(33,15);
+            // /home/jack/Desktop/MAlice.g:33:15: ( ( '*' | '/' | '%' | '^' | '&' | '|' ) factor )*
             try { dbg.enterSubRule(6);
 
             loop6:
@@ -939,7 +969,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 int LA6_0 = input.LA(1);
 
-                if ( ((LA6_0 >= 13 && LA6_0 <= 15)||(LA6_0 >= 17 && LA6_0 <= 18)||LA6_0==20) ) {
+                if ( ((LA6_0 >= 12 && LA6_0 <= 14)||(LA6_0 >= 17 && LA6_0 <= 18)||LA6_0==22) ) {
                     alt6=1;
                 }
 
@@ -950,15 +980,15 @@ public TreeAdaptor getTreeAdaptor() {
             	case 1 :
             	    dbg.enterAlt(1);
 
-            	    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:33:17: ( '*' | '/' | '%' | '^' | '&' | '|' ) factor
+            	    // /home/jack/Desktop/MAlice.g:33:16: ( '*' | '/' | '%' | '^' | '&' | '|' ) factor
             	    {
-            	    dbg.location(33,17);
-            	    set21=(Token)input.LT(1);
+            	    dbg.location(33,16);
+            	    set22=(Token)input.LT(1);
 
-            	    if ( (input.LA(1) >= 13 && input.LA(1) <= 15)||(input.LA(1) >= 17 && input.LA(1) <= 18)||input.LA(1)==20 ) {
+            	    if ( (input.LA(1) >= 12 && input.LA(1) <= 14)||(input.LA(1) >= 17 && input.LA(1) <= 18)||input.LA(1)==22 ) {
             	        input.consume();
             	        adaptor.addChild(root_0, 
-            	        (CommonTree)adaptor.create(set21)
+            	        (CommonTree)adaptor.create(set22)
             	        );
             	        state.errorRecovery=false;
             	    }
@@ -968,13 +998,13 @@ public TreeAdaptor getTreeAdaptor() {
             	        throw mse;
             	    }
 
-            	    dbg.location(33,53);
-            	    pushFollow(FOLLOW_factor_in_term164);
-            	    factor22=factor();
+            	    dbg.location(33,52);
+            	    pushFollow(FOLLOW_factor_in_term166);
+            	    factor23=factor();
 
             	    state._fsp--;
 
-            	    adaptor.addChild(root_0, factor22.getTree());
+            	    adaptor.addChild(root_0, factor23.getTree());
 
             	    }
             	    break;
@@ -1005,7 +1035,7 @@ public TreeAdaptor getTreeAdaptor() {
         finally {
         	// do for sure before leaving
         }
-        dbg.location(33, 60);
+        dbg.location(33, 59);
 
         }
         finally {
@@ -1026,7 +1056,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "factor"
-    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:35:1: factor : ( '~' )? ( ID | INT ) ;
+    // /home/jack/Desktop/MAlice.g:35:1: factor : ( '~' | '-' )* ( ID | ( INT )+ ) ;
     public final MAliceParser.factor_return factor() throws RecognitionException {
         MAliceParser.factor_return retval = new MAliceParser.factor_return();
         retval.start = input.LT(1);
@@ -1034,11 +1064,13 @@ public TreeAdaptor getTreeAdaptor() {
 
         CommonTree root_0 = null;
 
-        Token char_literal23=null;
         Token set24=null;
+        Token ID25=null;
+        Token INT26=null;
 
-        CommonTree char_literal23_tree=null;
         CommonTree set24_tree=null;
+        CommonTree ID25_tree=null;
+        CommonTree INT26_tree=null;
 
         try { dbg.enterRule(getGrammarFileName(), "factor");
         if ( getRuleLevel()==0 ) {dbg.commence();}
@@ -1046,62 +1078,163 @@ public TreeAdaptor getTreeAdaptor() {
         dbg.location(35, 0);
 
         try {
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:35:7: ( ( '~' )? ( ID | INT ) )
+            // /home/jack/Desktop/MAlice.g:35:7: ( ( '~' | '-' )* ( ID | ( INT )+ ) )
             dbg.enterAlt(1);
 
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:35:11: ( '~' )? ( ID | INT )
+            // /home/jack/Desktop/MAlice.g:35:10: ( '~' | '-' )* ( ID | ( INT )+ )
             {
             root_0 = (CommonTree)adaptor.nil();
 
 
-            dbg.location(35,11);
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:35:11: ( '~' )?
-            int alt7=2;
+            dbg.location(35,10);
+            // /home/jack/Desktop/MAlice.g:35:10: ( '~' | '-' )*
             try { dbg.enterSubRule(7);
-            try { dbg.enterDecision(7, decisionCanBacktrack[7]);
 
-            int LA7_0 = input.LA(1);
+            loop7:
+            do {
+                int alt7=2;
+                try { dbg.enterDecision(7, decisionCanBacktrack[7]);
 
-            if ( (LA7_0==21) ) {
-                alt7=1;
+                int LA7_0 = input.LA(1);
+
+                if ( (LA7_0==16||LA7_0==23) ) {
+                    alt7=1;
+                }
+
+
+                } finally {dbg.exitDecision(7);}
+
+                switch (alt7) {
+            	case 1 :
+            	    dbg.enterAlt(1);
+
+            	    // /home/jack/Desktop/MAlice.g:
+            	    {
+            	    dbg.location(35,10);
+            	    set24=(Token)input.LT(1);
+
+            	    if ( input.LA(1)==16||input.LA(1)==23 ) {
+            	        input.consume();
+            	        adaptor.addChild(root_0, 
+            	        (CommonTree)adaptor.create(set24)
+            	        );
+            	        state.errorRecovery=false;
+            	    }
+            	    else {
+            	        MismatchedSetException mse = new MismatchedSetException(null,input);
+            	        dbg.recognitionException(mse);
+            	        throw mse;
+            	    }
+
+
+            	    }
+            	    break;
+
+            	default :
+            	    break loop7;
+                }
+            } while (true);
+            } finally {dbg.exitSubRule(7);}
+
+            dbg.location(35,21);
+            // /home/jack/Desktop/MAlice.g:35:21: ( ID | ( INT )+ )
+            int alt9=2;
+            try { dbg.enterSubRule(9);
+            try { dbg.enterDecision(9, decisionCanBacktrack[9]);
+
+            int LA9_0 = input.LA(1);
+
+            if ( (LA9_0==ID) ) {
+                alt9=1;
             }
-            } finally {dbg.exitDecision(7);}
+            else if ( (LA9_0==INT) ) {
+                alt9=2;
+            }
+            else {
+                NoViableAltException nvae =
+                    new NoViableAltException("", 9, 0, input);
 
-            switch (alt7) {
+                dbg.recognitionException(nvae);
+                throw nvae;
+
+            }
+            } finally {dbg.exitDecision(9);}
+
+            switch (alt9) {
                 case 1 :
                     dbg.enterAlt(1);
 
-                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:35:12: '~'
+                    // /home/jack/Desktop/MAlice.g:35:22: ID
                     {
-                    dbg.location(35,12);
-                    char_literal23=(Token)match(input,21,FOLLOW_21_in_factor176); 
-                    char_literal23_tree = 
-                    (CommonTree)adaptor.create(char_literal23)
+                    dbg.location(35,22);
+                    ID25=(Token)match(input,ID,FOLLOW_ID_in_factor184); 
+                    ID25_tree = 
+                    (CommonTree)adaptor.create(ID25)
                     ;
-                    adaptor.addChild(root_0, char_literal23_tree);
+                    adaptor.addChild(root_0, ID25_tree);
+
+
+                    }
+                    break;
+                case 2 :
+                    dbg.enterAlt(2);
+
+                    // /home/jack/Desktop/MAlice.g:35:27: ( INT )+
+                    {
+                    dbg.location(35,27);
+                    // /home/jack/Desktop/MAlice.g:35:27: ( INT )+
+                    int cnt8=0;
+                    try { dbg.enterSubRule(8);
+
+                    loop8:
+                    do {
+                        int alt8=2;
+                        try { dbg.enterDecision(8, decisionCanBacktrack[8]);
+
+                        int LA8_0 = input.LA(1);
+
+                        if ( (LA8_0==INT) ) {
+                            alt8=1;
+                        }
+
+
+                        } finally {dbg.exitDecision(8);}
+
+                        switch (alt8) {
+                    	case 1 :
+                    	    dbg.enterAlt(1);
+
+                    	    // /home/jack/Desktop/MAlice.g:35:28: INT
+                    	    {
+                    	    dbg.location(35,28);
+                    	    INT26=(Token)match(input,INT,FOLLOW_INT_in_factor189); 
+                    	    INT26_tree = 
+                    	    (CommonTree)adaptor.create(INT26)
+                    	    ;
+                    	    adaptor.addChild(root_0, INT26_tree);
+
+
+                    	    }
+                    	    break;
+
+                    	default :
+                    	    if ( cnt8 >= 1 ) break loop8;
+                                EarlyExitException eee =
+                                    new EarlyExitException(8, input);
+                                dbg.recognitionException(eee);
+
+                                throw eee;
+                        }
+                        cnt8++;
+                    } while (true);
+                    } finally {dbg.exitSubRule(8);}
 
 
                     }
                     break;
 
             }
-            } finally {dbg.exitSubRule(7);}
-
-            dbg.location(35,17);
-            set24=(Token)input.LT(1);
-
-            if ( (input.LA(1) >= ID && input.LA(1) <= INT) ) {
-                input.consume();
-                adaptor.addChild(root_0, 
-                (CommonTree)adaptor.create(set24)
-                );
-                state.errorRecovery=false;
-            }
-            else {
-                MismatchedSetException mse = new MismatchedSetException(null,input);
-                dbg.recognitionException(mse);
-                throw mse;
-            }
+            } finally {dbg.exitSubRule(9);}
 
 
             }
@@ -1123,7 +1256,7 @@ public TreeAdaptor getTreeAdaptor() {
         finally {
         	// do for sure before leaving
         }
-        dbg.location(35, 26);
+        dbg.location(35, 33);
 
         }
         finally {
@@ -1136,34 +1269,120 @@ public TreeAdaptor getTreeAdaptor() {
     }
     // $ANTLR end "factor"
 
+
+    public static class expression_spoke_return extends ParserRuleReturnScope {
+        CommonTree tree;
+        public Object getTree() { return tree; }
+    };
+
+
+    // $ANTLR start "expression_spoke"
+    // /home/jack/Desktop/MAlice.g:37:1: expression_spoke : expression 'spoke' ;
+    public final MAliceParser.expression_spoke_return expression_spoke() throws RecognitionException {
+        MAliceParser.expression_spoke_return retval = new MAliceParser.expression_spoke_return();
+        retval.start = input.LT(1);
+
+
+        CommonTree root_0 = null;
+
+        Token string_literal28=null;
+        MAliceParser.expression_return expression27 =null;
+
+
+        CommonTree string_literal28_tree=null;
+
+        try { dbg.enterRule(getGrammarFileName(), "expression_spoke");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(37, 0);
+
+        try {
+            // /home/jack/Desktop/MAlice.g:37:17: ( expression 'spoke' )
+            dbg.enterAlt(1);
+
+            // /home/jack/Desktop/MAlice.g:37:30: expression 'spoke'
+            {
+            root_0 = (CommonTree)adaptor.nil();
+
+
+            dbg.location(37,30);
+            pushFollow(FOLLOW_expression_in_expression_spoke210);
+            expression27=expression();
+
+            state._fsp--;
+
+            adaptor.addChild(root_0, expression27.getTree());
+            dbg.location(37,41);
+            string_literal28=(Token)match(input,20,FOLLOW_20_in_expression_spoke212); 
+            string_literal28_tree = 
+            (CommonTree)adaptor.create(string_literal28)
+            ;
+            adaptor.addChild(root_0, string_literal28_tree);
+
+
+            }
+
+            retval.stop = input.LT(-1);
+
+
+            retval.tree = (CommonTree)adaptor.rulePostProcessing(root_0);
+            adaptor.setTokenBoundaries(retval.tree, retval.start, retval.stop);
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+    	retval.tree = (CommonTree)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+
+        }
+
+        finally {
+        	// do for sure before leaving
+        }
+        dbg.location(37, 47);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "expression_spoke");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
+        return retval;
+    }
+    // $ANTLR end "expression_spoke"
+
     // Delegated rules
 
 
  
 
-    public static final BitSet FOLLOW_statement_in_prog51 = new BitSet(new long[]{0x0000000000000082L});
-    public static final BitSet FOLLOW_command_in_statement60 = new BitSet(new long[]{0x0000000000000060L});
-    public static final BitSet FOLLOW_CONNECTOR_in_statement63 = new BitSet(new long[]{0x0000000000000080L});
-    public static final BitSet FOLLOW_command_in_statement65 = new BitSet(new long[]{0x0000000000000060L});
-    public static final BitSet FOLLOW_END_OF_LINE_in_statement69 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_variable_assignment_in_command77 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_variable_declaration_in_command81 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_command85 = new BitSet(new long[]{0x0000000000000200L});
-    public static final BitSet FOLLOW_PROCEDURE_in_command87 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_variable_assignment94 = new BitSet(new long[]{0x0000000000001000L});
-    public static final BitSet FOLLOW_12_in_variable_assignment96 = new BitSet(new long[]{0x0000000000200190L});
-    public static final BitSet FOLLOW_expression_in_variable_assignment98 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_variable_declaration105 = new BitSet(new long[]{0x0000000000080000L});
-    public static final BitSet FOLLOW_19_in_variable_declaration107 = new BitSet(new long[]{0x0000000000000400L});
-    public static final BitSet FOLLOW_TYPE_in_variable_declaration109 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_term_in_expression117 = new BitSet(new long[]{0x0000000000010002L});
-    public static final BitSet FOLLOW_16_in_expression120 = new BitSet(new long[]{0x0000000000200180L});
-    public static final BitSet FOLLOW_term_in_expression122 = new BitSet(new long[]{0x0000000000010002L});
-    public static final BitSet FOLLOW_CHAR_in_expression128 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_factor_in_term137 = new BitSet(new long[]{0x000000000016E002L});
-    public static final BitSet FOLLOW_set_in_term140 = new BitSet(new long[]{0x0000000000200180L});
-    public static final BitSet FOLLOW_factor_in_term164 = new BitSet(new long[]{0x000000000016E002L});
-    public static final BitSet FOLLOW_21_in_factor176 = new BitSet(new long[]{0x0000000000000180L});
-    public static final BitSet FOLLOW_set_in_factor179 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_statement_in_prog50 = new BitSet(new long[]{0x0000000000810192L});
+    public static final BitSet FOLLOW_command_in_statement59 = new BitSet(new long[]{0x0000000000000060L});
+    public static final BitSet FOLLOW_CONNECTOR_in_statement62 = new BitSet(new long[]{0x0000000000810190L});
+    public static final BitSet FOLLOW_command_in_statement64 = new BitSet(new long[]{0x0000000000000060L});
+    public static final BitSet FOLLOW_END_OF_LINE_in_statement68 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_variable_assignment_in_command76 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_variable_declaration_in_command80 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_command84 = new BitSet(new long[]{0x0000000000000200L});
+    public static final BitSet FOLLOW_PROCEDURE_in_command86 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_expression_spoke_in_command90 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_variable_assignment97 = new BitSet(new long[]{0x0000000000080000L});
+    public static final BitSet FOLLOW_19_in_variable_assignment99 = new BitSet(new long[]{0x0000000000810190L});
+    public static final BitSet FOLLOW_expression_in_variable_assignment101 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_variable_declaration108 = new BitSet(new long[]{0x0000000000200000L});
+    public static final BitSet FOLLOW_21_in_variable_declaration110 = new BitSet(new long[]{0x0000000000000400L});
+    public static final BitSet FOLLOW_TYPE_in_variable_declaration112 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_term_in_expression120 = new BitSet(new long[]{0x0000000000008002L});
+    public static final BitSet FOLLOW_15_in_expression123 = new BitSet(new long[]{0x0000000000810180L});
+    public static final BitSet FOLLOW_term_in_expression125 = new BitSet(new long[]{0x0000000000008002L});
+    public static final BitSet FOLLOW_CHAR_in_expression131 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_factor_in_term139 = new BitSet(new long[]{0x0000000000467002L});
+    public static final BitSet FOLLOW_set_in_term142 = new BitSet(new long[]{0x0000000000810180L});
+    public static final BitSet FOLLOW_factor_in_term166 = new BitSet(new long[]{0x0000000000467002L});
+    public static final BitSet FOLLOW_ID_in_factor184 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_INT_in_factor189 = new BitSet(new long[]{0x0000000000000102L});
+    public static final BitSet FOLLOW_expression_in_expression_spoke210 = new BitSet(new long[]{0x0000000000100000L});
+    public static final BitSet FOLLOW_20_in_expression_spoke212 = new BitSet(new long[]{0x0000000000000002L});
 
 }
