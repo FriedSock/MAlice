@@ -110,7 +110,7 @@ public class CodeGenerator implements CommandVisitor {
 
         Expression exp = command.getExpression();
         if (exp.isArithmeticExpression()) {
-            generateExpressionCode2(storage, (ArithmeticExpression) exp);
+            generateExpressionCode(storage, (ArithmeticExpression) exp);
         } else {
             generateExpressionCode(storage, (CharacterExpression) exp);
         }
@@ -124,12 +124,12 @@ public class CodeGenerator implements CommandVisitor {
         assemblyCommands.add("mov " + destStorage + ", " + (int) exp.getCharacter());
     }
 
-    private void generateExpressionCode2(Storage destStorage, ArithmeticExpression exp) {
+    private void generateExpressionCode(Storage destStorage, ArithmeticExpression exp) {
         if (!exp.isImmediateValue() && !exp.isValue()) {
             // binOp
-            generateExpressionCode2(destStorage, exp.getLeft());
+            generateExpressionCode(destStorage, exp.getLeft());
             Storage moreStorage = allocateStorage();
-            generateExpressionCode2(moreStorage, exp.getRight());
+            generateExpressionCode(moreStorage, exp.getRight());
 
             generateBinOpCode(exp.getBinOp(), destStorage, moreStorage);
 
@@ -142,7 +142,8 @@ public class CodeGenerator implements CommandVisitor {
                 assemblyCommands.add("not " + destStorage);
             }
         } else {
-            // value
+            // immediate value
+            //TODO - use register when saving to memory
             assemblyCommands.add("mov " + destStorage + ", " + exp.getValue());
             if (exp.hasTilde()) {
                 assemblyCommands.add("not " + destStorage);

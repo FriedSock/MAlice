@@ -14,7 +14,7 @@ public class MAlice {
 
     public static void main(String[] args) {
         if (args.length == 0) {
-            die("Please provide a file name of a malice file as an argument to this program");
+            die("Please provide a file name of an Alice file as an argument to this program");
         }
 
         String maliceFileName = args[0];
@@ -22,7 +22,7 @@ public class MAlice {
             die("Malice input file not found: " + maliceFileName);
         }
 
-        //CharStream charStream = new ANTLRStringStream("b was a number and b became 0+10*6^2+2. b became 5+5. b spoke. c was a letter. c became 'f'. e was a number. e became 10 . b became 10+10+e. b became 5*5/3+1. b became ~3.");
+        System.out.println("Parsing Alice file");
         ANTLRFileStream fileStream = null;
         try {
             fileStream = new ANTLRFileStream(maliceFileName);
@@ -47,14 +47,10 @@ public class MAlice {
             die("Build", ex);
         }
 
-
-        //System.out.println("CODE GEN:");
+        System.out.println("Generating assembly code");
         CodeGenerator codeGenerator = new CodeGenerator(parser.getCommands(), parser.getSymbolTable());
         List<String> assembly = codeGenerator.generateCode();
-        /*for (String asm : assembly) {
-        System.out.println(asm);
-        }*/
-
+        
         String baseFileName = maliceFileName.replaceAll(".alice$", "");
         String assemblyFileName = baseFileName + ".asm";
 
@@ -64,6 +60,7 @@ public class MAlice {
             die("Writing assembly file", ex);
         }
 
+        System.out.println("Generating machine code");
         try {
             buildAssembly(assemblyFileName, baseFileName);
         } catch (Exception ex) {
@@ -84,7 +81,7 @@ public class MAlice {
 
     private static void buildAssembly(String assemblyFileName, String baseFileName) throws Exception {
         String nasmProgram = "nasm -f elf64 -g -F stabs " + assemblyFileName;
-        System.out.println(nasmProgram);
+        System.out.println("=> " + nasmProgram);
 
         Process p = Runtime.getRuntime().exec(nasmProgram);
         int exitCode = p.waitFor();
@@ -94,7 +91,7 @@ public class MAlice {
         }
 
         String ldProgram = "ld -o " + baseFileName + " " + baseFileName + ".o";
-        System.out.println(ldProgram);
+        System.out.println("=> " + ldProgram);
         p = Runtime.getRuntime().exec(ldProgram);
 
         if (exitCode != 0) {
