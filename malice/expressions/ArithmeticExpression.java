@@ -59,7 +59,7 @@ public class ArithmeticExpression implements Expression {
             case '/':
                 if (exp.right.value == 0) {
                     // division by zero gives an undefined value
-                    System.out.println("Build failed: division by zero not allowed");
+                    System.err.println("Build failed: division by zero not allowed");
                     System.exit(1);
                 }
                 exp.value = exp.left.value / exp.right.value;
