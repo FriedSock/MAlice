@@ -13,11 +13,11 @@ import org.antlr.runtime.debug.ParseTreeBuilder;
 public class MAlice {
 
     public static void main(String[] args) {
-        if (args.length == 0) {
+        /*if (args.length == 0) {
             die("Please provide a file name of an Alice file as an argument to this program");
-        }
+        }*/
 
-        String maliceFileName = args[0];
+        String maliceFileName = "/home/jack/NetBeansProjects/MAlice/test.alice";
         if (!new File(maliceFileName).exists()) {
             die("Malice input file not found: " + maliceFileName);
         }

@@ -80,6 +80,8 @@ public class CodeGenerator implements CommandVisitor {
             }
         }
 
+        makeDataSegment();
+
         return assemblyCommands;
     }
 
@@ -246,6 +248,14 @@ public class CodeGenerator implements CommandVisitor {
             freeRegisters.add((Register) storage);
         } else {
             freeMemoryLocationVariables.add(((MemoryLocation) storage).getVariableName());
+        }
+    }
+
+    private void makeDataSegment() {
+        assemblyCommands.add("");
+        assemblyCommands.add("segment .data");
+        for(String x : freeMemoryLocationVariables) {
+            assemblyCommands.add(x +" dq");
         }
     }
 }
