@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 import org.antlr.runtime.ANTLRFileStream;
-import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.debug.ParseTreeBuilder;
@@ -98,6 +97,8 @@ public class MAlice {
         if (exitCode != 0) {
             die("Assembly build failed: 'ld' returned non-zero exit code");
         }
+        
+        //TODO - success message on command line
     }
 
     private static void die(String message) {

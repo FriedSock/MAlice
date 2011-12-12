@@ -1,8 +1,6 @@
 package malice.expressions;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class ArithmeticExpression implements Expression {
@@ -43,6 +41,7 @@ public class ArithmeticExpression implements Expression {
         reduce(this);
     }
 
+    //TODO - reduce unary bit operators
     private void reduceUnaryOperators() {
         int oldLength;
         do {
@@ -52,6 +51,7 @@ public class ArithmeticExpression implements Expression {
         } while (oldLength != unaryOperators.length());
     }
     
+    //TODO - reduce binar bit operators
     /**
      * Reduces given arithmetic expression.
      */
@@ -63,6 +63,7 @@ public class ArithmeticExpression implements Expression {
         reduce(exp.left);
         reduce(exp.right);
 
+        //TODO - What the fuck???
         if (!exp.left.isImmediateValue() || !exp.right.isImmediateValue() 
                 || exp.left.unaryOperators != "" || exp.right.unaryOperators != "") {
             return;
