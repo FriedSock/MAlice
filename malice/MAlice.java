@@ -62,7 +62,7 @@ public class MAlice {
 
         System.out.println("Generating machine code");
         try {
-            buildAssembly(assemblyFileName, baseFileName);
+            //buildAssembly(assemblyFileName, baseFileName);
         } catch (Exception ex) {
             die("Assembly build", ex);
         }

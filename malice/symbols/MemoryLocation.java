@@ -2,10 +2,10 @@ package malice.symbols;
 
 public class MemoryLocation implements Storage {
     
-    private final int address;
+    private final String variableName;
     
-    public MemoryLocation(int address) {
-        this.address = address;
+    public MemoryLocation(String variableName) {
+        this.variableName = variableName;
     }
 
     @Override
@@ -13,8 +13,12 @@ public class MemoryLocation implements Storage {
         return false;
     }
     
+    public String getVariableName() {
+        return variableName;
+    }
+    
     @Override
     public String toString() {
-        return "[" + address + "]";
+        return "[" + variableName + "]";
     }
 }

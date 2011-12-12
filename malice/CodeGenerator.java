@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,7 @@ public class CodeGenerator implements CommandVisitor {
     private List<String> assemblyCommands;
     private Queue<Register> freeRegisters;
     private Map<String, Command> variablesUsedLastInCommand;
+    private Set<String> freeMemoryLocationVariables;
     private int nextFreeMemoryAddress;
 
     public CodeGenerator(List<Command> commands, SymbolTable symbolTable) {
@@ -41,7 +43,8 @@ public class CodeGenerator implements CommandVisitor {
         freeRegisters = new LinkedList<Register>();
         freeRegisters.addAll(Arrays.asList(Register.values()));
         variablesUsedLastInCommand = new HashMap<String, Command>();
-        nextFreeMemoryAddress = 0;
+        freeMemoryLocationVariables = new HashSet<String>();
+        nextFreeMemoryAddress = 1;
 
         findLiveRanges();
     }
@@ -133,12 +136,12 @@ public class CodeGenerator implements CommandVisitor {
             // binOp
             Storage leftStorage = allocateStorage();
             Storage rightStorage = allocateStorage();
-            
+
             generateExpressionCode(leftStorage, exp.getLeft());
             generateExpressionCode(rightStorage, exp.getRight());
             generateBinOpCode(exp.getBinOp(), leftStorage, rightStorage);
             assemblyCommands.add("mov " + destStorage + ", " + leftStorage);
-            
+
             freeStorage(leftStorage);
             freeStorage(rightStorage);
         } else {
@@ -165,11 +168,11 @@ public class CodeGenerator implements CommandVisitor {
                     } else {
                         assemblyCommands.add("push " + Register.rax);
                         assemblyCommands.add("mov " + Register.rax + ", 0");
-                        assemblyCommands.add("sub " + Register.rax +", " + destStorage);
+                        assemblyCommands.add("sub " + Register.rax + ", " + destStorage);
                         assemblyCommands.add("mov " + destStorage + ", " + Register.rax);
                         assemblyCommands.add("pop " + Register.rax);
                     }
-                    
+
                     assemblyCommands.add("not " + destStorage);
                     assemblyCommands.add("not " + destStorage);
                 }
@@ -221,14 +224,28 @@ public class CodeGenerator implements CommandVisitor {
             return register;
         }
 
-        MemoryLocation memoryLocation = new MemoryLocation(nextFreeMemoryAddress);
-        nextFreeMemoryAddress += 4;
-        return memoryLocation;
+        if (!freeMemoryLocationVariables.isEmpty()) {
+            Iterator<String> iter = freeMemoryLocationVariables.iterator();
+            String memoryLocationVariable = iter.next();
+            iter.remove();
+
+            return new MemoryLocation(memoryLocationVariable);
+        }
+
+        String memoryLocationVariable;
+        do {
+            memoryLocationVariable = "mem_" + nextFreeMemoryAddress;
+            nextFreeMemoryAddress += 1;
+        } while (symbolTable.containsVariable(memoryLocationVariable));
+
+        return new MemoryLocation(memoryLocationVariable);
     }
 
     private void freeStorage(Storage storage) {
         if (storage.isRegister()) {
             freeRegisters.add((Register) storage);
+        } else {
+            freeMemoryLocationVariables.add(((MemoryLocation) storage).getVariableName());
         }
     }
 }
