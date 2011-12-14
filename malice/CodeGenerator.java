@@ -33,7 +33,9 @@ public class CodeGenerator implements CommandVisitor {
     private Queue<Register> freeRegisters;
     private Map<String, Command> variablesUsedLastInCommand;
     private Set<String> freeMemoryLocationVariables;
+    private Set<String> comparisonTests;
     private int nextFreeMemoryAddress;
+    private int nextComparisonNumber;
 
     public CodeGenerator(List<Command> commands, SymbolTable symbolTable) {
         this.commands = commands;
@@ -65,8 +67,12 @@ public class CodeGenerator implements CommandVisitor {
     }
 
     public List<String> generateCode() {
-        assemblyCommands.add("global _start");
-        assemblyCommands.add("_start:");
+        assemblyCommands.add("extern malloc");
+        assemblyCommands.add("");
+        assemblyCommands.add("segment .text");
+        assemblyCommands.add("");
+        assemblyCommands.add("global main");
+        assemblyCommands.add("main:");
 
         for (Command command : commands) {
             command.acceptVisitor(this);
@@ -80,6 +86,10 @@ public class CodeGenerator implements CommandVisitor {
             }
         }
 
+        assemblyCommands.add("mov rax 0");
+        assemblyCommands.add("int 0x80");
+
+        addPrint();
         makeDataSegment();
 
         return assemblyCommands;
@@ -185,46 +195,147 @@ public class CodeGenerator implements CommandVisitor {
     private void generateBinOpCode(char binOp, Storage destStorage, Storage moreStorage) {
         switch (binOp) {
             case '+':
-                assemblyCommands.add("add " + destStorage + ", " + moreStorage);
+                assemblyCommands.add("mov rax, " + destStorage);
+                assemblyCommands.add("mov rbx, " + moreStorage);
+                assemblyCommands.add("add rax, rbx");
+                assemblyCommands.add("mov " + destStorage + ", rax");
+                //assemblyCommands.add("mov " + moreStorage + ", rbx");
+                break;
+            case '-':
+                assemblyCommands.add("mov rax, " + destStorage);
+                assemblyCommands.add("mov rbx, " + moreStorage);
+                assemblyCommands.add("sub rax, rbx");
+                assemblyCommands.add("mov " + destStorage + ", rax");
                 break;
             case '&':
-                assemblyCommands.add("and " + destStorage + ", " + moreStorage);
+                assemblyCommands.add("mov rax, " + destStorage);
+                assemblyCommands.add("mov rbx, " + moreStorage);
+                assemblyCommands.add("and rax, rbx");
+                assemblyCommands.add("mov " + destStorage + ", rax");
+                //assemblyCommands.add("mov " + moreStorage + ", rbx");
                 break;
             case '*':
-                assemblyCommands.add("imul " + destStorage + ", " + moreStorage);
+                assemblyCommands.add("mov rax, " + destStorage);
+                assemblyCommands.add("mov rbx, " + moreStorage);
+                assemblyCommands.add("imul rax, rbx");
+                assemblyCommands.add("mov " + destStorage + ", rax");
+                //assemblyCommands.add("mov " + moreStorage + ", rbx");
                 break;
             case '%':
-                assemblyCommands.add("push " + Register.rax);
-                assemblyCommands.add("push " + Register.rdx);
-                assemblyCommands.add("mov " + Register.rax + ", " + destStorage);
-                assemblyCommands.add("idiv " + moreStorage);
-                assemblyCommands.add("mov " + destStorage + ", " + Register.rax);
-                assemblyCommands.add("pop " + Register.rdx);
-                assemblyCommands.add("pop " + Register.rax);
+                assemblyCommands.add("mov rax, " + destStorage);
+                assemblyCommands.add("mov rbx, " + moreStorage);
+                assemblyCommands.add("idiv rbx");
+                assemblyCommands.add("mov " + destStorage + ", rax");
                 break;
             case '/':
-                assemblyCommands.add("push " + Register.rax);
-                assemblyCommands.add("push " + Register.rdx);
-                assemblyCommands.add("mov " + Register.rax + ", " + destStorage);
-                assemblyCommands.add("idiv " + moreStorage);
-                assemblyCommands.add("mov " + destStorage + ", " + Register.rdx);
-                assemblyCommands.add("pop " + Register.rdx);
-                assemblyCommands.add("pop " + Register.rax);
+                assemblyCommands.add("mov rax, " + destStorage);
+                assemblyCommands.add("mov rbx, " + moreStorage);
+                assemblyCommands.add("idiv rbx");
+                assemblyCommands.add("mov " + destStorage + ", rdx");
                 break;
             case '|':
-                assemblyCommands.add("or " + destStorage + ", " + moreStorage);
+                assemblyCommands.add("mov rax, " + destStorage);
+                assemblyCommands.add("mov rbx, " + moreStorage);
+                assemblyCommands.add("or  rax, rbx");
+                assemblyCommands.add("mov " + destStorage + ", rax");
+                //assemblyCommands.add("mov " + moreStorage + ", rbx");
                 break;
             case '^':
-                assemblyCommands.add("xor " + destStorage + ", " + moreStorage);
+                assemblyCommands.add("mov rax, " + destStorage);
+                assemblyCommands.add("mov rbx, " + moreStorage);
+                assemblyCommands.add("xor rax, rbx");
+                assemblyCommands.add("mov " + destStorage + ", rax");
+                //assemblyCommands.add("mov " + moreStorage + ", rbx");
                 break;
+
         }
+        freeStorage(moreStorage); //Not sure
+    }
+
+    private void generateBooleanExpressionCode(Storage destStorage, String binop, ArithmeticExpression left, ArithmeticExpression right){
+        assemblyCommands.add("");
+
+        if (binop.equals("==")) {
+            generateComparisonCode(destStorage, binop, left, right);
+        }
+
+        Storage leftStorage = allocateStorage();
+        Storage rightStorage = allocateStorage();
+
+        //Evaluate both sides of the comparison
+        generateExpressionCode(leftStorage, left);
+        generateExpressionCode(rightStorage, right);
+
+        //Move the values into registers
+        assemblyCommands.add("mov rax, " + leftStorage);
+        assemblyCommands.add("mov rbx, " + rightStorage);
+
+        if (binop.equals("&&")) {
+            assemblyCommands.add("and rax, rbx");
+        } else if (binop.equals("||")) {
+            assemblyCommands.add("or rax, rbx");
+        }
+
+        assemblyCommands.add("mov " + destStorage + ", rax");
+
+        assemblyCommands.add("");
+    }
+    private void generateComparisonCode(Storage destStorage, String binop, ArithmeticExpression left, ArithmeticExpression right){
+        Storage leftStorage = allocateStorage();
+        Storage rightStorage = allocateStorage();
+
+        //Evaluate both sides of the comparison
+        generateExpressionCode(leftStorage, left);
+        generateExpressionCode(rightStorage, right);
+
+        //Move the values into registers
+        assemblyCommands.add("");
+        assemblyCommands.add("mov rax, " + leftStorage);
+        assemblyCommands.add("mov rbx, " + rightStorage);
+        
+        String comparisonLabel = "test_" + nextComparisonNumber;
+        nextComparisonNumber += 1;
+        assemblyCommands.add("cmp rax, rbx");
+        
+       
+        if(binop.equals("==")){
+            assemblyCommands.add("je " + comparisonLabel);
+        } else if (binop.equals("!=")) {
+            assemblyCommands.add("jne " + comparisonLabel);
+        } else if (binop.equals(">")) {
+            assemblyCommands.add("jg " + comparisonLabel);
+        } else if (binop.equals("<")) {
+            assemblyCommands.add("jl " + comparisonLabel);
+        } else if (binop.equals(">=")) {
+            assemblyCommands.add("jge " + comparisonLabel);
+        } else if (binop.equals("<=")) {
+            assemblyCommands.add("jle " + comparisonLabel);
+        }
+        String endLabel = "endtest_" + nextComparisonNumber;
+
+        assemblyCommands.add("mov " + destStorage + ", 0");
+        assemblyCommands.add("jmp " + endLabel);
+        assemblyCommands.add(comparisonLabel + ":");
+        assemblyCommands.add("mov " + destStorage + ", 1");
+        assemblyCommands.add(endLabel + ":");
+        assemblyCommands.add("");
+    }
+
+    private void generateConditionalCode(){
+
+    }
+    
+    private void generateFunctionCode(String name){
+            assemblyCommands.add("");
+            assemblyCommands.add(name + ":");
+            assemblyCommands.add("ret");
     }
 
     private Storage allocateStorage() {
-        if (freeRegisters.size() > 0) {
+        /*if (freeRegisters.size() > 0) {
             Register register = freeRegisters.remove();
             return register;
-        }
+        }*/
 
         if (!freeMemoryLocationVariables.isEmpty()) {
             Iterator<String> iter = freeMemoryLocationVariables.iterator();
@@ -257,5 +368,25 @@ public class CodeGenerator implements CommandVisitor {
         for(String x : freeMemoryLocationVariables) {
             assemblyCommands.add(x +" dq" + 0);
         }
+        assemblyCommands.add("octetbuffer dq 0");
+    }
+
+    private void addPrint() {
+        assemblyCommands.add("push " + Register.rax);
+        assemblyCommands.add("push " + Register.rbx);
+        assemblyCommands.add("push " + Register.rdx);
+        assemblyCommands.add("");
+        assemblyCommands.add("");
+        assemblyCommands.add("print:");
+        assemblyCommands.add("mov [octetbuffer], rcx");
+        assemblyCommands.add("lea rcx, [octetbuffer]");
+        assemblyCommands.add("mov rbx, 1");
+        assemblyCommands.add("mov rdx, 1");
+        assemblyCommands.add("mov rax, 4");
+        assemblyCommands.add("int 0x80");
+        assemblyCommands.add("pop " + Register.rdx);
+        assemblyCommands.add("pop " + Register.rbx);
+        assemblyCommands.add("pop " + Register.rax);
+        assemblyCommands.add("ret");
     }
 }
