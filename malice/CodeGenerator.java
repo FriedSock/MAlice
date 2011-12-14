@@ -255,7 +255,7 @@ public class CodeGenerator implements CommandVisitor {
         assemblyCommands.add("");
         assemblyCommands.add("segment .data");
         for(String x : freeMemoryLocationVariables) {
-            assemblyCommands.add(x +" dq");
+            assemblyCommands.add(x +" dq" + 0);
         }
     }
 }
