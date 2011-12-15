@@ -14,8 +14,8 @@ import malice.commands.Command;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import malice.functions.LookingGlass;
-import malice.functions.Room;
+import malice.functions.LookingGlassFunction;
+import malice.functions.RoomFunction;
 import org.antlr.runtime.tree.Tree;
 
 public class Parser {
@@ -42,14 +42,14 @@ public class Parser {
     private static final String DRANK = "drank";
     // fields
     private List<Command> commands;
-    private List<Room> rooms;
-    private List<LookingGlass> lookingGlasses;
+    private List<RoomFunction> rooms;
+    private List<LookingGlassFunction> lookingGlasses;
     private SymbolTable symbolTable;
 
     public Parser() {
         commands = new ArrayList<Command>();
-        rooms = new ArrayList<Room>();
-        lookingGlasses = new ArrayList<LookingGlass>();
+        rooms = new ArrayList<RoomFunction>();
+        lookingGlasses = new ArrayList<LookingGlassFunction>();
         symbolTable = new SymbolTable();
     }
 

@@ -1,5 +1,5 @@
 package malice.functions;
 
-public class LookingGlass {
+public class RoomFunction {
 
 }
