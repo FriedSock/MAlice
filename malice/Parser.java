@@ -40,13 +40,12 @@ public class Parser {
         return symbolTable;
     }
 
-    public void parseProg(Tree tree) {
+    public void parseProgram(Tree tree) {
         tree = tree.getChild(0);
         for (int i = 0; i < tree.getChildCount(); i++) {
             Tree child = tree.getChild(i);
             parseStatement(child);
         }
-        int breakpoint = 1;
     }
 
     private void parseStatement(Tree tree) {

@@ -42,7 +42,7 @@ public class MAlice {
 
         Parser parser = new Parser();
         try {
-            parser.parseProg(builder.getTree());
+            parser.parseProgram(builder.getTree());
         } catch (RuntimeException ex) {
             die("Build", ex);
         }
