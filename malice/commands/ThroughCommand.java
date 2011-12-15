@@ -1,6 +1,5 @@
 package malice.commands;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -8,8 +7,10 @@ public class ThroughCommand implements Command{
 
     private String lookingGlassName;
     private String variableName;
-    public ThroughCommand(String variable, String lookingGlassName){
-
+    
+    public ThroughCommand(String variableName, String lookingGlassName) {
+        this.variableName = variableName;
+        this.lookingGlassName = lookingGlassName;
     }
 
     public String getLookingGlassName() {
@@ -22,17 +23,21 @@ public class ThroughCommand implements Command{
 
     @Override
     public void acceptVisitor(CommandVisitor visitor) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //TODO - acceptVisitor
     }
 
     @Override
     public Set<String> getUsedVariables() {
-        return new HashSet<String>(Arrays.asList(variableName));
+        return new HashSet<String>();
     }
 
     @Override
     public boolean usesVariable(String aVariableName) {
-        return aVariableName.equals(variableName);
+        return false;
     }
-
+    
+    @Override
+    public String toString() {
+        return variableName + " went through " + lookingGlassName;
+    }
 }

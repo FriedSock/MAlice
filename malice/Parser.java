@@ -15,8 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import malice.commands.ArrayDeclarationCommand;
+import malice.commands.ConditionalBranch;
 import malice.commands.FunctionCallCommand;
 import malice.commands.FunctionReturnCommand;
+import malice.commands.ThroughCommand;
+import malice.commands.WhileNotCommand;
 import malice.expressions.BooleanExpression;
 import malice.expressions.StringExpression;
 import malice.functions.LookingGlassFunction;
@@ -73,7 +76,7 @@ public class Parser {
 
             if (STATEMENT.equals(child.getText())) {
                 // statement
-                parseStatement(child);
+                commands.addAll(parseStatement(child));
             } else if (FUNCTION.equals(child.getText())) {
                 // function
                 parseFunction(child);
@@ -82,50 +85,64 @@ public class Parser {
                 parseLookingGlass(child);
             }
         }
+        
+        //TODO - remove
+        for (Command command : commands) {
+            System.out.println(command);
+        }
     }
 
-    private void parseStatement(Tree tree) {
+    private List<Command> parseStatement(Tree tree) {
+        List<Command> statementCommands = new ArrayList<Command>();
+        
         for (int i = 0; i < tree.getChildCount(); i++) {
             Tree child = tree.getChild(i);
 
             if (COMMAND.equals(child.getText())) {
-                parseCommand(child);
+                Command command = parseCommand(child);
+                if (command != null) {
+                    statementCommands.add(command);
+                }
             }
         }
+        
+        return statementCommands;
     }
 
-    private void parseCommand(Tree tree) {
+    private Command parseCommand(Tree tree) {
         Tree commandTree = tree.getChild(0);
         String commandName = commandTree.getText();
 
         if (EXPRESSION_SPOKE.equals(commandName)) {
-            commands.add(parseExpressionSpoke(commandTree));
+            return parseExpressionSpoke(commandTree);
         } else if (ARRAY_DECLARATION.equals(commandName)) {
-            commands.add(parseArrayDeclaration(commandTree));
+            return parseArrayDeclaration(commandTree);
         } else if (VARIABLE_DECLARATION.equals(commandName)) {
-            commands.add(parseVariableDeclaration(commandTree));
+            return parseVariableDeclaration(commandTree);
         } else if (VARIABLE_ASSIGNMENT.equals(commandName)) {
-            commands.add(parseVariableAssignment(commandTree));
+            return parseVariableAssignment(commandTree);
         } else if (PROCEDURE.equals(commandName)) {
-            commands.add(parseProcedure(commandTree));
+            return parseProcedure(commandTree);
         } else if (FUNCTION_CALL.equals(commandName)) {
-            commands.add(parseFunctionCall(commandTree));
+            return parseFunctionCall(commandTree);
         } else if (FUNCTION_RETURN.equals(commandName)) {
-            commands.add(parseFunctionReturn(commandTree));
-            System.out.println(commands.get(commands.size() - 1));
+            return parseFunctionReturn(commandTree);
         } else if (THROUGH.equals(commandName)) {
-            commands.add(parseProcedure(commandTree));
+            return parseThrough(commandTree);
         } else if (WHILE_NOT.equals(commandName)) {
-            commands.add(parseProcedure(commandTree));
+            return parseWhileNot(commandTree);
         } else if (CONDITIONAL.equals(commandName)) {
-            commands.add(parseProcedure(commandTree));
+            return parseProcedure(commandTree);
         } else if (INPUT.equals(commandName)) {
-            commands.add(parseProcedure(commandTree));
+            return parseProcedure(commandTree);
         } else if (OUTPUT.equals(commandName)) {
-            commands.add(parseProcedure(commandTree));
+            return parseProcedure(commandTree);
         } else if (COMMENT.equals(commandName)) {
             // discard comment
+            return null;
         }
+        
+        throw new IllegalArgumentException("Invalid command");
     }
 
     private Command parseExpressionSpoke(Tree tree) {
@@ -289,6 +306,21 @@ public class Parser {
         // Arithmetic expression
         return new FunctionReturnCommand(parseArithmeticExpression(tree.getChild(1)));
     }
+    
+    private Command parseThrough(Tree tree) {
+        return new ThroughCommand(tree.getChild(0).getText(), tree.getChild(2).getText());
+    }
+    
+    private Command parseWhileNot(Tree tree) {
+        BooleanExpression condition = parseBooleanExpression(tree.getChild(1));
+        List<Command> whileNotCommands = new ArrayList<Command>();
+        
+        for (int i = 4; i < tree.getChildCount() - 1; i++) {
+            whileNotCommands.addAll(parseStatement(tree.getChild(i)));
+        }
+        
+        return new WhileNotCommand(new ConditionalBranch(condition, whileNotCommands));
+    }
 
     private ArithmeticExpression parseArithmeticExpression(Tree tree) {
         String ruleName = tree.getText();
@@ -410,6 +442,11 @@ public class Parser {
             ArithmeticExpression leftAritExpr = parseArithmeticExpression(tree.getChild(0));
             ArithmeticExpression rightAritExpr = parseArithmeticExpression(tree.getChild(2));
             return new BooleanExpression(leftAritExpr, rightAritExpr, tree.getChild(1).getText());
+        }
+        
+        // If there is only one children rule it is not a binary operation
+        if (tree.getChildCount() == 1) {
+            return parseBooleanExpression(tree.getChild(0));
         }
         
         int rightExprIndex = 2;

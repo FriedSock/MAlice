@@ -2,7 +2,8 @@ package malice.commands;
 
 import java.util.Set;
 
-public class WhileNotCommand implements Command{
+public class WhileNotCommand implements Command {
+    
     private ConditionalBranch branch;
 
     public WhileNotCommand(ConditionalBranch branch){
@@ -11,7 +12,7 @@ public class WhileNotCommand implements Command{
 
     @Override
     public void acceptVisitor(CommandVisitor visitor) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //TODO - acceptVIsitor
     }
 
     @Override
@@ -24,5 +25,13 @@ public class WhileNotCommand implements Command{
         return branch.usesVariable(aVariableName);
     }
 
-
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        for (Command command : branch.getCommands()) {
+            builder.append(command);
+            builder.append('\n');
+        }
+        return "eventually " + branch.getCondition() + " because\n" + builder + "enough times";
+    }
 }
