@@ -377,12 +377,13 @@ public class CodeGenerator implements CommandVisitor {
     }
 
     private void addPrint() {
-        assemblyCommands.add("push " + Register.rax);
-        assemblyCommands.add("push " + Register.rbx);
-        assemblyCommands.add("push " + Register.rdx);
+        //Shouldn't need to preserve registers, but just to be safe.
         assemblyCommands.add("");
         assemblyCommands.add("");
         assemblyCommands.add("print:");
+        assemblyCommands.add("push " + Register.rax);
+        assemblyCommands.add("push " + Register.rbx);
+        assemblyCommands.add("push " + Register.rdx);
         assemblyCommands.add("mov [octetbuffer], rcx");
         assemblyCommands.add("lea rcx, [octetbuffer]");
         assemblyCommands.add("mov rbx, 1");
