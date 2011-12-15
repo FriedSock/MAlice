@@ -1,19 +1,18 @@
 package malice.commands;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class FunctionCallCommand implements Command {
 
     private String functionName;
-    private Set<String> parameters;
+    private List<String> parameters;
 
-    public FunctionCallCommand(String args[]){
-        functionName = args[0];
-
-        //Put all the parameters in the list, remove the function name
-        parameters.addAll(Arrays.asList(args));
-        parameters.remove(functionName);
+    public FunctionCallCommand(String functionName, List<String> parameters){
+        this.functionName = functionName;
+        this.parameters = parameters;
         
     }
 
@@ -21,18 +20,23 @@ public class FunctionCallCommand implements Command {
         return functionName;
     }
 
-    public Set<String> getParameters() {
+    public List<String> getParameters() {
         return parameters;
     }
 
+    @Override
     public void acceptVisitor(CommandVisitor visitor) {
         //TODO
     }
 
+    @Override
     public Set<String> getUsedVariables() {
-        return parameters;
+        Set<String> usedVariables = new HashSet<String>();
+        usedVariables.addAll(parameters);
+        return usedVariables;
     }
 
+    @Override
     public boolean usesVariable(String aVariableName) {
         return parameters.contains(aVariableName);
     }
