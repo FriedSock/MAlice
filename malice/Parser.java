@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Set;
 import malice.commands.ArrayDeclarationCommand;
 import malice.commands.FunctionCallCommand;
+import malice.commands.FunctionReturnCommand;
 import malice.expressions.BooleanExpression;
 import malice.expressions.StringExpression;
 import malice.functions.LookingGlassFunction;
@@ -99,7 +100,6 @@ public class Parser {
 
         if (EXPRESSION_SPOKE.equals(commandName)) {
             commands.add(parseExpressionSpoke(commandTree));
-            System.out.println(commands.get(commands.size() - 1));
         } else if (ARRAY_DECLARATION.equals(commandName)) {
             commands.add(parseArrayDeclaration(commandTree));
         } else if (VARIABLE_DECLARATION.equals(commandName)) {
@@ -107,21 +107,22 @@ public class Parser {
         } else if (VARIABLE_ASSIGNMENT.equals(commandName)) {
             commands.add(parseVariableAssignment(commandTree));
         } else if (PROCEDURE.equals(commandName)) {
-            commands.add(parseProcedure(tree));
+            commands.add(parseProcedure(commandTree));
         } else if (FUNCTION_CALL.equals(commandName)) {
-            commands.add(parseFunctionCall(tree));
+            commands.add(parseFunctionCall(commandTree));
         } else if (FUNCTION_RETURN.equals(commandName)) {
-            commands.add(parseProcedure(tree));
+            commands.add(parseFunctionReturn(commandTree));
+            System.out.println(commands.get(commands.size() - 1));
         } else if (THROUGH.equals(commandName)) {
-            commands.add(parseProcedure(tree));
+            commands.add(parseProcedure(commandTree));
         } else if (WHILE_NOT.equals(commandName)) {
-            commands.add(parseProcedure(tree));
+            commands.add(parseProcedure(commandTree));
         } else if (CONDITIONAL.equals(commandName)) {
-            commands.add(parseProcedure(tree));
+            commands.add(parseProcedure(commandTree));
         } else if (INPUT.equals(commandName)) {
-            commands.add(parseProcedure(tree));
+            commands.add(parseProcedure(commandTree));
         } else if (OUTPUT.equals(commandName)) {
-            commands.add(parseProcedure(tree));
+            commands.add(parseProcedure(commandTree));
         } else if (COMMENT.equals(commandName)) {
             // discard comment
         }
@@ -277,6 +278,16 @@ public class Parser {
 
         FunctionCallCommand functionCall = new FunctionCallCommand(tree.getChild(0).getText(), parameters);
         return functionCall;
+    }
+    
+    private Command parseFunctionReturn(Tree tree) {
+        if ('\'' == tree.getChild(1).getText().charAt(0)) {
+            // Character
+            return new FunctionReturnCommand(tree.getChild(1).getText().charAt(1));
+        }
+        
+        // Arithmetic expression
+        return new FunctionReturnCommand(parseArithmeticExpression(tree.getChild(1)));
     }
 
     private ArithmeticExpression parseArithmeticExpression(Tree tree) {
