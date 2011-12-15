@@ -1,17 +1,17 @@
 package malice.commands;
 
 import java.util.Set;
-import malice.expressions.ArithmeticExpression;
+import malice.expressions.Expression;
 
 public class SpeakCommand implements Command {
 
-    private ArithmeticExpression expression;
+    private Expression expression;
 
-    public SpeakCommand(ArithmeticExpression expression) {
+    public SpeakCommand(Expression expression) {
         this.expression = expression;
     }
 
-    public ArithmeticExpression getExpression() {
+    public Expression getExpression() {
         return expression;
     }
     

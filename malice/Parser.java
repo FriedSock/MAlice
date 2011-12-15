@@ -99,6 +99,7 @@ public class Parser {
 
         if (EXPRESSION_SPOKE.equals(commandName)) {
             commands.add(parseExpressionSpoke(commandTree));
+            System.out.println(commands.get(commands.size() - 1));
         } else if (ARRAY_DECLARATION.equals(commandName)) {
             commands.add(parseArrayDeclaration(commandTree));
         } else if (VARIABLE_DECLARATION.equals(commandName)) {
@@ -129,8 +130,27 @@ public class Parser {
     private Command parseExpressionSpoke(Tree tree) {
         // Only an arithmetic expression or a variable can speak - not a character
 
+        String ruleName = tree.getChild(0).getText();
+        
+        if ("expression".equals(ruleName)) {
+            return new SpeakCommand(parseArithmeticExpression(tree.getChild(0)));
+        }
+        if ("boolean_expression".equals(ruleName)) {
+            return new SpeakCommand(parseBooleanExpression(tree.getChild(0)));
+        }
+        if ('"' == ruleName.charAt(0)) {
+            String expressionText = tree.getChild(0).getText();
+            return new SpeakCommand(new StringExpression(expressionText.substring(1, expressionText.length() - 1)));
+        }
+        if ('\'' == ruleName.charAt(0)) {
+            String expressionText = tree.getChild(0).getText();
+            return new SpeakCommand(new CharacterExpression(expressionText.charAt(1)));
+        }
+        
+        throw new IllegalArgumentException("Build failed: Wring expression in a Spoke command");
+        
         //TODO - BOLLOCKS
-        ArithmeticExpression expression = parseArithmeticExpression(tree.getChild(0));
+        /*ArithmeticExpression expression = parseArithmeticExpression(tree.getChild(0));
 
         System.out.println("EXPR: " + expression);
 
@@ -148,7 +168,7 @@ public class Parser {
             }
         }
 
-        return new SpeakCommand(expression);
+        return new SpeakCommand(expression);*/
     }
 
     private Command parseArrayDeclaration(Tree tree) {
@@ -286,7 +306,7 @@ public class Parser {
                 i++;
             }
 
-            if (tree.getChild(i).getText().charAt(0) == '(') {
+            if ('(' == tree.getChild(i).getText().charAt(0)) {
                 // Nested expression
                 ArithmeticExpression nestedExpr = parseArithmeticExpression(tree.getChild(i + 1));
                 nestedExpr.setUnaryOperators(unaryOperators);
@@ -383,8 +403,31 @@ public class Parser {
     }
     
     private BooleanExpression parseBooleanExpression(Tree tree) {
-        //TODO
-        return null;
+        String ruleName = tree.getText();
+        
+        if ("comparison".equals(ruleName)) {
+            if ('(' == tree.getChild(0).getText().charAt(0)) {
+                // Nested boolean expression
+                return parseBooleanExpression(tree.getChild(1));
+            }
+
+            ArithmeticExpression leftAritExpr = parseArithmeticExpression(tree.getChild(0));
+            ArithmeticExpression rightAritExpr = parseArithmeticExpression(tree.getChild(2));
+            return new BooleanExpression(leftAritExpr, rightAritExpr, tree.getChild(1).getText());
+        }
+        
+        int rightExprIndex = 2;
+        BooleanExpression boolExpr = null;
+
+        while (rightExprIndex <= tree.getChildCount() - 1) {
+            boolExpr = (boolExpr != null) ? boolExpr : parseBooleanExpression(tree.getChild(0));
+            BooleanExpression rightExpr = parseBooleanExpression(tree.getChild(rightExprIndex));
+            String op = tree.getChild(rightExprIndex - 1).getText();
+
+            boolExpr = new BooleanExpression(boolExpr, rightExpr, op);
+            rightExprIndex += 2;
+        }
+        return boolExpr;
     }
 
     private void parseFunction(Tree tree) {

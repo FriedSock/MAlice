@@ -109,7 +109,10 @@ public class CodeGenerator implements CommandVisitor {
     @Override
     public void visitSpeak(SpeakCommand command) {
         // No need to push and pop ebx and eax as this is the end of the program
-        generateExpressionCode(Register.rbx, command.getExpression());
+        
+        
+        //TODO - I commented this out to be able to run the program
+        //generateExpressionCode(Register.rbx, command.getExpression());
         // If the last command just does rbx=rbx remove it
         if (("mov " + Register.rbx + ", " + Register.rbx).equals(assemblyCommands.get(assemblyCommands.size() - 1))) {
             assemblyCommands.remove(assemblyCommands.size() - 1);

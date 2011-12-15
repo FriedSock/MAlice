@@ -1,28 +1,73 @@
 package malice.expressions;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class BooleanExpression implements Expression {
 
+    public enum Type {
+        
+        COMPARISON,
+        BINOP
+    }
+    
+    private Type type;
+    private ArithmeticExpression leftAritExpr, rightAritExpr;
+    private String op;
+    private BooleanExpression leftExpr, rightExpr;
+    
+    public BooleanExpression(ArithmeticExpression leftAritExpr,
+            ArithmeticExpression rightAritExpr, String op) {
+        this.type = Type.COMPARISON;
+        this.leftAritExpr = leftAritExpr;
+        this.rightAritExpr = rightAritExpr;
+        this.op = op;
+    }
+    
+    public BooleanExpression(BooleanExpression leftExpr,
+            BooleanExpression rightExpr, String op) {
+        this.type = Type.BINOP;
+        this.leftExpr = leftExpr;
+        this.rightExpr = rightExpr;
+        this.op = op;
+    }
+    
     @Override
     public Set<String> getUsedVariables() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Set<String> usedVariables = new HashSet<String>();
+        
+        if (Type.COMPARISON == type) {
+            usedVariables.addAll(leftAritExpr.getUsedVariables());
+            usedVariables.addAll(rightAritExpr.getUsedVariables());
+        } else {
+            usedVariables.addAll(leftExpr.getUsedVariables());
+            usedVariables.addAll(rightExpr.getUsedVariables());
+        }
+        
+        return usedVariables;
     }
 
     @Override
     public boolean usesVariable(String aVariableName) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (Type.COMPARISON == type) {
+            return leftAritExpr.usesVariable(aVariableName) || rightAritExpr.usesVariable(aVariableName);
+        } else {
+            return leftExpr.usesVariable(aVariableName) || rightExpr.usesVariable(aVariableName);
+        }
     }
 
     @Override
     public boolean isArithmeticExpression() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return false;
     }
     
     @Override
     public String toString() {
-        //TODO - bool to string
-        return "";
+        if (Type.COMPARISON == type) {
+            return leftAritExpr + " " + op + " " + rightAritExpr;
+        } else {
+            return "(" + leftExpr + " " + op + " " + rightExpr + ")";
+        }
     }
 }
 
