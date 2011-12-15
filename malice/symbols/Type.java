@@ -2,5 +2,5 @@ package malice.symbols;
 
 public enum Type {
 
-    letter, number;
+    letter, number, sentence, array;
 }

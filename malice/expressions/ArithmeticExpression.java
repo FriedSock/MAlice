@@ -5,6 +5,16 @@ import java.util.Set;
 
 public class ArithmeticExpression implements Expression {
     
+    private static enum Type {
+        
+        IMMEDIATE,
+        BINOP,
+        VARIABLE,
+        ARRAY_PIECE,
+        FUNCTION_CALL
+    }
+    
+    private final Type type;
     private ArithmeticExpression left, right;
     private char binOp;
     private int value;
@@ -13,6 +23,7 @@ public class ArithmeticExpression implements Expression {
     private String unaryOperators;
 
     public ArithmeticExpression(String variableName, String unaryOperators) {
+        this.type = Type.VARIABLE;
         this.variableName = variableName;
         this.unaryOperators = unaryOperators;
         isImmediateValue = false;
@@ -22,6 +33,7 @@ public class ArithmeticExpression implements Expression {
     }
 
     public ArithmeticExpression(int value, String unaryOperators) {
+        this.type = Type.IMMEDIATE;
         this.value = value;
         this.unaryOperators = unaryOperators;
         isImmediateValue = true;
@@ -31,6 +43,7 @@ public class ArithmeticExpression implements Expression {
     }
 
     public ArithmeticExpression(ArithmeticExpression left, ArithmeticExpression right, char binOp) {
+        this.type = Type.BINOP;
         this.left = left;
         this.right = right;
         this.binOp = binOp;
