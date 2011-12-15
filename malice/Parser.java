@@ -128,47 +128,32 @@ public class Parser {
     }
 
     private Command parseExpressionSpoke(Tree tree) {
-        // Only an arithmetic expression or a variable can speak - not a character
-
         String ruleName = tree.getChild(0).getText();
         
+        Expression expression;
+        
         if ("expression".equals(ruleName)) {
-            return new SpeakCommand(parseArithmeticExpression(tree.getChild(0)));
-        }
-        if ("boolean_expression".equals(ruleName)) {
-            return new SpeakCommand(parseBooleanExpression(tree.getChild(0)));
-        }
-        if ('"' == ruleName.charAt(0)) {
+            expression = parseArithmeticExpression(tree.getChild(0));
+        } else if ("boolean_expression".equals(ruleName)) {
+            expression = parseBooleanExpression(tree.getChild(0));
+        } else if ('"' == ruleName.charAt(0)) {
             String expressionText = tree.getChild(0).getText();
-            return new SpeakCommand(new StringExpression(expressionText.substring(1, expressionText.length() - 1)));
-        }
-        if ('\'' == ruleName.charAt(0)) {
+            expression = new StringExpression(expressionText.substring(1, expressionText.length() - 2));
+        } else if ('\'' == ruleName.charAt(0)) {
             String expressionText = tree.getChild(0).getText();
-            return new SpeakCommand(new CharacterExpression(expressionText.charAt(1)));
+            expression = new CharacterExpression(expressionText.charAt(1));
+        } else {
+            throw new IllegalArgumentException("Build failed: Wrong expression in a Spoke command");
         }
         
-        throw new IllegalArgumentException("Build failed: Wring expression in a Spoke command");
-        
-        //TODO - BOLLOCKS
-        /*ArithmeticExpression expression = parseArithmeticExpression(tree.getChild(0));
-
-        System.out.println("EXPR: " + expression);
-
         Set<String> variablesUsed = expression.getUsedVariables();
         for (String variableUsed : variablesUsed) {
             if (!symbolTable.containsVariable(variableUsed)) {
                 throw new VariableNotDeclaredException(variableUsed);
             }
-            if (Type.number != symbolTable.getVariableType(variableUsed)) {
-                throw new IncompatibleTypeException(variableUsed
-                        + " is not a number and therefore cannot be in an arithmetic expression");
-            }
-            if (!symbolTable.isInitialisedVariable(variableUsed)) {
-                throw new VariableNotInitialisedException(variableUsed);
-            }
         }
-
-        return new SpeakCommand(expression);*/
+        
+        return new SpeakCommand(expression);
     }
 
     private Command parseArrayDeclaration(Tree tree) {
@@ -233,7 +218,7 @@ public class Parser {
                 throw new IncompatibleTypeException(variableName, variableType);
             }
 
-            expression = new StringExpression(expressionText.substring(1, expressionText.length() - 1));
+            expression = new StringExpression(expressionText.substring(1, expressionText.length() - 2));
         } else {
             // arithmetic expression
             if (Type.number != variableType) {

@@ -32,7 +32,7 @@ public class MAlice {
             die("Build", ex);
         }*/
 
-        MAliceLexer lexer = new MAliceLexer(new ANTLRStringStream("b was a number and 1==1&&(2>4||6<3) spoke."));
+        MAliceLexer lexer = new MAliceLexer(new ANTLRStringStream("\"bla fdkfj fdf.(\" spoke."));
         //MAliceLexer lexer = new MAliceLexer(fileStream);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         ParseTreeBuilder builder = new ParseTreeBuilder("prog");
