@@ -33,7 +33,6 @@ public class CodeGenerator implements CommandVisitor {
     private Queue<Register> freeRegisters;
     private Map<String, Command> variablesUsedLastInCommand;
     private Set<String> freeMemoryLocationVariables;
-    private Set<String> comparisonTests;
     private int nextFreeMemoryAddress;
     private int nextComparisonNumber;
 
@@ -249,7 +248,9 @@ public class CodeGenerator implements CommandVisitor {
                 break;
 
         }
-        freeStorage(moreStorage); //Not sure
+        //Need to check if moreStorage is being used in the symbol table
+        //Use symboltable.usesStorage(moreStorage)
+        //freeStorage(moreStorage); //Not sure
     }
 
     private void generateBooleanExpressionCode(Storage destStorage, String binop, ArithmeticExpression left, ArithmeticExpression right){
@@ -329,6 +330,10 @@ public class CodeGenerator implements CommandVisitor {
             assemblyCommands.add("");
             assemblyCommands.add(name + ":");
             assemblyCommands.add("ret");
+    }
+
+    private void generateLookingGlassCode(){
+
     }
 
     private Storage allocateStorage() {

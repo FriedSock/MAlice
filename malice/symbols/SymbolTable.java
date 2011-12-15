@@ -39,4 +39,14 @@ public class SymbolTable {
         symbolTable.get(variableName).initialise();
     }
 
+    //TODO - Check if this works
+    public boolean usesStorage(Storage storage) {
+        for(Symbol s : symbolTable.values()){
+            if(s.getStorage().equals(storage)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

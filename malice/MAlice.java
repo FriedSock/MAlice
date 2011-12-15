@@ -35,7 +35,7 @@ public class MAlice {
         ParseTreeBuilder builder = new ParseTreeBuilder("prog");
         MAliceParser maliceParser = new MAliceParser(tokenStream, builder);
         try {
-            maliceParser.prog();
+            maliceParser.program();
         } catch (RecognitionException ex) {
             die("Parser", ex);
         }
