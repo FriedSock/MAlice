@@ -6,14 +6,14 @@ import malice.symbols.Type;
 
 public class Function {
 
-    private String name;
-    private Type returnType;
-    private List<Command> commands;
+    protected String name;
+    protected Type type;
+    protected List<Command> commands;
 
-
-   public Function(String name, List<Command> commands, Type returnType) {
+    public Function(String name, List<Command> commands, Type type) {
         this.name = name;
-        this.returnType = returnType;
+        this.commands = commands;
+        this.type = type;
     }
 
     public String getName() {
@@ -24,7 +24,8 @@ public class Function {
         return commands;
     }
 
-    public Type getReturnType() {
-        return returnType;
+    public Type getType() {
+        return type;
     }
+
 }

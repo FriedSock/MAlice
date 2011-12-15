@@ -25,6 +25,7 @@ import malice.commands.WhileNotCommand;
 import malice.expressions.BooleanExpression;
 import malice.expressions.StringExpression;
 import malice.functions.LookingGlassFunction;
+import malice.functions.Parameter;
 import malice.functions.RoomFunction;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.Tree;
@@ -92,6 +93,12 @@ public class Parser {
         //TODO - remove
         for (Command command : commands) {
             System.out.println(command);
+        }
+        for (RoomFunction room : rooms) {
+            System.out.println(room);
+        }
+        for (LookingGlassFunction lookingGlass : lookingGlasses) {
+            System.out.println(lookingGlass);
         }
     }
 
@@ -218,31 +225,34 @@ public class Parser {
     private Command parseVariableAssignment(Tree tree) {
         String variableName = tree.getChild(0).getText();
 
-        if (!symbolTable.containsVariable(variableName)) {
+        if (!"it".equals(variableName) && !symbolTable.containsVariable(variableName)) {
             throw new VariableNotDeclaredException(variableName);
         }
 
         String expressionText = tree.getChild(2).getChild(0).getText();
         Expression expression = null;
 
-        Type variableType = symbolTable.getVariableType(variableName);
+        Type variableType = null;
+        if (!"it".equals(variableName)) {
+            variableType = symbolTable.getVariableType(variableName);
+        }
         if ('\'' == expressionText.charAt(0)) {
             // character expression
-            if (Type.letter != variableType) {
+            if (variableType != null && Type.letter != variableType) {
                 throw new IncompatibleTypeException(variableName, variableType);
             }
 
             expression = new CharacterExpression(expressionText.charAt(1));
         } else if ('"' == expressionText.charAt(0)) {
             // string expression
-            if (Type.sentence != variableType) {
+            if (variableType != null && Type.sentence != variableType) {
                 throw new IncompatibleTypeException(variableName, variableType);
             }
 
             expression = new StringExpression(expressionText.substring(1, expressionText.length() - 2));
         } else {
             // arithmetic expression
-            if (Type.number != variableType) {
+            if (variableType != null && Type.number != variableType) {
                 throw new IncompatibleTypeException(variableName, variableType);
             }
 
@@ -250,6 +260,9 @@ public class Parser {
 
             Set<String> variablesUsed = expression.getUsedVariables();
             for (String variableUsed : variablesUsed) {
+                if ("it".equals(variableUsed)) {
+                    continue;
+                }
                 if (!symbolTable.containsVariable(variableUsed)) {
                     throw new VariableNotDeclaredException(variableUsed);
                 }
@@ -263,7 +276,9 @@ public class Parser {
             }
         }
 
-        symbolTable.initialiseVariable(variableName);
+        if (variableType != null) {
+            symbolTable.initialiseVariable(variableName);
+        }
 
         return new VariableAssignmentCommand(variableName, expression);
     }
@@ -514,11 +529,39 @@ public class Parser {
     }
 
     private void parseFunction(Tree tree) {
-        //TODO - parsing functions
+        String functionName = tree.getChild(1).getText();
+        List<Parameter> parameters = new ArrayList<Parameter>();
+        List<Command> functionCommands = parseStatement(tree.getChild(tree.getChildCount() - 1));
+        Type returnType = Type.valueOf(tree.getChild(tree.getChildCount() - 2).getText());
+        
+        boolean wantsType = true;
+        Parameter parameter = new Parameter();
+        for (int i = 3; i <= tree.getChildCount() - 4; i++) {
+            String word = tree.getChild(i).getText();
+            if (')' == word.charAt(0) || ',' == word.charAt(0)) {
+                parameters.add(parameter);
+                parameter = new Parameter();
+            } else if ("spider".equals(word)) {
+                parameter.setPassByReference(true);
+            } else {
+                if (wantsType) {
+                    parameter.setType(Type.valueOf(word));
+                } else {
+                    parameter.setName(word);
+                }
+                wantsType = !wantsType;
+            }
+        }
+        
+        rooms.add(new RoomFunction(functionName, parameters, functionCommands, returnType));
     }
 
     private void parseLookingGlass(Tree tree) {
-        //TODO - looking glasses
+        String functionName = tree.getChild(1).getText();
+        Type inputType = Type.valueOf(tree.getChild(tree.getChildCount() - 2).getText());
+        List<Command> functionCommands = parseStatement(tree.getChild(tree.getChildCount() - 1));
+        
+        lookingGlasses.add(new LookingGlassFunction(functionName, functionCommands, inputType));
     }
 
     @Override
