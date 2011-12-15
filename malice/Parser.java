@@ -14,7 +14,9 @@ import malice.commands.Command;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import malice.commands.ArrayDeclarationCommand;
 import malice.commands.FunctionCallCommand;
+import malice.expressions.StringExpression;
 import malice.functions.LookingGlassFunction;
 import malice.functions.RoomFunction;
 import org.antlr.runtime.tree.Tree;
@@ -105,7 +107,7 @@ public class Parser {
         } else if (PROCEDURE.equals(commandName)) {
             commands.add(parseProcedure(tree));
         } else if (FUNCTION_CALL.equals(commandName)) {
-            commands.add(parseProcedure(tree));
+            commands.add(parseFunctionCall(tree));
         } else if (FUNCTION_RETURN.equals(commandName)) {
             commands.add(parseProcedure(tree));
         } else if (THROUGH.equals(commandName)) {
@@ -147,8 +149,28 @@ public class Parser {
     }
 
     private Command parseArrayDeclaration(Tree tree) {
-        //TODO - array decl
-        return null;
+        String variableName = tree.getChild(0).getText();
+        Type variableType = Type.valueOf(tree.getChild(3).getText());
+        ArithmeticExpression size = parseArithmeticExpression(tree.getChild(1));
+
+        if (symbolTable.containsVariable(variableName)) {
+            throw new VariableAlreadyDeclaredException(variableName);
+        }
+
+        symbolTable.addVariable(variableName, Type.array);
+        
+        Set<String> variablesUsed = size.getUsedVariables();
+        for (String variableUsed : variablesUsed) {
+            if (!symbolTable.containsVariable(variableUsed)) {
+                throw new VariableNotDeclaredException(variableUsed);
+            }
+            if (Type.number != symbolTable.getVariableType(variableUsed)) {
+                throw new IncompatibleTypeException(variableUsed
+                        + " is not a number and therefore cannot be in an arithmetic expression");
+            }
+        }
+
+        return new ArrayDeclarationCommand(variableName, variableType, size);
     }
 
     private Command parseVariableDeclaration(Tree tree) {
@@ -182,6 +204,13 @@ public class Parser {
             }
 
             expression = new CharacterExpression(expressionText.charAt(1));
+        } else if ('"' == expressionText.charAt(0)) {
+            // string expression
+            if (Type.sentence != variableType) {
+                throw new IncompatibleTypeException(variableName, variableType);
+            }
+            
+            expression = new StringExpression(expressionText.substring(1, expressionText.length() - 1));
         } else {
             // arithmetic expression
             if (Type.number != variableType) {
@@ -232,6 +261,16 @@ public class Parser {
         }
     }
 
+    private Command parseFunctionCall(Tree tree) {
+        List<ArithmeticExpression> parameters = new ArrayList<ArithmeticExpression>();
+        for (int j = 2; j <= tree.getChildCount() - 2; j += 2) {
+            parameters.add(parseArithmeticExpression(tree.getChild(j)));
+        }
+
+        FunctionCallCommand functionCall = new FunctionCallCommand(tree.getChild(0).getText(), parameters);
+        return functionCall;
+    }
+
     private ArithmeticExpression parseArithmeticExpression(Tree tree) {
         String ruleName = tree.getText();
 
@@ -246,20 +285,12 @@ public class Parser {
             if (tree.getChild(i).getText().charAt(0) == '(') {
                 ArithmeticExpression nestedExpr = parseArithmeticExpression(tree.getChild(i + 1));
                 nestedExpr.setUnaryOperators(unaryOperators);
-               return nestedExpr;
+                return nestedExpr;
             } else if ("array_piece".equals(tree.getChild(i).getText())) {
                 ArithmeticExpression pieceIndex = parseArithmeticExpression(tree.getChild(i).getChild(2));
                 return new ArithmeticExpression(tree.getChild(i).getChild(0).getText(), pieceIndex, unaryOperators);
             } else if ("function_call".equals(tree.getChild(i).getText())) {
-                Tree functionCallTree = tree.getChild(i);
-
-                List<ArithmeticExpression> parameters = new ArrayList<ArithmeticExpression>();
-                for (int j = 2; j <= functionCallTree.getChildCount() - 2; j += 2) {
-                    parameters.add(parseArithmeticExpression(functionCallTree.getChild(j)));
-                }
-                
-                FunctionCallCommand functionCall = new FunctionCallCommand(functionCallTree.getChild(0).getText(), parameters);
-                return new ArithmeticExpression(functionCall, unaryOperators);
+                return new ArithmeticExpression((FunctionCallCommand) parseFunctionCall(tree.getChild(i)), unaryOperators);
             } else {
                 try {
                     // to decide if this is an immediate value
@@ -273,15 +304,15 @@ public class Parser {
             if (tree.getChildCount() == 1) {
                 return parseArithmeticExpression(tree.getChild(0));
             }
-            
+
             int rightExprIndex = 2;
-            
+
             ArithmeticExpression binOpExpr = null;
             while (rightExprIndex <= tree.getChildCount() - 1) {
                 binOpExpr = (binOpExpr != null) ? binOpExpr : parseArithmeticExpression(tree.getChild(0));
                 ArithmeticExpression rightExpr = parseArithmeticExpression(tree.getChild(rightExprIndex));
                 char binOp = tree.getChild(rightExprIndex - 1).getText().charAt(0);
-                
+
                 if (binOpExpr.isImmediateValue() && binOpExpr.getImmediateValue() == 0 && (binOp == '+' || binOp == '-')) {
                     binOpExpr = rightExpr;
                 } else if (rightExpr.isImmediateValue() && rightExpr.getImmediateValue() == 0 && (binOp == '+' || binOp == '-')) {
@@ -298,8 +329,8 @@ public class Parser {
                 } else {
                     binOpExpr = new ArithmeticExpression(binOpExpr, rightExpr, binOp, "");
                 }
-                
-                
+
+
                 rightExprIndex += 2;
             }
             return binOpExpr;

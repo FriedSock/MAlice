@@ -3,15 +3,16 @@ package malice.commands;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import malice.expressions.ArithmeticExpression;
 import malice.symbols.Type;
 
 public class ArrayDeclarationCommand implements Command {
     
     private String variableName;
     private Type type;
-    private int size;
+    private ArithmeticExpression size;
 
-    public ArrayDeclarationCommand(String variableName, Type type, int size) {
+    public ArrayDeclarationCommand(String variableName, Type type, ArithmeticExpression size) {
         this.variableName = variableName;
         this.type = type;
         this.size = size;
@@ -36,8 +37,8 @@ public class ArrayDeclarationCommand implements Command {
         //visitor.visitVariableDeclaration(this);
     }
     
-    /*@Override
+    @Override
     public String toString() {
-        return variableName + " was a " + type;
-    }*/
+        return variableName + " had " + size + " " + type;
+    }
 }

@@ -4,13 +4,14 @@ import malice.symbols.Type;
 
 
 public class Parameter {
-    String name;
-    Type type;
 
-    public Parameter(String name, Type type ){
+    private String name;
+    private Type type;
+    private boolean passByReference;
+
+    public Parameter(String name, Type type, boolean passByReference) {
         this.name = name;
         this.type = type;
-
+        this.passByReference = passByReference;
     }
-
 }
