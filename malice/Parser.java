@@ -14,6 +14,7 @@ import malice.commands.Command;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import malice.commands.FunctionCallCommand;
 import malice.functions.LookingGlass;
 import malice.functions.Room;
 import org.antlr.runtime.tree.Tree;
@@ -121,10 +122,12 @@ public class Parser {
             // discard comment
         }
     }
-    
+
     private Command parseExpressionSpoke(Tree tree) {
         // Only an arithmetic expression or a variable can speak - not a character
         ArithmeticExpression expression = parseArithmeticExpression(tree.getChild(0));
+
+        System.out.println("EXPR: " + expression);
 
         Set<String> variablesUsed = expression.getUsedVariables();
         for (String variableUsed : variablesUsed) {
@@ -142,7 +145,7 @@ public class Parser {
 
         return new SpeakCommand(expression);
     }
-    
+
     private Command parseArrayDeclaration(Tree tree) {
         //TODO - array decl
         return null;
@@ -230,37 +233,149 @@ public class Parser {
     }
 
     private ArithmeticExpression parseArithmeticExpression(Tree tree) {
-        if (tree.getText().equals("factor")) {
-            String firstChildText = tree.getChild(0).getText();
-            if (firstChildText.startsWith("MismatchedSetException")) {
-                throw new IllegalArgumentException("Invalid arithmetic expression: " + tree.toStringTree());
+        String ruleName = tree.getText();
+        //System.out.println(ruleName);
+
+        if ("value".equals(ruleName)) {
+            /*System.out.println("VA");
+            for (int i = 0; i < tree.getChildCount(); i++) {
+            System.out.println("VAL:" + tree.getChild(i) + " " + tree.getChild(i).getChildCount());
+            }*/
+
+            String unaryOperators = "";
+            int i = 0;
+            while (tree.getChild(i).getText().charAt(0) == '-' || tree.getChild(i).getText().charAt(0) == '~') {
+                unaryOperators += tree.getChild(i).getText();
+                i++;
             }
 
-            int childCount = tree.getChildCount();
-            String terminal = tree.getChild(childCount - 1).getText();
-            String unaryOperators = "";
-            for (int i = 0; i < childCount - 1; i++) {
-                unaryOperators += tree.getChild(i).getText();
-            }
-            try {
-                // to decide if there is an identifier or an immediate value
-                int value = Integer.valueOf(terminal);
-                return new ArithmeticExpression(value, unaryOperators);
-            } catch (NumberFormatException e) {
-                return new ArithmeticExpression(terminal, unaryOperators);
-            }
-        } else {
-            Tree leftExp = tree.getChild(0);
-            if (tree.getChildCount() > 1) {
-                ArithmeticExpression rightExp = parseArithmeticExpression(leftExp);
-                for (int i = 2; i < tree.getChildCount(); i += 2) {
-                    leftExp = tree.getChild(i);
-                    rightExp = new ArithmeticExpression(rightExp, parseArithmeticExpression(leftExp), tree.getChild(i - 1).toString().charAt(0));
+            System.out.println(unaryOperators + tree.getChildCount());
+
+            if (tree.getChild(i).getText().charAt(0) == '(') {
+                //System.out.println("1" + tree.getChild(i + 1));
+                ArithmeticExpression nestedExpr = parseArithmeticExpression(tree.getChild(i + 1));
+                nestedExpr.setUnaryOperators(unaryOperators);
+               return nestedExpr;
+            } else if ("array_piece".equals(tree.getChild(i).getText())) {
+                ArithmeticExpression pieceIndex = parseArithmeticExpression(tree.getChild(i).getChild(2));
+                
+                //System.out.println("a" + tree.getChild(i).getChildCount());
+                return new ArithmeticExpression(tree.getChild(i).getChild(0).getText(), pieceIndex, unaryOperators);
+            } else if ("function_call".equals(tree.getChild(i).getText())) {
+                Tree functionCallTree = tree.getChild(i);
+
+                List<String> parameters = new ArrayList<String>();
+                for (int j = 2; j < functionCallTree.getChildCount() - 2; j += 2) {
+                    parameters.add(functionCallTree.getChild(j).getText());
                 }
-                return rightExp;
+                
+                FunctionCallCommand functionCall = new FunctionCallCommand(functionCallTree.getChild(0).getText(), parameters);
+                return new ArithmeticExpression(functionCall, unaryOperators);
+                //return new ArithmeticExpression(2, unaryOperators);
+            } else {
+                try {
+                    // to decide if this is an immediate value
+                    int value = Integer.valueOf(tree.getChild(i).getText());
+                    return new ArithmeticExpression(value, unaryOperators);
+                } catch (NumberFormatException e) {
+                    // 
+                    return new ArithmeticExpression(tree.getChild(i).getText(), unaryOperators);
+                }
+
+                // parse only when function call or array piece
+                //nestedExpr = parseArithmeticExpression(tree.getChild(i));
             }
-            return parseArithmeticExpression(leftExp);
+        } else {//if ("hexpr".equals(ruleName) || "mexpr".equals(ruleName)) {
+            if (tree.getChildCount() == 1) {
+                return parseArithmeticExpression(tree.getChild(0));
+            }
+            
+            System.out.println("BLA " + tree.getChildCount());
+            
+            //int leftExprIndex = 0;
+            int rightExprIndex = 2;
+            
+            ArithmeticExpression binOpExpr = null;
+            while (rightExprIndex <= tree.getChildCount() - 1) {
+                binOpExpr = (binOpExpr != null) ? binOpExpr : parseArithmeticExpression(tree.getChild(0));
+                ArithmeticExpression rightExpr = parseArithmeticExpression(tree.getChild(rightExprIndex));
+                char binOp = tree.getChild(rightExprIndex - 1).getText().charAt(0);
+                
+                if (binOpExpr.isImmediateValue() && binOpExpr.getImmediateValue() == 0 && (binOp == '+' || binOp == '-')) {
+                    binOpExpr = rightExpr;
+                } else if (rightExpr.isImmediateValue() && rightExpr.getImmediateValue() == 0 && (binOp == '+' || binOp == '-')) {
+                } else if (binOpExpr.isImmediateValue() && binOpExpr.getImmediateValue() == 1 && (binOp == '*' || binOp == '/')) {
+                    binOpExpr = rightExpr;
+                } else if (rightExpr.isImmediateValue() && rightExpr.getImmediateValue() == 1 && (binOp == '*' || binOp == '/')) {
+                } else if (binOpExpr.isImmediateValue() && binOpExpr.getImmediateValue() == 0 && binOp == '*') {
+                    binOpExpr = new ArithmeticExpression(0, "");
+                } else if (rightExpr.isImmediateValue() && rightExpr.getImmediateValue() == 0 && binOp == '*') {
+                    binOpExpr = new ArithmeticExpression(0, "");
+                } else if (rightExpr.isImmediateValue() && rightExpr.getImmediateValue() == 0 && binOp == '/') {
+                    System.err.println("Build failed: division by zero not allowed");
+                    System.exit(1);
+                } else {
+                    binOpExpr = new ArithmeticExpression(binOpExpr, rightExpr, binOp, "");
+                }
+                
+                
+                rightExprIndex += 2;
+            }
+            
+            /*ArithmeticExpression leftExpr = parseArithmeticExpression(tree.getChild(0));
+            ArithmeticExpression rightExpr = parseArithmeticExpression(tree.getChild(2));
+            
+            return new ArithmeticExpression(leftExpr, rightExpr, tree.getChild(1).getText().charAt(0), "");*/
+            
+            return binOpExpr;
+            
+            //return parseArithmeticExpression(tree.getChild(0));
+        } /*else {
+            return parseArithmeticExpression(tree.getChild(0));
+        }*/
+
+        /*System.out.println("\nARIT " + ruleName);
+        System.out.println(tree.getText());
+        
+        for (int i = 0; i < tree.getChildCount(); i++) {
+        parseArithmeticExpression(tree.getChild(i));
         }
+        
+        System.out.println("ARIT-END\n");*/
+
+
+
+        /*if (tree.getText().equals("factor")) {
+        String firstChildText = tree.getChild(0).getText();
+        if (firstChildText.startsWith("MismatchedSetException")) {
+        throw new IllegalArgumentException("Invalid arithmetic expression: " + tree.toStringTree());
+        }
+        
+        int childCount = tree.getChildCount();
+        String terminal = tree.getChild(childCount - 1).getText();
+        String unaryOperators = "";
+        for (int i = 0; i < childCount - 1; i++) {
+        unaryOperators += tree.getChild(i).getText();
+        }
+        try {
+        // to decide if there is an identifier or an immediate value
+        int value = Integer.valueOf(terminal);
+        return new ArithmeticExpression(value, unaryOperators);
+        } catch (NumberFormatException e) {
+        return new ArithmeticExpression(terminal, unaryOperators);
+        }
+        } else {
+        Tree leftExp = tree.getChild(0);
+        if (tree.getChildCount() > 1) {
+        ArithmeticExpression rightExp = parseArithmeticExpression(leftExp);
+        for (int i = 2; i < tree.getChildCount(); i += 2) {
+        leftExp = tree.getChild(i);
+        rightExp = new ArithmeticExpression(rightExp, parseArithmeticExpression(leftExp), tree.getChild(i - 1).toString().charAt(0));
+        }
+        return rightExp;
+        }
+        return parseArithmeticExpression(leftExp);
+        }*/
     }
 
     private void parseFunction(Tree tree) {

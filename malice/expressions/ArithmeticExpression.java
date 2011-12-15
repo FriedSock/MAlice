@@ -104,9 +104,9 @@ public class ArithmeticExpression implements Expression {
      */
     private void reduce(ArithmeticExpression expr) {
         if (Type.ARRAY_PIECE == expr.type) {
-            reduce(pieceIndex);
+            reduce(expr.pieceIndex);
             return;
-        } else if (Type.BINOP != type) {
+        } else if (Type.BINOP != expr.type) {
             return;
         }
 
@@ -127,11 +127,6 @@ public class ArithmeticExpression implements Expression {
                 expr.immediateValue = expr.leftExpr.immediateValue * expr.rightExpr.immediateValue;
                 break;
             case '/':
-                if (expr.rightExpr.immediateValue == 0) {
-                    // division by zero gives an undefined value
-                    System.err.println("Build failed: division by zero not allowed");
-                    System.exit(1);
-                }
                 expr.immediateValue = expr.leftExpr.immediateValue / expr.rightExpr.immediateValue;
                 break;
             case '%':
@@ -194,6 +189,11 @@ public class ArithmeticExpression implements Expression {
     public String getUnaryOperators() {
         return unaryOperators;
     }
+    
+    public void setUnaryOperators(String unaryOperators) {
+        this.unaryOperators = unaryOperators;
+        reduceUnaryOperators();
+    }
 
     @Override
     public Set<String> getUsedVariables() {
@@ -242,15 +242,15 @@ public class ArithmeticExpression implements Expression {
     public String toString() {
         switch (type) {
             case ARRAY_PIECE:
-                return arrayName + "'s " + pieceIndex + " piece";
+                return unaryOperators + arrayName + "'s " + pieceIndex + " piece";
             case BINOP:
-                return "(" + leftExpr + binOp + rightExpr + ")";
+                return unaryOperators + "(" + leftExpr + binOp + rightExpr + ")";
             case FUNCTION_CALL:
-                return functionCall.toString(); // TODO - fix
+                return unaryOperators + functionCall.toString(); // TODO - fix
             case IMMEDIATE:
-                return Integer.toString(immediateValue);
+                return unaryOperators + Integer.toString(immediateValue);
             case VARIABLE:
-                return variableName;
+                return unaryOperators + variableName;
         }
         
         return "";
