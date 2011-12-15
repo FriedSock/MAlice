@@ -9,6 +9,6 @@ package malice.commands;
  *
  * @author jack
  */
-public class Through {
+public class OutputCommand {
 
 }
