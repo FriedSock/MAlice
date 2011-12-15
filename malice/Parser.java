@@ -93,15 +93,59 @@ public class Parser {
         Tree commandTree = tree.getChild(0);
         String commandName = commandTree.getText();
 
-        if (VARIABLE_DECLARATION.equals(commandName)) {
+        if (EXPRESSION_SPOKE.equals(commandName)) {
+            commands.add(parseExpressionSpoke(commandTree));
+        } else if (ARRAY_DECLARATION.equals(commandName)) {
+            commands.add(parseArrayDeclaration(commandTree));
+        } else if (VARIABLE_DECLARATION.equals(commandName)) {
             commands.add(parseVariableDeclaration(commandTree));
         } else if (VARIABLE_ASSIGNMENT.equals(commandName)) {
             commands.add(parseVariableAssignment(commandTree));
-        } else if (EXPRESSION_SPOKE.equals(commandName)) {
-            commands.add(parseExpressionSpoke(commandTree));
-        } else {
+        } else if (PROCEDURE.equals(commandName)) {
             commands.add(parseProcedure(tree));
+        } else if (FUNCTION_CALL.equals(commandName)) {
+            commands.add(parseProcedure(tree));
+        } else if (FUNCTION_RETURN.equals(commandName)) {
+            commands.add(parseProcedure(tree));
+        } else if (THROUGH.equals(commandName)) {
+            commands.add(parseProcedure(tree));
+        } else if (WHILE_NOT.equals(commandName)) {
+            commands.add(parseProcedure(tree));
+        } else if (CONDITIONAL.equals(commandName)) {
+            commands.add(parseProcedure(tree));
+        } else if (INPUT.equals(commandName)) {
+            commands.add(parseProcedure(tree));
+        } else if (OUTPUT.equals(commandName)) {
+            commands.add(parseProcedure(tree));
+        } else if (COMMENT.equals(commandName)) {
+            // discard comment
         }
+    }
+    
+    private Command parseExpressionSpoke(Tree tree) {
+        // Only an arithmetic expression or a variable can speak - not a character
+        ArithmeticExpression expression = parseArithmeticExpression(tree.getChild(0));
+
+        Set<String> variablesUsed = expression.getUsedVariables();
+        for (String variableUsed : variablesUsed) {
+            if (!symbolTable.containsVariable(variableUsed)) {
+                throw new VariableNotDeclaredException(variableUsed);
+            }
+            if (Type.number != symbolTable.getVariableType(variableUsed)) {
+                throw new IncompatibleTypeException(variableUsed
+                        + " is not a number and therefore cannot be in an arithmetic expression");
+            }
+            if (!symbolTable.isInitialisedVariable(variableUsed)) {
+                throw new VariableNotInitialisedException(variableUsed);
+            }
+        }
+
+        return new SpeakCommand(expression);
+    }
+    
+    private Command parseArrayDeclaration(Tree tree) {
+        //TODO - array decl
+        return null;
     }
 
     private Command parseVariableDeclaration(Tree tree) {
@@ -161,27 +205,6 @@ public class Parser {
         symbolTable.initialiseVariable(variableName);
 
         return new VariableAssignmentCommand(variableName, expression);
-    }
-
-    private Command parseExpressionSpoke(Tree tree) {
-        // Only an arithmetic expression or a variable can speak - not a character
-        ArithmeticExpression expression = parseArithmeticExpression(tree.getChild(0));
-
-        Set<String> variablesUsed = expression.getUsedVariables();
-        for (String variableUsed : variablesUsed) {
-            if (!symbolTable.containsVariable(variableUsed)) {
-                throw new VariableNotDeclaredException(variableUsed);
-            }
-            if (Type.number != symbolTable.getVariableType(variableUsed)) {
-                throw new IncompatibleTypeException(variableUsed
-                        + " is not a number and therefore cannot be in an arithmetic expression");
-            }
-            if (!symbolTable.isInitialisedVariable(variableUsed)) {
-                throw new VariableNotInitialisedException(variableUsed);
-            }
-        }
-
-        return new SpeakCommand(expression);
     }
 
     private Command parseProcedure(Tree tree) {

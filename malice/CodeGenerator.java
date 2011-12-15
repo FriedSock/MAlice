@@ -148,8 +148,8 @@ public class CodeGenerator implements CommandVisitor {
             Storage leftStorage = allocateStorage();
             Storage rightStorage = allocateStorage();
 
-            generateExpressionCode(leftStorage, exp.getLeft());
-            generateExpressionCode(rightStorage, exp.getRight());
+            generateExpressionCode(leftStorage, exp.getLeftExpr());
+            generateExpressionCode(rightStorage, exp.getRightExpr());
             generateBinOpCode(exp.getBinOp(), leftStorage, rightStorage);
             assemblyCommands.add("mov " + destStorage + ", " + leftStorage);
 
@@ -162,7 +162,7 @@ public class CodeGenerator implements CommandVisitor {
                         + symbolTable.getVariableStorage(exp.getVariableName()));
             } else {
                 // immediate value
-                assemblyCommands.add("mov " + destStorage + ", " + exp.getValue());
+                assemblyCommands.add("mov " + destStorage + ", " + exp.getImmediateValue());
             }
 
             String unaryOperators = exp.getUnaryOperators();
