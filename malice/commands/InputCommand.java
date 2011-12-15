@@ -20,7 +20,7 @@ public class InputCommand implements Command{
 
     @Override
     public void acceptVisitor(CommandVisitor visitor) {
-        //TODO - acceptVisitor
+        visitor.visitInput(this);
     }
 
     @Override

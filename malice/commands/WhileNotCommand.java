@@ -12,7 +12,7 @@ public class WhileNotCommand implements Command {
 
     @Override
     public void acceptVisitor(CommandVisitor visitor) {
-        //TODO - acceptVIsitor
+        visitor.visitWhileNot(this);
     }
 
     @Override

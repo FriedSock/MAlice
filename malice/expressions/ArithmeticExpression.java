@@ -141,11 +141,6 @@ public class ArithmeticExpression implements Expression {
         expr.rightExpr = null;
     }
 
-    // TODO - WTF?
-    public boolean isValue() {
-        return false;
-    }
-
     public boolean isImmediateValue() {
         return Type.IMMEDIATE == type;
     }
@@ -246,7 +241,7 @@ public class ArithmeticExpression implements Expression {
             case BINOP:
                 return unaryOperators + "(" + leftExpr + binOp + rightExpr + ")";
             case FUNCTION_CALL:
-                return unaryOperators + functionCall.toString(); // TODO - fix
+                return unaryOperators + functionCall;
             case IMMEDIATE:
                 return unaryOperators + Integer.toString(immediateValue);
             case VARIABLE:

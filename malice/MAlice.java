@@ -32,7 +32,7 @@ public class MAlice {
             die("Build", ex);
         }*/
 
-        MAliceLexer lexer = new MAliceLexer(new ANTLRStringStream("The Looking-Glass addAnswer changed a number it became it + 42."));
+        MAliceLexer lexer = new MAliceLexer(new ANTLRStringStream("The Looking-Glass addAnswer changed a number it became it + fun(1,2+2). it drank."));
         //MAliceLexer lexer = new MAliceLexer(fileStream);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         ParseTreeBuilder builder = new ParseTreeBuilder("prog");

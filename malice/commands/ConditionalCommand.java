@@ -18,7 +18,7 @@ public class ConditionalCommand implements Command {
 
     @Override
     public void acceptVisitor(CommandVisitor visitor) {
-        //TODO - acceptVisitor
+        visitor.visitConditional(this);
     }
 
     @Override

@@ -40,7 +40,7 @@ public class FunctionReturnCommand implements Command {
 
     @Override
     public void acceptVisitor(CommandVisitor visitor) {
-        //TODO - acceptVisitor
+        visitor.visitFunctionReturn(this);
     }
 
     @Override

@@ -69,6 +69,14 @@ public class Parser {
         return commands;
     }
 
+    public List<RoomFunction> getRooms() {
+        return rooms;
+    }
+    
+    public List<LookingGlassFunction> getLookingGlasses() {
+        return lookingGlasses;
+    }
+
     public SymbolTable getSymbolTable() {
         return symbolTable;
     }
@@ -286,10 +294,10 @@ public class Parser {
     private Command parseProcedure(Tree tree) {
         String variableName = tree.getChild(0).getText();
 
-        if (!symbolTable.containsVariable(variableName)) {
+        if (!"it".equals(variableName) && !symbolTable.containsVariable(variableName)) {
             throw new VariableNotDeclaredException(variableName);
         }
-        if (!symbolTable.isInitialisedVariable(variableName)) {
+        if (!"it".equals(variableName) && !symbolTable.isInitialisedVariable(variableName)) {
             throw new VariableNotInitialisedException(variableName);
         }
 
@@ -300,9 +308,7 @@ public class Parser {
         } else if (DRANK.equals(procedureName)) {
             return new DecrementCommand(variableName);
         } else {
-            //TODO - really?
-            // in case of syntax connectors such as and
-            return null;
+            throw new IllegalArgumentException("Invalid procedure name: " + procedureName);
         }
     }
 

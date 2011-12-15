@@ -26,7 +26,7 @@ public class FunctionCallCommand implements Command {
 
     @Override
     public void acceptVisitor(CommandVisitor visitor) {
-        //TODO
+        visitor.visitFunctionCall(this);
     }
 
     @Override

@@ -1,5 +1,11 @@
 package malice;
 
+import malice.commands.ArrayDeclarationCommand;
+import malice.commands.ConditionalCommand;
+import malice.commands.FunctionCallCommand;
+import malice.commands.InputCommand;
+import malice.commands.ThroughCommand;
+import malice.commands.WhileNotCommand;
 import malice.symbols.SymbolTable;
 import malice.symbols.Register;
 import java.util.ArrayList;
@@ -15,6 +21,7 @@ import java.util.Set;
 import malice.commands.Command;
 import malice.commands.CommandVisitor;
 import malice.commands.DecrementCommand;
+import malice.commands.FunctionReturnCommand;
 import malice.commands.IncrementCommand;
 import malice.commands.SpeakCommand;
 import malice.commands.VariableAssignmentCommand;
@@ -95,15 +102,40 @@ public class CodeGenerator implements CommandVisitor {
     }
 
     @Override
+    public void visitArrayDeclaration(ArrayDeclarationCommand command) {
+        //TODO - visitArrayDeclaration
+    }
+
+    @Override
+    public void visitConditional(ConditionalCommand command) {
+        //TODO - visitConditional
+    }
+    
+    @Override
     public void visitDecrement(DecrementCommand command) {
         Storage storage = symbolTable.getVariableStorage(command.getVariableName());
         assemblyCommands.add("dec " + storage);
+    }
+    
+    @Override
+    public void visitFunctionCall(FunctionCallCommand command) {
+        //TODO - visitFunctionCall
+    }
+    
+    @Override
+    public void visitFunctionReturn(FunctionReturnCommand command) {
+        //TODO - visitFunctionReturn
     }
 
     @Override
     public void visitIncrement(IncrementCommand command) {
         Storage storage = symbolTable.getVariableStorage(command.getVariableName());
         assemblyCommands.add("inc " + storage);
+    }
+    
+    @Override
+    public void visitInput(InputCommand command) {
+        //TODO - visitInput
     }
 
     @Override
@@ -119,6 +151,11 @@ public class CodeGenerator implements CommandVisitor {
         }
         assemblyCommands.add("mov " + Register.rax + ", 1");
         assemblyCommands.add("int 0x80");
+    }
+    
+    @Override
+    public void visitThrough(ThroughCommand command) {
+        //TODO - visitThrough
     }
 
     @Override
@@ -140,13 +177,18 @@ public class CodeGenerator implements CommandVisitor {
     @Override
     public void visitVariableDeclaration(VariableDeclarationCommand command) {
     }
+    
+    @Override
+    public void visitWhileNot(WhileNotCommand command) {
+        //TODO - visitWhileNot
+    }
 
     private void generateExpressionCode(Storage destStorage, CharacterExpression exp) {
         assemblyCommands.add("mov " + destStorage + ", " + (int) exp.getCharacter());
     }
 
     private void generateExpressionCode(Storage destStorage, ArithmeticExpression exp) {
-        if (!exp.isImmediateValue() && !exp.isValue()) {
+        if (ArithmeticExpression.Type.BINOP == exp.getType()) {
             // binOp
             Storage leftStorage = allocateStorage();
             Storage rightStorage = allocateStorage();
@@ -398,4 +440,5 @@ public class CodeGenerator implements CommandVisitor {
         assemblyCommands.add("pop " + Register.rax);
         assemblyCommands.add("ret");
     }
+
 }

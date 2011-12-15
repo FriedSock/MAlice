@@ -14,6 +14,5 @@ public interface Expression {
      */
     boolean usesVariable(String aVariableName);
     
-    //TODO - why?
     boolean isArithmeticExpression();
 }

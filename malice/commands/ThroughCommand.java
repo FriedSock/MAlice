@@ -23,7 +23,7 @@ public class ThroughCommand implements Command{
 
     @Override
     public void acceptVisitor(CommandVisitor visitor) {
-        //TODO - acceptVisitor
+        visitor.visitThrough(this);
     }
 
     @Override
