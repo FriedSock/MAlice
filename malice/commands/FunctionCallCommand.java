@@ -16,6 +16,15 @@ public class FunctionCallCommand implements Command {
         parameters.remove(functionName);
         
     }
+
+    public String getFunctionName() {
+        return functionName;
+    }
+
+    public Set<String> getParameters() {
+        return parameters;
+    }
+
     public void acceptVisitor(CommandVisitor visitor) {
         //TODO
     }
