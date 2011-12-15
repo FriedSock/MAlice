@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Set;
 import malice.commands.ArrayDeclarationCommand;
 import malice.commands.FunctionCallCommand;
+import malice.expressions.BooleanExpression;
 import malice.expressions.StringExpression;
 import malice.functions.LookingGlassFunction;
 import malice.functions.RoomFunction;
@@ -127,6 +128,8 @@ public class Parser {
 
     private Command parseExpressionSpoke(Tree tree) {
         // Only an arithmetic expression or a variable can speak - not a character
+
+        //TODO - BOLLOCKS
         ArithmeticExpression expression = parseArithmeticExpression(tree.getChild(0));
 
         System.out.println("EXPR: " + expression);
@@ -158,7 +161,7 @@ public class Parser {
         }
 
         symbolTable.addVariable(variableName, Type.array);
-        
+
         Set<String> variablesUsed = size.getUsedVariables();
         for (String variableUsed : variablesUsed) {
             if (!symbolTable.containsVariable(variableUsed)) {
@@ -209,7 +212,7 @@ public class Parser {
             if (Type.sentence != variableType) {
                 throw new IncompatibleTypeException(variableName, variableType);
             }
-            
+
             expression = new StringExpression(expressionText.substring(1, expressionText.length() - 1));
         } else {
             // arithmetic expression
@@ -274,6 +277,7 @@ public class Parser {
     private ArithmeticExpression parseArithmeticExpression(Tree tree) {
         String ruleName = tree.getText();
 
+        // Parsing the value rule.
         if ("value".equals(ruleName)) {
             String unaryOperators = "";
             int i = 0;
@@ -283,58 +287,104 @@ public class Parser {
             }
 
             if (tree.getChild(i).getText().charAt(0) == '(') {
+                // Nested expression
                 ArithmeticExpression nestedExpr = parseArithmeticExpression(tree.getChild(i + 1));
                 nestedExpr.setUnaryOperators(unaryOperators);
                 return nestedExpr;
             } else if ("array_piece".equals(tree.getChild(i).getText())) {
+                // Array pieces
                 ArithmeticExpression pieceIndex = parseArithmeticExpression(tree.getChild(i).getChild(2));
                 return new ArithmeticExpression(tree.getChild(i).getChild(0).getText(), pieceIndex, unaryOperators);
             } else if ("function_call".equals(tree.getChild(i).getText())) {
+                // Function call
                 return new ArithmeticExpression((FunctionCallCommand) parseFunctionCall(tree.getChild(i)), unaryOperators);
             } else {
+                // Variable or and immediate value
                 try {
-                    // to decide if this is an immediate value
                     int value = Integer.valueOf(tree.getChild(i).getText());
+                    // Immediate value
                     return new ArithmeticExpression(value, unaryOperators);
                 } catch (NumberFormatException e) {
+                    // Variable
                     return new ArithmeticExpression(tree.getChild(i).getText(), unaryOperators);
                 }
             }
-        } else {
-            if (tree.getChildCount() == 1) {
-                return parseArithmeticExpression(tree.getChild(0));
-            }
-
-            int rightExprIndex = 2;
-
-            ArithmeticExpression binOpExpr = null;
-            while (rightExprIndex <= tree.getChildCount() - 1) {
-                binOpExpr = (binOpExpr != null) ? binOpExpr : parseArithmeticExpression(tree.getChild(0));
-                ArithmeticExpression rightExpr = parseArithmeticExpression(tree.getChild(rightExprIndex));
-                char binOp = tree.getChild(rightExprIndex - 1).getText().charAt(0);
-
-                if (binOpExpr.isImmediateValue() && binOpExpr.getImmediateValue() == 0 && (binOp == '+' || binOp == '-')) {
-                    binOpExpr = rightExpr;
-                } else if (rightExpr.isImmediateValue() && rightExpr.getImmediateValue() == 0 && (binOp == '+' || binOp == '-')) {
-                } else if (binOpExpr.isImmediateValue() && binOpExpr.getImmediateValue() == 1 && (binOp == '*' || binOp == '/')) {
-                    binOpExpr = rightExpr;
-                } else if (rightExpr.isImmediateValue() && rightExpr.getImmediateValue() == 1 && (binOp == '*' || binOp == '/')) {
-                } else if (binOpExpr.isImmediateValue() && binOpExpr.getImmediateValue() == 0 && binOp == '*') {
-                    binOpExpr = new ArithmeticExpression(0, "");
-                } else if (rightExpr.isImmediateValue() && rightExpr.getImmediateValue() == 0 && binOp == '*') {
-                    binOpExpr = new ArithmeticExpression(0, "");
-                } else if (rightExpr.isImmediateValue() && rightExpr.getImmediateValue() == 0 && binOp == '/') {
-                    System.err.println("Build failed: division by zero not allowed");
-                    System.exit(1);
-                } else {
-                    binOpExpr = new ArithmeticExpression(binOpExpr, rightExpr, binOp, "");
-                }
-
-
-                rightExprIndex += 2;
-            }
-            return binOpExpr;
         }
+
+        // Now it must be a binary rule
+
+        // If there is only one children rule it is not a binary operation
+        if (tree.getChildCount() == 1) {
+            return parseArithmeticExpression(tree.getChild(0));
+        }
+
+        // Parse a binary operation assuming all the operators are left-associative
+        int rightExprIndex = 2;
+        ArithmeticExpression binOpExpr = null;
+
+        while (rightExprIndex <= tree.getChildCount() - 1) {
+            binOpExpr = (binOpExpr != null) ? binOpExpr : parseArithmeticExpression(tree.getChild(0));
+            ArithmeticExpression rightExpr = parseArithmeticExpression(tree.getChild(rightExprIndex));
+            char binOp = tree.getChild(rightExprIndex - 1).getText().charAt(0);
+
+            binOpExpr = combineArithmeticExpressions(binOpExpr, rightExpr, binOp);
+            rightExprIndex += 2;
+        }
+
+        return binOpExpr;
+
+    }
+
+    /**
+     * Combines two arithmetic operations into one which is a binary operation.
+     */
+    private ArithmeticExpression combineArithmeticExpressions(ArithmeticExpression leftExpr,
+            ArithmeticExpression rightExpr, char binOp) {
+        if (leftExpr.isImmediateValue() && leftExpr.getImmediateValue() == 0 && binOp == '+') {
+            // 0 + x = x 
+            return rightExpr;
+        }
+        if (leftExpr.isImmediateValue() && leftExpr.getImmediateValue() == 0 && binOp == '-') {
+            // 0 - x = -x
+            return new ArithmeticExpression(rightExpr.getImmediateValue(), "-" + rightExpr.getUnaryOperators());
+        }
+        if (rightExpr.isImmediateValue() && rightExpr.getImmediateValue() == 0 && (binOp == '+' || binOp == '-')) {
+            // x + 0 = x && x - 0 = x
+            return leftExpr;
+        }
+        if (leftExpr.isImmediateValue() && leftExpr.getImmediateValue() == 1 && binOp == '*') {
+            // 1 * x = x
+            return rightExpr;
+        }
+        if (rightExpr.isImmediateValue() && rightExpr.getImmediateValue() == 1 && (binOp == '*' || binOp == '/')) {
+            // x * 1 = x && x / 1 == x
+            return leftExpr;
+        }
+        if (leftExpr.isImmediateValue() && leftExpr.getImmediateValue() == 0 && binOp == '*') {
+            // 0 * x = 0
+            return new ArithmeticExpression(0, "");
+        }
+        if (rightExpr.isImmediateValue() && rightExpr.getImmediateValue() == 0 && binOp == '*') {
+            // x * 0 = 0
+            return new ArithmeticExpression(0, "");
+        }
+        if (rightExpr.isImmediateValue() && rightExpr.getImmediateValue() == 0 && binOp == '/') {
+            // x / 0 = error
+            System.err.println("Build failed: division by zero not allowed");
+            System.exit(1);
+            return null;
+        }
+        if (leftExpr.isImmediateValue() && leftExpr.getImmediateValue() == 0 && binOp == '/') {
+            // 0 / x = 0
+            return new ArithmeticExpression(0, "");
+        }
+        // If there is no simplification just combine expression into a binary operation
+        return new ArithmeticExpression(leftExpr, rightExpr, binOp, "");
+    }
+    
+    private BooleanExpression parseBooleanExpression(Tree tree) {
+        //TODO
+        return null;
     }
 
     private void parseFunction(Tree tree) {

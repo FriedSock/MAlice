@@ -32,7 +32,7 @@ public class MAlice {
             die("Build", ex);
         }*/
 
-        MAliceLexer lexer = new MAliceLexer(new ANTLRStringStream("b was a number and -~-(- b * 3 + 4 * ack(m+2,n) - 2 / 3) & 3 | 2+2*~~-(3/arr's 2 piece) spoke."));
+        MAliceLexer lexer = new MAliceLexer(new ANTLRStringStream("b was a number and -~-(- b * 3 + (0 - -2) + 4 * ack(m+2,n) - 2 / 3) & 3 | 2+2*~~-(3/arr's 2 piece) spoke."));
         //MAliceLexer lexer = new MAliceLexer(fileStream);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         ParseTreeBuilder builder = new ParseTreeBuilder("prog");
