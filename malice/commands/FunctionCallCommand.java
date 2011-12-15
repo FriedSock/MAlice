@@ -1,16 +1,16 @@
 package malice.commands;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import malice.expressions.ArithmeticExpression;
 
 public class FunctionCallCommand implements Command {
 
     private String functionName;
-    private List<String> parameters;
+    private List<ArithmeticExpression> parameters;
 
-    public FunctionCallCommand(String functionName, List<String> parameters){
+    public FunctionCallCommand(String functionName, List<ArithmeticExpression> parameters){
         this.functionName = functionName;
         this.parameters = parameters;
         
@@ -20,7 +20,7 @@ public class FunctionCallCommand implements Command {
         return functionName;
     }
 
-    public List<String> getParameters() {
+    public List<ArithmeticExpression> getParameters() {
         return parameters;
     }
 
@@ -32,14 +32,34 @@ public class FunctionCallCommand implements Command {
     @Override
     public Set<String> getUsedVariables() {
         Set<String> usedVariables = new HashSet<String>();
-        usedVariables.addAll(parameters);
+        for (ArithmeticExpression parameter : parameters) {
+            usedVariables.addAll(parameter.getUsedVariables());
+        }
         return usedVariables;
     }
 
     @Override
     public boolean usesVariable(String aVariableName) {
-        return parameters.contains(aVariableName);
+        for (ArithmeticExpression parameter : parameters) {
+            if (parameter.usesVariable(aVariableName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        boolean first = true;
+        for (ArithmeticExpression parameter : parameters) {
+            if (!first) {
+                builder.append(", ");
+            }
+            builder.append(parameter.toString());
+            first = false;
+        }
+        return functionName + "(" + builder.toString() + ")";
+    }
 }
