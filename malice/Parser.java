@@ -14,21 +14,42 @@ import malice.commands.Command;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import malice.functions.LookingGlass;
+import malice.functions.Room;
 import org.antlr.runtime.tree.Tree;
 
 public class Parser {
 
+    private static final String STATEMENT = "statement";
+    private static final String FUNCTION = "function";
     private static final String COMMAND = "command";
+    // commands
+    private static final String EXPRESSION_SPOKE = "expression_spoke";
+    private static final String ARRAY_DECLARATION = "array_declaration";
     private static final String VARIABLE_DECLARATION = "variable_declaration";
     private static final String VARIABLE_ASSIGNMENT = "variable_assignment";
-    private static final String EXPRESSION_SPOKE = "expression_spoke";
+    private static final String PROCEDURE = "procedure";
+    private static final String FUNCTION_CALL = "function_call";
+    private static final String FUNCTION_RETURN = "function_return";
+    private static final String THROUGH = "through";
+    private static final String WHILE_NOT = "while_not";
+    private static final String CONDITIONAL = "conditional";
+    private static final String INPUT = "input";
+    private static final String OUTPUT = "output";
+    private static final String COMMENT = "comment";
+    // procedures
     private static final String ATE = "ate";
     private static final String DRANK = "drank";
+    // fields
     private List<Command> commands;
+    private List<Room> rooms;
+    private List<LookingGlass> lookingGlasses;
     private SymbolTable symbolTable;
 
     public Parser() {
         commands = new ArrayList<Command>();
+        rooms = new ArrayList<Room>();
+        lookingGlasses = new ArrayList<LookingGlass>();
         symbolTable = new SymbolTable();
     }
 
@@ -44,7 +65,17 @@ public class Parser {
         tree = tree.getChild(0);
         for (int i = 0; i < tree.getChildCount(); i++) {
             Tree child = tree.getChild(i);
-            parseStatement(child);
+
+            if (STATEMENT.equals(child.getText())) {
+                // statement
+                parseStatement(child);
+            } else if (FUNCTION.equals(child.getText())) {
+                // function
+                parseFunction(child);
+            } else {
+                // looking glass
+                parseLookingGlass(child);
+            }
         }
     }
 
@@ -207,6 +238,14 @@ public class Parser {
             }
             return parseArithmeticExpression(leftExp);
         }
+    }
+
+    private void parseFunction(Tree tree) {
+        //TODO - parsing functions
+    }
+
+    private void parseLookingGlass(Tree tree) {
+        //TODO - looking glasses
     }
 
     @Override
