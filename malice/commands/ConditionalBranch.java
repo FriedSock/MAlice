@@ -25,7 +25,9 @@ public class ConditionalBranch {
 
     public Set<String> getUsedVariables() {
         Set<String> usedVariables = new HashSet<String>();
-        usedVariables.addAll(condition.getUsedVariables());
+        if (condition != null) {
+            usedVariables.addAll(condition.getUsedVariables());
+        }
         for (Command c : commands) {
             usedVariables.addAll(c.getUsedVariables());
         }
@@ -33,7 +35,7 @@ public class ConditionalBranch {
     }
 
     public boolean usesVariable(String aVariableName) {
-        if (condition.usesVariable(aVariableName)) {
+        if (condition != null && condition.usesVariable(aVariableName)) {
             return true;
         }
         for (Command c : commands) {

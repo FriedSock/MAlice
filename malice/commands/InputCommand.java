@@ -1,34 +1,41 @@
 package malice.commands;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
+import malice.expressions.ArithmeticExpression;
 
 public class InputCommand implements Command{
 
-    private String variableName;
+    /**
+     * Either a variable or array piece.
+     */
+    private ArithmeticExpression inputDestination;
 
-    public InputCommand(String variableName){
-        this.variableName = variableName;
+    public InputCommand(ArithmeticExpression inputDestination){
+        this.inputDestination = inputDestination;
     }
 
-    public String getVariableName(){
-        return variableName;
+    public ArithmeticExpression getInputDestination() {
+        return inputDestination;
     }
 
     @Override
     public void acceptVisitor(CommandVisitor visitor) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //TODO - acceptVisitor
     }
 
     @Override
     public Set<String> getUsedVariables() {
-        return new HashSet<String>(Arrays.asList(variableName));
+        //TODO - fix
+        return inputDestination.getUsedVariables();
     }
 
     @Override
     public boolean usesVariable(String aVariableName) {
-        return aVariableName.equals(variableName);
+        return inputDestination.usesVariable(aVariableName);
     }
 
+    @Override
+    public String toString() {
+        return "what was " + inputDestination + "?";
+    }
 }

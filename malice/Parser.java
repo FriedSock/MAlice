@@ -16,14 +16,17 @@ import java.util.List;
 import java.util.Set;
 import malice.commands.ArrayDeclarationCommand;
 import malice.commands.ConditionalBranch;
+import malice.commands.ConditionalCommand;
 import malice.commands.FunctionCallCommand;
 import malice.commands.FunctionReturnCommand;
+import malice.commands.InputCommand;
 import malice.commands.ThroughCommand;
 import malice.commands.WhileNotCommand;
 import malice.expressions.BooleanExpression;
 import malice.expressions.StringExpression;
 import malice.functions.LookingGlassFunction;
 import malice.functions.RoomFunction;
+import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.Tree;
 
 public class Parser {
@@ -132,11 +135,11 @@ public class Parser {
         } else if (WHILE_NOT.equals(commandName)) {
             return parseWhileNot(commandTree);
         } else if (CONDITIONAL.equals(commandName)) {
-            return parseProcedure(commandTree);
+            return parseConditional(commandTree);
         } else if (INPUT.equals(commandName)) {
-            return parseProcedure(commandTree);
+            return parseInput(commandTree);
         } else if (OUTPUT.equals(commandName)) {
-            return parseProcedure(commandTree);
+            return parseOutput(commandTree);
         } else if (COMMENT.equals(commandName)) {
             // discard comment
             return null;
@@ -282,6 +285,7 @@ public class Parser {
         } else if (DRANK.equals(procedureName)) {
             return new DecrementCommand(variableName);
         } else {
+            //TODO - really?
             // in case of syntax connectors such as and
             return null;
         }
@@ -320,6 +324,52 @@ public class Parser {
         }
         
         return new WhileNotCommand(new ConditionalBranch(condition, whileNotCommands));
+    }
+    
+    private Command parseConditional(Tree tree) {
+        BooleanExpression condition = parseBooleanExpression(tree.getChild(1));
+        List<Command> conditionalCommands = parseStatement(tree.getChild(3));
+        
+        List<ConditionalBranch> branches = new ArrayList<ConditionalBranch>();
+        branches.add(new ConditionalBranch(condition, conditionalCommands));
+        
+        
+        boolean hasElseBranch = tree.getChildCount() % 2 == 1;
+        int topIndex = hasElseBranch ? tree.getChildCount() - 4 : tree.getChildCount() - 2;
+
+        condition = null;
+        for (int i = 5; i <= topIndex; i += 2) {
+            if (condition == null) {
+                condition = parseBooleanExpression(tree.getChild(i));
+            } else {
+                branches.add(new ConditionalBranch(condition, parseStatement(tree.getChild(i))));
+                condition = null;
+            }
+        }
+        
+        if (hasElseBranch) {
+            branches.add(new ConditionalBranch(null, parseStatement(tree.getChild(tree.getChildCount() - 2))));
+        }
+        
+        return new ConditionalCommand(branches);
+    }
+    
+    private Command parseInput(Tree tree) {
+        // Little hack to be able to use parseArithmeticExpression
+        Tree t = new CommonTree() {
+            @Override
+            public String getText() {
+                return "value";
+            }
+        };
+        t.addChild(tree.getChild(1));
+        
+        ArithmeticExpression inputDestination = parseArithmeticExpression(t);
+        return new InputCommand(inputDestination);
+    }
+    
+    private Command parseOutput(Tree tree) {
+        return parseExpressionSpoke(tree);
     }
 
     private ArithmeticExpression parseArithmeticExpression(Tree tree) {
