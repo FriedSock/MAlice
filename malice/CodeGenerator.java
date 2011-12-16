@@ -29,47 +29,35 @@ import malice.commands.VariableDeclarationCommand;
 import malice.expressions.ArithmeticExpression;
 import malice.expressions.CharacterExpression;
 import malice.expressions.Expression;
+import malice.functions.LookingGlassFunction;
+import malice.functions.RoomFunction;
 import malice.symbols.MemoryLocation;
 import malice.symbols.Storage;
 
 public class CodeGenerator implements CommandVisitor {
 
     private List<Command> commands;
+    private List<RoomFunction> rooms;
+    private List<LookingGlassFunction> lookingGlasses;
     private SymbolTable symbolTable;
     private List<String> assemblyCommands;
     private Queue<Register> freeRegisters;
-    private Map<String, Command> variablesUsedLastInCommand;
     private Set<String> freeMemoryLocationVariables;
     private int nextFreeMemoryAddress;
     private int nextComparisonNumber;
 
-    public CodeGenerator(List<Command> commands, SymbolTable symbolTable) {
+    public CodeGenerator(List<Command> commands, List<RoomFunction> rooms,
+            List<LookingGlassFunction> lookingGlasses, SymbolTable symbolTable) {
         this.commands = commands;
+        this.rooms = rooms;
+        this.lookingGlasses = lookingGlasses;
         this.symbolTable = symbolTable;
 
         assemblyCommands = new ArrayList<String>();
         freeRegisters = new LinkedList<Register>();
         freeRegisters.addAll(Arrays.asList(Register.values()));
-        variablesUsedLastInCommand = new HashMap<String, Command>();
         freeMemoryLocationVariables = new HashSet<String>();
         nextFreeMemoryAddress = 1;
-
-        findLiveRanges();
-    }
-
-    private void findLiveRanges() {
-        Set<String> allVariables = new HashSet<String>();
-        for (Command command : commands) {
-            allVariables.addAll(command.getUsedVariables());
-        }
-
-        for (Command command : commands) {
-            for (String variableName : allVariables) {
-                if (command.usesVariable(variableName)) {
-                    variablesUsedLastInCommand.put(variableName, command);
-                }
-            }
-        }
     }
 
     public List<String> generateCode() {
@@ -82,14 +70,6 @@ public class CodeGenerator implements CommandVisitor {
 
         for (Command command : commands) {
             command.acceptVisitor(this);
-
-            // free storage used by variables which is not needed in later commands
-            for (Map.Entry<String, Command> entry : variablesUsedLastInCommand.entrySet()) {
-                if (command == entry.getValue()) {
-                    Storage storage = symbolTable.getVariableStorage(entry.getKey(), "");
-                    freeStorage(storage);
-                }
-            }
         }
 
         assemblyCommands.add("mov rax 0");

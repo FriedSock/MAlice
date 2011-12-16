@@ -62,13 +62,14 @@ public class MAlice {
             die("Build", ex);
         }
 
-        /*System.out.println("Generating assembly code");
-        CodeGenerator codeGenerator = new CodeGenerator(parser.getCommands(), parser.getSymbolTable());
+        System.out.println("Generating assembly code");
+        CodeGenerator codeGenerator = new CodeGenerator(parser.getCommands(), parser.getRooms(),
+                parser.getLookingGlasses(), parser.getSymbolTable());
         List<String> assembly = codeGenerator.generateCode();
         
         for (String asm : assembly) {
             System.out.println(asm);
-        }*/
+        }
         
         /*String baseFileName = maliceFileName.replaceAll(".alice$", "");
         String assemblyFileName = baseFileName + ".asm";
