@@ -21,7 +21,10 @@ public class ArrayDeclarationCommand implements Command {
     public String getVariableName() {
         return variableName;
     }
-    
+
+    public ArithmeticExpression getSize() {
+        return size;
+    }
     @Override
     public Set<String> getUsedVariables() {
         return new HashSet<String>(Arrays.asList(variableName));
@@ -34,7 +37,7 @@ public class ArrayDeclarationCommand implements Command {
 
     @Override
     public void acceptVisitor(CommandVisitor visitor) {
-        //visitor.visitVariableDeclaration(this);
+        visitor.visitArrayDeclaration(this);
     }
     
     @Override

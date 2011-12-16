@@ -112,8 +112,17 @@ public class CodeGenerator implements CommandVisitor {
 
     @Override
     public void visitArrayDeclaration(ArrayDeclarationCommand command) {
-        //TODO - visitArrayDeclaration
-        //TODO - need to allocate memory and stuff
+        Storage storage = symbolTable.getVariableStorage(command.getVariableName(), scope);
+        if (storage == Register.NONE) {
+            storage = allocateStorage();
+            symbolTable.setVariableStorage(command.getVariableName(), storage, scope);
+        }
+        Storage expStorage = allocateStorage();
+        generateExpressionCode(expStorage,command.getSize());
+        assemblyCommands.add("mov rax, " + expStorage);
+        assemblyCommands.add("push rax");
+        assemblyCommands.add("call malloc");
+        assemblyCommands.add("mov " + storage + ", rax");
     }
 
     @Override
@@ -285,20 +294,23 @@ public class CodeGenerator implements CommandVisitor {
 
     @Override
     public void visitThrough(ThroughCommand command) {
-        //Preserve all the initialized variables
-        List<Storage> initializedStorage = getInitializedStorage();
-        for (Storage s : initializedStorage) {
-            assemblyCommands.add("mov rbx, " + s);
-            assemblyCommands.add("push rbx");
-        }
-        assemblyCommands.add("push rsi");
-
 
         Storage storage = symbolTable.getVariableStorage(command.getVariableName(), scope);
         if (storage == Register.NONE) {
             storage = allocateStorage();
             symbolTable.setVariableStorage(command.getVariableName(), storage, scope);
         }
+
+
+        //Preserve all the initialized variables
+        List<Storage> initializedStorage = getInitializedStorage();
+        initializedStorage.remove(storage);
+        for (Storage s : initializedStorage) {
+            assemblyCommands.add("mov rbx, " + s);
+            assemblyCommands.add("push rbx");
+        }
+        assemblyCommands.add("push rsi");
+
         assemblyCommands.add("mov rax, " + storage.toString());
         assemblyCommands.add("push rax");
         assemblyCommands.add("call lookingglass_" + command.getLookingGlassName());
