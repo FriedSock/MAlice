@@ -103,10 +103,22 @@ public class CodeGenerator implements CommandVisitor {
         
         ConditionalBranch firstBranch = branches.get(0);
         
+        // code for if
+        // code for else if
+        // code for next else if
+        // code for else
+        
+        
+        for (int i = branches.size() - 1; i > 0; i--) {
+            assemblyCommands.add("cond_" + conditionalLabel + "_" + i + ":");
+            
+            
+            
+        }
         
         
         
-        assemblyCommands.add("cond_" + conditionalLabel + "_1:");
+        
         
         
         assemblyCommands.add("cond_" + conditionalLabel + "end:");
