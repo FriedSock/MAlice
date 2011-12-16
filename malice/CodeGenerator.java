@@ -333,10 +333,10 @@ public class CodeGenerator implements CommandVisitor {
         // ArithmeticExp instead of a String as a field for this
 
 
-        Storage storage = symbolTable.getVariableStorage(command.getVariableName(), scope);
+        Storage storage = symbolTable.getVariableStorage(command.getDestination().getVariableName(), scope);
         if (storage == Register.NONE) {
             storage = allocateStorage();
-            symbolTable.setVariableStorage(command.getVariableName(), storage, scope);
+            symbolTable.setVariableStorage(command.getDestination().getVariableName(), storage, scope);
         }
 
         if(command.isArrayPiece()){
@@ -346,10 +346,13 @@ public class CodeGenerator implements CommandVisitor {
         Expression exp = command.getSource();
         if (exp.isArithmeticExpression()) {
             generateExpressionCode(storage, (ArithmeticExpression) exp);
+            //TODO - should be here an if else?
             if (command.isArrayPiece()) {
-                Storage arrayAddr = symbolTable.getVariableStorage(command.getVariableName(), scope);
+                ArithmeticExpression sourceArithmeticExpression = (ArithmeticExpression) exp;
+                
+                Storage arrayAddr = symbolTable.getVariableStorage(command.getDestination().getVariableName(), scope);
                 Storage index = allocateStorage();
-                generateExpressionCode(index, command.getPieceIndex());
+                generateExpressionCode(index, sourceArithmeticExpression.getPieceIndex());
                 assemblyCommands.add("mov rax, " + storage);
                 assemblyCommands.add("mov rbx, " + arrayAddr);
                 assemblyCommands.add("mov rcx, " + index);
