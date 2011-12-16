@@ -44,7 +44,11 @@ public class MAlice {
          lexer = new MAliceLexer(fileStream);
         }
         else {
+<<<<<<< HEAD
          lexer = new MAliceLexer(new ANTLRStringStream("1 + 2 spoke."));
+=======
+         lexer = new MAliceLexer(new ANTLRStringStream(""));
+>>>>>>> be3036f3022099d7f6e374812b2f487c3dd0313b
         }
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         ParseTreeBuilder builder = new ParseTreeBuilder("prog");
