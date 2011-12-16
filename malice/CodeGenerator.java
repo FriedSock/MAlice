@@ -20,6 +20,7 @@ import java.util.Queue;
 import java.util.Set;
 import malice.commands.Command;
 import malice.commands.CommandVisitor;
+import malice.commands.ConditionalBranch;
 import malice.commands.DecrementCommand;
 import malice.commands.FunctionReturnCommand;
 import malice.commands.IncrementCommand;
@@ -75,6 +76,9 @@ public class CodeGenerator implements CommandVisitor {
         assemblyCommands.add("mov rax 0");
         assemblyCommands.add("int 0x80");
 
+        //TODO - rooms
+        //TODO - looking glasses
+        
         addPrint();
         makeDataSegment();
 
@@ -84,11 +88,31 @@ public class CodeGenerator implements CommandVisitor {
     @Override
     public void visitArrayDeclaration(ArrayDeclarationCommand command) {
         //TODO - visitArrayDeclaration
+        //TODO - need to allocate memory and stuff
     }
 
     @Override
     public void visitConditional(ConditionalCommand command) {
         //TODO - visitConditional
+        
+        int nextConditionalLabel = 1;
+        int conditionalLabel = nextConditionalLabel;
+        nextConditionalLabel++;
+        
+        List<ConditionalBranch> branches = command.getBranches();
+        
+        ConditionalBranch firstBranch = branches.get(0);
+        
+        
+        
+        
+        assemblyCommands.add("cond_" + conditionalLabel + "_1:");
+        
+        
+        assemblyCommands.add("cond_" + conditionalLabel + "end:");
+        
+        
+        
     }
     
     @Override
