@@ -330,7 +330,6 @@ public class CodeGenerator implements CommandVisitor {
 
     @Override
     public void visitVariableAssignment(VariableAssignmentCommand command) {
-        //TODO - array piece - here you need array_piece. VariableAssignmentCommand should have
         // ArithmeticExp instead of a String as a field for this
 
 
@@ -455,6 +454,18 @@ public class CodeGenerator implements CommandVisitor {
             }
             assemblyCommands.addAll(pop);
 
+        } else if(ArithmeticExpression.Type.ARRAY_PIECE == exp.getType()) {
+            Storage arrayAddr = symbolTable.getVariableStorage(exp.getArrayName(), scope);
+            Storage index = allocateStorage();
+            generateExpressionCode(index, exp.getPieceIndex());
+            assemblyCommands.add("mov rax, " + arrayAddr);
+            assemblyCommands.add("mov rbx, " + index);
+            assemblyCommands.add("imul rbx, 8");
+            assemblyCommands.add("add rax, rbx");
+            assemblyCommands.add("mov rax, [rax]");
+            assemblyCommands.add("mov " + destStorage + ", rax");
+            freeStorage(arrayAddr);
+            freeStorage(index);
         } else {
             if (!exp.isImmediateValue()) {
                 // variable
