@@ -109,7 +109,7 @@ public class SymbolTable {
         return symbolTable.get("");
     }
     
-    private Map<String, Symbol> getScopeSymbolTable(String scope) {
+    public Map<String, Symbol> getScopeSymbolTable(String scope) {
         Map<String, Symbol> scopeSymbolTable = symbolTable.get(scope);
         if (scopeSymbolTable == null) {
             scopeSymbolTable = new HashMap<String, Symbol>();

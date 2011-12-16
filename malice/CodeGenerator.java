@@ -100,7 +100,7 @@ public class CodeGenerator implements CommandVisitor {
             generateRoomCode(room);
         }
 
-        for(LookingGlassFunction lookingGlass : lookingGlasses) {
+        for (LookingGlassFunction lookingGlass : lookingGlasses) {
             generateLookingGlassCode(lookingGlass);
         }
 
@@ -165,6 +165,15 @@ public class CodeGenerator implements CommandVisitor {
 
     @Override
     public void visitFunctionCall(FunctionCallCommand command) {
+
+        //Preserve all the initialized variables
+        List<Storage> initializedStorage = getInitializedStorage();
+        for (Storage s : initializedStorage) {
+            assemblyCommands.add("mov rbx, " + s);
+            assemblyCommands.add("push rbx");
+        }
+
+
         Storage destStorage = allocateStorage();
 
         for (ArithmeticExpression parameter : command.getParameters()) {
@@ -175,10 +184,19 @@ public class CodeGenerator implements CommandVisitor {
         freeStorage(destStorage);
 
         assemblyCommands.add("call room_" + command.getFunctionName());
+
+        //Restore memory used by the room
+        List<String> pop = new ArrayList<String>();
+        for (Storage s : initializedStorage) {
+            pop.add(0, "mov " + s + ", rbx");
+            pop.add(0, "pop rbx");
+        }
+        assemblyCommands.addAll(pop);
     }
 
     @Override
     public void visitFunctionReturn(FunctionReturnCommand command) {
+
         if (FunctionReturnCommand.Type.EXPRESSION == command.getType()) {
             // number
             Storage destStorage = allocateStorage();
@@ -268,7 +286,7 @@ public class CodeGenerator implements CommandVisitor {
     @Override
     public void visitThrough(ThroughCommand command) {
         Storage storage = symbolTable.getVariableStorage(command.getVariableName(), scope);
-        if(storage == Register.NONE) {
+        if (storage == Register.NONE) {
             storage = allocateStorage();
             symbolTable.setVariableStorage(command.getVariableName(), storage, scope);
         }
@@ -354,6 +372,15 @@ public class CodeGenerator implements CommandVisitor {
             freeStorage(leftStorage);
             freeStorage(rightStorage);
         } else if (ArithmeticExpression.Type.FUNCTION_CALL == exp.getType()) {
+
+            //Preserve all the initialized variables
+            List<Storage> initializedStorage = getInitializedStorage();
+            for (Storage s : initializedStorage) {
+                assemblyCommands.add("mov rbx, " + s);
+                assemblyCommands.add("push rbx");
+            }
+            assemblyCommands.add("push rsi");
+
             Storage destStorage2 = allocateStorage();
 
             for (ArithmeticExpression parameter : exp.getFunctionCall().getParameters()) {
@@ -365,6 +392,15 @@ public class CodeGenerator implements CommandVisitor {
 
             assemblyCommands.add("call room_" + exp.getFunctionCall().getFunctionName());
             assemblyCommands.add("mov " + destStorage + ", rax");
+
+            //Restore memory used by the room
+            assemblyCommands.add("pop rsi");
+            List<String> pop = new ArrayList<String>();
+            for (Storage s : initializedStorage) {
+                pop.add(0, "mov " + s + ", rbx");
+                pop.add(0, "pop rbx");
+            }
+            assemblyCommands.addAll(pop);
         } else {
             if (!exp.isImmediateValue()) {
                 // variable
@@ -617,6 +653,20 @@ public class CodeGenerator implements CommandVisitor {
         assemblyCommands.add("ret");
 
         scope = "";
+    }
+
+    private List<Storage> getInitializedStorage() {
+        List<Storage> pushStorage = new ArrayList<Storage>();
+        Set<String> allStorage = symbolTable.getScopeSymbolTable(scope).keySet();
+
+        //Get the storage of all the variables used so far
+        for (String id : allStorage) {
+            if (symbolTable.isInitialisedVariable(id, scope)) {
+                pushStorage.add(symbolTable.getVariableStorage(id, scope));
+            }
+        }
+
+        return pushStorage;
     }
 
     private Storage allocateStorage() {
