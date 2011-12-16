@@ -10,6 +10,10 @@ public class WhileNotCommand implements Command {
         this.branch = branch;
     }
 
+    public ConditionalBranch getBranch() {
+        return branch;
+    }
+    
     @Override
     public void acceptVisitor(CommandVisitor visitor) {
         visitor.visitWhileNot(this);

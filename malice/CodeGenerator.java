@@ -31,10 +31,12 @@ import malice.expressions.ArithmeticExpression;
 import malice.expressions.BooleanExpression;
 import malice.expressions.CharacterExpression;
 import malice.expressions.Expression;
+import malice.expressions.StringExpression;
 import malice.functions.LookingGlassFunction;
 import malice.functions.RoomFunction;
 import malice.symbols.MemoryLocation;
 import malice.symbols.Storage;
+import malice.symbols.Type;
 
 public class CodeGenerator implements CommandVisitor {
 
@@ -49,6 +51,8 @@ public class CodeGenerator implements CommandVisitor {
     private int nextFreeMemoryAddress;
     private int nextComparisonNumber;
     private int nextConditionalLabel;
+    private int nextStringName;
+    private Map<String, String> stringNames;
     private String scope;
 
     public CodeGenerator(List<Command> commands, List<RoomFunction> rooms,
@@ -66,6 +70,8 @@ public class CodeGenerator implements CommandVisitor {
         nextFreeMemoryAddress = 0;
         nextComparisonNumber = 0;
         nextConditionalLabel = 0;
+        nextStringName = 0;
+        stringNames = new HashMap<String, String>();
         scope = "";
     }
 
@@ -168,18 +174,42 @@ public class CodeGenerator implements CommandVisitor {
         // No need to push and pop ebx and eax as this is the end of the program
 
 
-        
+
         Storage destStorage = allocateStorage();
-        if (command.getExpression() instanceof ArithmeticExpression) {
-            generateExpressionCode(destStorage, (ArithmeticExpression) command.getExpression());
+        Expression exp = command.getExpression();
+
+        if (exp instanceof ArithmeticExpression) {
+            ArithmeticExpression arithmeticExpression = (ArithmeticExpression) exp;
+            if (ArithmeticExpression.Type.VARIABLE == arithmeticExpression.getType()
+                    && Type.sentence == symbolTable.getVariableType(arithmeticExpression.getVariableName(), scope)) {
+                assemblyCommands.add("mov eax, 4");
+                assemblyCommands.add("mov ebx, 1");
+                assemblyCommands.add("mov ecx, " + symbolTable.getVariableStorage(arithmeticExpression.getVariableName(), scope));
+                assemblyCommands.add("mov edx, 100");
+                assemblyCommands.add("int 0x80");
+                return;
+            }
+
+            generateExpressionCode(destStorage, (ArithmeticExpression) exp);
+            assemblyCommands.add("mov rax, " + destStorage);
+            assemblyCommands.add("call print_int");
+        } else if (exp instanceof StringExpression) {
+            stringNames.put("msg_" + nextStringName, ((StringExpression) exp).getString());
+
+            assemblyCommands.add("mov eax, 4");
+            assemblyCommands.add("mov ebx, 1");
+            assemblyCommands.add("mov ecx, " + "msg_" + nextStringName);
+            assemblyCommands.add("mov edx, 100");
+            assemblyCommands.add("int 0x80");
+
+            nextStringName++;
         }
-        assemblyCommands.add("mov rax, " + destStorage);
-        assemblyCommands.add("call print_int");
         
-        
+
+
         // If the last command just does rbx=rbx remove it
         /*if (("mov " + Register.rbx + ", " + Register.rbx).equals(assemblyCommands.get(assemblyCommands.size() - 1))) {
-            assemblyCommands.remove(assemblyCommands.size() - 1);
+        assemblyCommands.remove(assemblyCommands.size() - 1);
         }
         assemblyCommands.add("mov " + Register.rax + ", 1");
         assemblyCommands.add("int 0x80");*/
@@ -201,6 +231,8 @@ public class CodeGenerator implements CommandVisitor {
         Expression exp = command.getExpression();
         if (exp.isArithmeticExpression()) {
             generateExpressionCode(storage, (ArithmeticExpression) exp);
+        } else if (exp instanceof StringExpression) {
+            generateExpressionCode(storage, (StringExpression) exp);
         } else {
             generateExpressionCode(storage, (CharacterExpression) exp);
         }
@@ -218,6 +250,15 @@ public class CodeGenerator implements CommandVisitor {
     private void generateExpressionCode(Storage destStorage, CharacterExpression exp) {
         //assemblyCommands.add("mov " + Register.rax + ", " + destStorage);
         assemblyCommands.add("mov " + destStorage + ", " + (int) exp.getCharacter());
+    }
+
+    private void generateExpressionCode(Storage destStorage, StringExpression exp) {
+        stringNames.put("msg_" + nextStringName, exp.getString());
+
+        assemblyCommands.add("mov rax, msg_" + nextStringName);
+        assemblyCommands.add("mov " + destStorage + ", rax");
+
+        nextStringName++;
     }
 
     private void generateExpressionCode(Storage destStorage, ArithmeticExpression exp) {
@@ -453,11 +494,26 @@ public class CodeGenerator implements CommandVisitor {
         for (String x : memoryLocationVariables) {
             assemblyCommands.add(x + " dq " + 0);
         }
+
+        assemblyCommands.add("bufferaddr dq 0");
         assemblyCommands.add("octetbuffer dq 0");
         assemblyCommands.add("noofdigits dq 0");
         assemblyCommands.add("originalvalue dq 0");
         assemblyCommands.add("isnegative dq 0");
-        
+
+        for (Map.Entry<String, String> entry : stringNames.entrySet()) {
+            String sentence = entry.getValue();
+
+            boolean newLine = false;
+            if ('\n' == sentence.charAt(sentence.length() - 1)) {
+                newLine = true;
+                sentence.substring(0, sentence.length() - 2);
+            }
+
+            assemblyCommands.add(entry.getKey() + " db \"" + sentence + "\"" + (newLine ? ", 0xA" : ""));
+            assemblyCommands.add("len_" + entry.getKey() + " equ $-" + entry.getKey());
+        }
+
         assemblyCommands.add("segment .bss");
         assemblyCommands.add("number resb 100");
     }
