@@ -235,11 +235,13 @@ public class Parser {
 
     private Command parseVariableAssignment(Tree tree) {
         String variableName = tree.getChild(0).getText();
-        ArithmeticExpression pieceIndex = null;
+        //ArithmeticExpression pieceIndex = null;
+        ArithmeticExpression destination = new ArithmeticExpression(variableName, "");
 
         if ("array_piece".equals(variableName)) {
-            variableName = tree.getChild(0).getChild(0).getText();
-            pieceIndex = parseArithmeticExpression(tree.getChild(0).getChild(2));
+            String arrayName = tree.getChild(0).getChild(0).getText();
+            ArithmeticExpression pieceIndex = parseArithmeticExpression(tree.getChild(0).getChild(2));
+            destination = new ArithmeticExpression(arrayName, pieceIndex, "");
         }
         
         if (!"it".equals(variableName) && !symbolTable.containsVariable(variableName, scope)) {
@@ -299,7 +301,7 @@ public class Parser {
             symbolTable.initialiseVariable(variableName, scope);
         }
 
-        return new VariableAssignmentCommand(variableName, pieceIndex, expression);
+        return new VariableAssignmentCommand(destination, expression);
     }
 
     private Command parseProcedure(Tree tree) {

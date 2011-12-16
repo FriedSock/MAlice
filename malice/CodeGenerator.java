@@ -343,7 +343,7 @@ public class CodeGenerator implements CommandVisitor {
             storage = allocateStorage();
         }
 
-        Expression exp = command.getExpression();
+        Expression exp = command.getSource();
         if (exp.isArithmeticExpression()) {
             generateExpressionCode(storage, (ArithmeticExpression) exp);
             if (command.isArrayPiece()) {

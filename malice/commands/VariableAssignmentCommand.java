@@ -8,39 +8,41 @@ import malice.expressions.Expression;
 
 public class VariableAssignmentCommand implements Command {
 
-    private String variableName;
-    private ArithmeticExpression pieceIndex;
-    private Expression expression;
-    private boolean isArrayPiece;
+    private ArithmeticExpression destination;
+    private Expression source;
 
-    public VariableAssignmentCommand(String variableName, Expression expression) {
-        this.variableName = variableName;
-        this.expression = expression;
-        isArrayPiece = false;
+    public VariableAssignmentCommand(ArithmeticExpression destination, Expression source) {
+        this.destination = destination;
+        this.source = source;
     }
     
-    public VariableAssignmentCommand(String variableName, ArithmeticExpression pieceIndex, Expression expression) {
-        this.variableName = variableName;
-        this.pieceIndex = pieceIndex;
-        this.expression = expression;
-        isArrayPiece = true;
-    }
-    
-    public String getVariableName() {
+    /*public String getVariableName() {
         return variableName;
+    }*/
+
+    public ArithmeticExpression getDestination() {
+        return destination;
     }
 
-    public boolean isArrayPiece(){
-        return isArrayPiece;
+    public Expression getSource() {
+        return source;
     }
     
-    public ArithmeticExpression getPieceIndex() {
+    public boolean isArrayPiece(){
+        if (!(source instanceof ArithmeticExpression)) {
+            return false;
+        }
+        ArithmeticExpression sourceArithmeticExpression = (ArithmeticExpression) source;
+        return ArithmeticExpression.Type.ARRAY_PIECE == sourceArithmeticExpression.getType();
+    }
+    
+    /*public ArithmeticExpression getPieceIndex() {
         return pieceIndex;
     }
     
     public Expression getExpression() {
         return expression;
-    }
+    }*/
 
     @Override
     public void acceptVisitor(CommandVisitor visitor) {
@@ -49,18 +51,18 @@ public class VariableAssignmentCommand implements Command {
     
     @Override
     public Set<String> getUsedVariables() {
-        Set<String> usedVariables = new HashSet<String>(Arrays.asList(variableName));
-        usedVariables.addAll(expression.getUsedVariables());
+        Set<String> usedVariables = new HashSet<String>();
+        usedVariables.addAll(source.getUsedVariables());
         return usedVariables;
     }
     
     @Override
     public boolean usesVariable(String aVariableName) {
-        return variableName.equals(aVariableName) || expression.usesVariable(aVariableName);
+        return source.usesVariable(aVariableName);
     }
     
     @Override
     public String toString() {
-        return variableName + " became " + expression;
+        return destination + " became " + source;
     }
 }
