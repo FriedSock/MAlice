@@ -15,6 +15,7 @@ public class FunctionReturnCommand implements Command {
     private Type type;
     private char character;
     private Expression expression;
+    private String functionName;
 
     public FunctionReturnCommand(char character) {
         this.type = Type.CHAR;
@@ -24,6 +25,14 @@ public class FunctionReturnCommand implements Command {
     public FunctionReturnCommand(Expression expression) {
         this.type = Type.EXPRESSION;
         this.expression = expression;
+    }
+
+    public String getFunctionName(){
+        return functionName;
+    }
+
+    public void setFunctionName(String functionName){
+        this.functionName = functionName;
     }
 
     public Type getType() {

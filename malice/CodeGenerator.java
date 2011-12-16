@@ -100,6 +100,10 @@ public class CodeGenerator implements CommandVisitor {
             generateRoomCode(room);
         }
 
+        for(LookingGlassFunction lookingGlass : lookingGlasses) {
+            generateLookingGlassCode(lookingGlass);
+        }
+
         //TODO - looking glasses
 
         addPrint();
@@ -184,7 +188,7 @@ public class CodeGenerator implements CommandVisitor {
             // character
             //TODO - return character
         }
-
+        assemblyCommands.add("push rsi"); //push the instruction pointer back
         assemblyCommands.add("ret");
     }
 
@@ -238,7 +242,7 @@ public class CodeGenerator implements CommandVisitor {
             assemblyCommands.add("mov eax, 4");
             assemblyCommands.add("mov ebx, 1");
             assemblyCommands.add("mov ecx, " + "msg_" + nextStringName);
-            assemblyCommands.add("mov edx, 100");
+            assemblyCommands.add("mov edx, " + "len_msg_" + nextStringName);
             assemblyCommands.add("int 0x80");
 
             nextStringName++;
@@ -263,7 +267,16 @@ public class CodeGenerator implements CommandVisitor {
 
     @Override
     public void visitThrough(ThroughCommand command) {
-        //TODO - visitThrough
+        Storage storage = symbolTable.getVariableStorage(command.getVariableName(), scope);
+        if(storage == Register.NONE) {
+            storage = allocateStorage();
+            symbolTable.setVariableStorage(command.getVariableName(), storage, scope);
+        }
+        assemblyCommands.add("mov rax, " + storage.toString());
+        assemblyCommands.add("push rax");
+        assemblyCommands.add("call lookingglass_" + command.getLookingGlassName());
+        assemblyCommands.add("pop rax");
+        assemblyCommands.add("mov " + storage.toString() + ", rax");
     }
 
     @Override
@@ -492,7 +505,18 @@ public class CodeGenerator implements CommandVisitor {
                 generateComparisonCode(destStorage, exp.getOp(), exp.getLeftAritExpr(), exp.getRightAritExpr());
                 break;
             case FUNCTION:
-                //TODO
+                //Doesn't work, NullPointerException
+                Storage destStorage2 = allocateStorage();
+
+                for (ArithmeticExpression parameter : exp.getLeftAritExpr().getFunctionCall().getParameters()) {
+                    generateExpressionCode(destStorage2, parameter);
+                    assemblyCommands.add("mov rax, " + destStorage2);
+                    assemblyCommands.add("push rax");
+                }
+                freeStorage(destStorage);
+
+                assemblyCommands.add("call room_" + exp.getLeftAritExpr().getFunctionCall().getFunctionName());
+                assemblyCommands.add("mov " + destStorage + ", rax");
                 break;
         }
 
@@ -551,6 +575,7 @@ public class CodeGenerator implements CommandVisitor {
         List<Storage> storages = new ArrayList<Storage>();
 
         assemblyCommands.add("room_" + room.getName() + ":");
+        assemblyCommands.add("pop rsi"); //get instruction pointer
         for (int i = parameters.size() - 1; i >= 0; i--) {
             Storage storage = symbolTable.getVariableStorage(parameters.get(i).getName(), scope);
             if (storage == Register.NONE) {
@@ -565,9 +590,33 @@ public class CodeGenerator implements CommandVisitor {
         for (Command command : room.getCommands()) {
             command.acceptVisitor(this);
         }
+
+        scope = "";
     }
 
-    private void generateLookingGlassCode() {
+    private void generateLookingGlassCode(LookingGlassFunction lookingGlass) {
+        scope = lookingGlass.getName();
+
+        assemblyCommands.add("lookingglass_" + lookingGlass.getName() + ":");
+        assemblyCommands.add("pop rsi");
+
+        Storage itStorage = allocateStorage();
+        symbolTable.addVariable("it", Type.number, scope);
+        symbolTable.setVariableStorage("it", itStorage, scope);
+        assemblyCommands.add("pop rax");
+        assemblyCommands.add("mov " + itStorage.toString() + ", rax");
+
+        for (Command command : lookingGlass.getCommands()) {
+            command.acceptVisitor(this);
+        }
+
+        assemblyCommands.add("");
+        assemblyCommands.add("mov rax, " + symbolTable.getVariableStorage("it", scope).toString());
+        assemblyCommands.add("push rax");
+        assemblyCommands.add("push rsi");
+        assemblyCommands.add("ret");
+
+        scope = "";
     }
 
     private Storage allocateStorage() {
@@ -616,14 +665,14 @@ public class CodeGenerator implements CommandVisitor {
         for (Map.Entry<String, String> entry : stringNames.entrySet()) {
             String sentence = entry.getValue();
 
-            boolean newLine = false;
+            /*boolean newLine = false;
             if (sentence.endsWith("\n")) {
-                newLine = true;
-                sentence = sentence.substring(0, sentence.length() - 2);
-                System.out.println("NEWLINE");
-            }
+            newLine = true;
+            sentence = sentence.substring(0, sentence.length() - 2);
+            System.out.println("NEWLINE");
+            }*/
 
-            assemblyCommands.add(entry.getKey() + " db \"" + sentence + "\"" + (newLine ? ", 0xA" : ""));
+            assemblyCommands.add(entry.getKey() + " db `" + sentence + "` , 0xA, 0xD");
             assemblyCommands.add("len_" + entry.getKey() + " equ $-" + entry.getKey());
         }
 

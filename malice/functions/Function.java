@@ -2,6 +2,7 @@ package malice.functions;
 
 import java.util.List;
 import malice.commands.Command;
+import malice.commands.FunctionReturnCommand;
 import malice.symbols.Type;
 
 public class Function {
@@ -14,6 +15,11 @@ public class Function {
         this.name = name;
         this.commands = commands;
         this.type = type;
+        for(Command c : this.commands) {
+            if(c instanceof FunctionReturnCommand) {
+                ((FunctionReturnCommand) c).setFunctionName(name);
+            }
+        }
     }
 
     public String getName() {

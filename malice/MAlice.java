@@ -44,7 +44,7 @@ public class MAlice {
          lexer = new MAliceLexer(fileStream);
         }
         else {
-         lexer = new MAliceLexer(new ANTLRStringStream("i was a number. i became simpleSum(2,3). i spoke. The room simpleSum ( number l, number m ) contained a number Alice found l+m."));
+         lexer = new MAliceLexer(new ANTLRStringStream("i was a number. \"What number will go through the looking glass?\\n>\" said Alice, what was i? i went through addAnswer. \"The number is now: \" said Alice and i spoke and \"\\n\" spoke. The Looking-Glass addAnswer changed a number it became it + 42."));
         }
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         ParseTreeBuilder builder = new ParseTreeBuilder("prog");
