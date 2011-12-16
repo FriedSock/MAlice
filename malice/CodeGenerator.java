@@ -33,6 +33,7 @@ import malice.expressions.CharacterExpression;
 import malice.expressions.Expression;
 import malice.expressions.StringExpression;
 import malice.functions.LookingGlassFunction;
+import malice.functions.Parameter;
 import malice.functions.RoomFunction;
 import malice.symbols.MemoryLocation;
 import malice.symbols.Storage;
@@ -155,12 +156,24 @@ public class CodeGenerator implements CommandVisitor {
 
     @Override
     public void visitFunctionReturn(FunctionReturnCommand command) {
-        //TODO - visitFunctionReturn
+        
+        assemblyCommands.add("");
+        
+        if (FunctionReturnCommand.Type.EXPRESSION == command.getType()) {
+            // number
+            generateExpressionCode(Register.rax, (ArithmeticExpression) command.getExpression());
+        } else {
+            // character
+            
+        }
+        
+        //assemblyCommands.add("");
+        assemblyCommands.add("ret");
     }
 
     @Override
     public void visitIncrement(IncrementCommand command) {
-        Storage storage = symbolTable.getVariableStorage(command.getVariableName(), "");
+        Storage storage = symbolTable.getVariableStorage(command.getVariableName(), scope);
         assemblyCommands.add("inc " + storage);
     }
 
@@ -225,10 +238,10 @@ public class CodeGenerator implements CommandVisitor {
 
     @Override
     public void visitVariableAssignment(VariableAssignmentCommand command) {
-        Storage storage = symbolTable.getVariableStorage(command.getVariableName(), "");
+        Storage storage = symbolTable.getVariableStorage(command.getVariableName(), scope);
         if (storage == Register.NONE) {
             storage = allocateStorage();
-            symbolTable.setVariableStorage(command.getVariableName(), storage, "");
+            symbolTable.setVariableStorage(command.getVariableName(), storage, scope);
         }
 
         Expression exp = command.getExpression();
@@ -281,7 +294,7 @@ public class CodeGenerator implements CommandVisitor {
         } else {
             if (!exp.isImmediateValue()) {
                 // variable
-                assemblyCommands.add("mov " + Register.rax + ", " + symbolTable.getVariableStorage(exp.getVariableName(), ""));
+                assemblyCommands.add("mov " + Register.rax + ", " + symbolTable.getVariableStorage(exp.getVariableName(), scope));
             } else {
                 // immediate value
                 assemblyCommands.add("mov " + Register.rax + ", " + exp.getImmediateValue());
@@ -449,12 +462,28 @@ public class CodeGenerator implements CommandVisitor {
         assemblyCommands.add("");
     }
 
-    private void generateConditionalCode() {
-    }
-
-    private void generateFunctionCode(String name) {
+    private void generateRoomCode(RoomFunction room) {
+        scope = room.getName();
+        
+        List<Parameter> parameters = room.getParameters();
+        
+        List<Storage> storages = new ArrayList<Storage>();
+        
+        assemblyCommands.add("room_" + room.getName() + ":");
+        for (int i = parameters.size() - 1; i >= 0; i--) {
+            Storage storage = allocateStorage();
+            storages.add(0, storage);
+            assemblyCommands.add("pop rax");
+            assemblyCommands.add("mov " + storage + ", rax");
+        }
+        
         assemblyCommands.add("");
-        assemblyCommands.add(name + ":");
+        
+        for (Command command : room.getCommands()) {
+            command.acceptVisitor(this);
+        }
+        
+        
         assemblyCommands.add("ret");
     }
 
@@ -479,7 +508,7 @@ public class CodeGenerator implements CommandVisitor {
         do {
             memoryLocationVariable = "mem_" + nextFreeMemoryAddress;
             nextFreeMemoryAddress += 1;
-        } while (symbolTable.containsVariable(memoryLocationVariable, ""));
+        } while (symbolTable.containsVariable(memoryLocationVariable, scope));
 
         //Keep a list of all memory locations
         memoryLocationVariables.add(memoryLocationVariable);
@@ -508,9 +537,9 @@ public class CodeGenerator implements CommandVisitor {
             String sentence = entry.getValue();
 
             boolean newLine = false;
-            if ('\n' == sentence.charAt(sentence.length() - 1)) {
+            if (sentence.endsWith("\n")) {
                 newLine = true;
-                sentence = sentence.substring(0, sentence.length() - 2);
+                sentence = sentence.substring(0, sentence.length() - 3);
             }
 
             assemblyCommands.add(entry.getKey() + " db \"" + sentence + "\"" + (newLine ? ", 0xA" : ""));
