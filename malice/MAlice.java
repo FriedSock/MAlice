@@ -44,7 +44,7 @@ public class MAlice {
          lexer = new MAliceLexer(fileStream);
         }
         else {
-         lexer = new MAliceLexer(new ANTLRStringStream("a was a number, a became 10 < 5."));
+         lexer = new MAliceLexer(new ANTLRStringStream("var was a number. var became 0. perhaps (var > 0) so var became 1. or maybe (var < 0) so var became 2 or var became 3."));
         }
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         ParseTreeBuilder builder = new ParseTreeBuilder("prog");

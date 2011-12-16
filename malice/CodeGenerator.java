@@ -48,6 +48,7 @@ public class CodeGenerator implements CommandVisitor {
     private Set<String> memoryLocationVariables;
     private int nextFreeMemoryAddress;
     private int nextComparisonNumber;
+    private int nextConditionalLabel;
     private String scope;
 
     public CodeGenerator(List<Command> commands, List<RoomFunction> rooms,
@@ -62,7 +63,9 @@ public class CodeGenerator implements CommandVisitor {
         freeRegisters.addAll(Arrays.asList(Register.values()));
         freeMemoryLocationVariables = new HashSet<String>();
         memoryLocationVariables = new HashSet<String>();
-        nextFreeMemoryAddress = 1;
+        nextFreeMemoryAddress = 0;
+        nextComparisonNumber = 0;
+        nextConditionalLabel = 0;
         scope = "";
     }
 
@@ -98,38 +101,39 @@ public class CodeGenerator implements CommandVisitor {
 
     @Override
     public void visitConditional(ConditionalCommand command) {
-        //TODO - visitConditional
-
-        int nextConditionalLabel = 1;
         int conditionalLabel = nextConditionalLabel;
         nextConditionalLabel++;
 
         List<ConditionalBranch> branches = command.getBranches();
 
-        ConditionalBranch firstBranch = branches.get(0);
+        Storage destStorage = allocateStorage();
+        for (int i = 0; i < branches.size() - 1; i++) {
+            if (branches.get(i).getCondition() == null) {
+                break;
+            }
 
-        // code for if
-        // code for else if
-        // code for next else if
-        // code for else
+            generateBooleanExpressionCode(destStorage, branches.get(i).getCondition());
 
+            assemblyCommands.add("mov rax, " + destStorage);
+            assemblyCommands.add("cmp rax, 1");
+            assemblyCommands.add("je cond_" + conditionalLabel + "_" + i);   
+        }
+        freeStorage(destStorage);
 
-        for (int i = branches.size() - 1; i > 0; i--) {
+        for (int i = branches.size() - 1; i >= 0; i--) {
             assemblyCommands.add("cond_" + conditionalLabel + "_" + i + ":");
 
+            for (Command aCommand : branches.get(i).getCommands()) {
+                aCommand.acceptVisitor(this);
+            }
 
-
+            if (i != 0) {
+                // Don't need to jump if this is the last branch
+                assemblyCommands.add("jmp cond_" + conditionalLabel + "_end");
+            }
         }
 
-
-
-
-
-
-        assemblyCommands.add("cond_" + conditionalLabel + "end:");
-
-
-
+        assemblyCommands.add("cond_" + conditionalLabel + "_end:");
     }
 
     @Override
@@ -433,11 +437,7 @@ public class CodeGenerator implements CommandVisitor {
     }
 
     private void freeStorage(Storage storage) {
-        if (storage.isRegister()) {
-            freeRegisters.add((Register) storage);
-        } else {
-            freeMemoryLocationVariables.add(((MemoryLocation) storage).getLocationName());
-        }
+        freeMemoryLocationVariables.add(((MemoryLocation) storage).getLocationName());
     }
 
     private void makeDataSegment() {
