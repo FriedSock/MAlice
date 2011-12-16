@@ -920,9 +920,18 @@ public class CodeGenerator implements CommandVisitor {
 
         assemblyCommands.add("");
         assemblyCommands.add("firsttime:");
+        assemblyCommands.add("cmp rsi, 10");
+        assemblyCommands.add("je specialcase");
         assemblyCommands.add("mov rcx, rsi");
         assemblyCommands.add("add rcx, 48");
         assemblyCommands.add("call print");
+        assemblyCommands.add("jmp after");
+        assemblyCommands.add("specialcase:");
+        assemblyCommands.add("mov rcx, '1'");
+        assemblyCommands.add("call print");
+        assemblyCommands.add("mov rcx, '0'");
+        assemblyCommands.add("call print");
+        assemblyCommands.add("after:");
 
         assemblyCommands.add("");
         assemblyCommands.add("add rbp, 1");
