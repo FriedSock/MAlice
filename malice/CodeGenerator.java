@@ -95,11 +95,11 @@ public class CodeGenerator implements CommandVisitor {
         assemblyCommands.add("mov rax, 1");
         assemblyCommands.add("int 0x80");
 
-        
+
         for (RoomFunction room : rooms) {
             generateRoomCode(room);
         }
-        
+
         //TODO - looking glasses
 
         addPrint();
@@ -162,14 +162,15 @@ public class CodeGenerator implements CommandVisitor {
     @Override
     public void visitFunctionCall(FunctionCallCommand command) {
         Storage destStorage = allocateStorage();
+
         for (ArithmeticExpression parameter : command.getParameters()) {
             generateExpressionCode(destStorage, parameter);
             assemblyCommands.add("mov rax, " + destStorage);
             assemblyCommands.add("push rax");
         }
         freeStorage(destStorage);
-        
-        assemblyCommands.add("call " + command.getFunctionName());
+
+        assemblyCommands.add("call room_" + command.getFunctionName());
     }
 
     @Override
@@ -205,7 +206,7 @@ public class CodeGenerator implements CommandVisitor {
             storage = allocateStorage();
             symbolTable.setVariableStorage(variableName, storage, scope);
         }
-        
+
         assemblyCommands.add("call read");
         assemblyCommands.add("call string_to_int");
         assemblyCommands.add("mov " + storage + ", rax");
@@ -254,7 +255,7 @@ public class CodeGenerator implements CommandVisitor {
         } else if (exp instanceof BooleanExpression) {
             BooleanExpression boolExp = (BooleanExpression) exp;
             generateBooleanExpressionCode(destStorage, boolExp);
-            
+
             assemblyCommands.add("mov rax, " + destStorage);
             assemblyCommands.add("call print_int");
         }
@@ -291,22 +292,22 @@ public class CodeGenerator implements CommandVisitor {
     public void visitWhileNot(WhileNotCommand command) {
         ConditionalBranch branch = command.getBranch();
         Storage destStorage = allocateStorage();
-        
+
         int currentWhileNotNumber = nextWhileNotNumber;
         nextWhileNotNumber++;
-        
+
         assemblyCommands.add("while_not_" + currentWhileNotNumber + ":");
-        
+
         generateBooleanExpressionCode(destStorage, branch.getCondition());
 
         assemblyCommands.add("mov rax, " + destStorage);
         assemblyCommands.add("cmp rax, 1");
         assemblyCommands.add("je while_not_end_" + currentWhileNotNumber);
-        
+
         for (Command aCommand : branch.getCommands()) {
             aCommand.acceptVisitor(this);
         }
-        
+
         assemblyCommands.add("jmp while_not_" + currentWhileNotNumber);
         assemblyCommands.add("while_not_end_" + currentWhileNotNumber + ":");
     }
@@ -339,6 +340,18 @@ public class CodeGenerator implements CommandVisitor {
 
             freeStorage(leftStorage);
             freeStorage(rightStorage);
+        } else if (ArithmeticExpression.Type.FUNCTION_CALL == exp.getType()) {
+            Storage destStorage2 = allocateStorage();
+
+            for (ArithmeticExpression parameter : exp.getFunctionCall().getParameters()) {
+                generateExpressionCode(destStorage2, parameter);
+                assemblyCommands.add("mov rax, " + destStorage2);
+                assemblyCommands.add("push rax");
+            }
+            freeStorage(destStorage);
+
+            assemblyCommands.add("call room_" + exp.getFunctionCall().getFunctionName());
+            assemblyCommands.add("mov " + destStorage + ", rax");
         } else {
             if (!exp.isImmediateValue()) {
                 // variable
@@ -533,10 +546,10 @@ public class CodeGenerator implements CommandVisitor {
 
     private void generateRoomCode(RoomFunction room) {
         scope = room.getName();
-        
+
         List<Parameter> parameters = room.getParameters();
         List<Storage> storages = new ArrayList<Storage>();
-        
+
         assemblyCommands.add("room_" + room.getName() + ":");
         for (int i = parameters.size() - 1; i >= 0; i--) {
             Storage storage = symbolTable.getVariableStorage(parameters.get(i).getName(), scope);
@@ -548,7 +561,7 @@ public class CodeGenerator implements CommandVisitor {
             assemblyCommands.add("pop rax");
             assemblyCommands.add("mov " + storage + ", rax");
         }
-        
+
         for (Command command : room.getCommands()) {
             command.acceptVisitor(this);
         }
