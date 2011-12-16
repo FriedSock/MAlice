@@ -168,14 +168,21 @@ public class CodeGenerator implements CommandVisitor {
         // No need to push and pop ebx and eax as this is the end of the program
 
 
-        //TODO - I commented this out to be able to run the program
-        //generateExpressionCode(Register.rbx, command.getExpression());
+        
+        Storage destStorage = allocateStorage();
+        if (command.getExpression() instanceof ArithmeticExpression) {
+            generateExpressionCode(destStorage, (ArithmeticExpression) command.getExpression());
+        }
+        assemblyCommands.add("mov rax, " + destStorage);
+        assemblyCommands.add("call print_int");
+        
+        
         // If the last command just does rbx=rbx remove it
-        if (("mov " + Register.rbx + ", " + Register.rbx).equals(assemblyCommands.get(assemblyCommands.size() - 1))) {
+        /*if (("mov " + Register.rbx + ", " + Register.rbx).equals(assemblyCommands.get(assemblyCommands.size() - 1))) {
             assemblyCommands.remove(assemblyCommands.size() - 1);
         }
         assemblyCommands.add("mov " + Register.rax + ", 1");
-        assemblyCommands.add("int 0x80");
+        assemblyCommands.add("int 0x80");*/
     }
 
     @Override
