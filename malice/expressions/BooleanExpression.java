@@ -37,7 +37,32 @@ public class BooleanExpression implements Expression {
         this.rightExpr = rightExpr;
         this.op = op;
     }
-    
+
+    public Type getType() {
+        return type;
+    }
+
+    public ArithmeticExpression getLeftAritExpr() {
+        return leftAritExpr;
+    }
+
+    public BooleanExpression getLeftExpr() {
+        return leftExpr;
+    }
+
+    public String getOp() {
+        return op;
+    }
+
+    public ArithmeticExpression getRightAritExpr() {
+        return rightAritExpr;
+    }
+
+    public BooleanExpression getRightExpr() {
+        return rightExpr;
+    }
+
+
     @Override
     public Set<String> getUsedVariables() {
         Set<String> usedVariables = new HashSet<String>();

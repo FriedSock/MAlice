@@ -17,7 +17,7 @@ public class MAlice {
         String maliceFileName;
         MAliceLexer lexer;
                 
-        boolean DEBUG = false;
+        boolean DEBUG = true;
         if (!DEBUG) {
         if (args.length == 0) {
             die("Please provide a file name of an Alice file as an argument to this program");
@@ -44,7 +44,7 @@ public class MAlice {
          lexer = new MAliceLexer(fileStream);
         }
         else {
-         lexer = new MAliceLexer(new ANTLRStringStream("The room primeFactors(number n) contained a number perhaps (isPrime(n)) so n became -n. Alice was unsure which."));
+         lexer = new MAliceLexer(new ANTLRStringStream("a was a number, a became 10 < 5."));
         }
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         ParseTreeBuilder builder = new ParseTreeBuilder("prog");

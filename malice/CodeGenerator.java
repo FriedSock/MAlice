@@ -28,6 +28,7 @@ import malice.commands.SpeakCommand;
 import malice.commands.VariableAssignmentCommand;
 import malice.commands.VariableDeclarationCommand;
 import malice.expressions.ArithmeticExpression;
+import malice.expressions.BooleanExpression;
 import malice.expressions.CharacterExpression;
 import malice.expressions.Expression;
 import malice.functions.LookingGlassFunction;
@@ -44,8 +45,10 @@ public class CodeGenerator implements CommandVisitor {
     private List<String> assemblyCommands;
     private Queue<Register> freeRegisters;
     private Set<String> freeMemoryLocationVariables;
+    private Set<String> memoryLocationVariables;
     private int nextFreeMemoryAddress;
     private int nextComparisonNumber;
+    private String scope;
 
     public CodeGenerator(List<Command> commands, List<RoomFunction> rooms,
             List<LookingGlassFunction> lookingGlasses, SymbolTable symbolTable) {
@@ -58,7 +61,9 @@ public class CodeGenerator implements CommandVisitor {
         freeRegisters = new LinkedList<Register>();
         freeRegisters.addAll(Arrays.asList(Register.values()));
         freeMemoryLocationVariables = new HashSet<String>();
+        memoryLocationVariables = new HashSet<String>();
         nextFreeMemoryAddress = 1;
+        scope = "";
     }
 
     public List<String> generateCode() {
@@ -78,7 +83,7 @@ public class CodeGenerator implements CommandVisitor {
 
         //TODO - rooms
         //TODO - looking glasses
-        
+
         addPrint();
         makeDataSegment();
 
@@ -94,50 +99,50 @@ public class CodeGenerator implements CommandVisitor {
     @Override
     public void visitConditional(ConditionalCommand command) {
         //TODO - visitConditional
-        
+
         int nextConditionalLabel = 1;
         int conditionalLabel = nextConditionalLabel;
         nextConditionalLabel++;
-        
+
         List<ConditionalBranch> branches = command.getBranches();
-        
+
         ConditionalBranch firstBranch = branches.get(0);
-        
+
         // code for if
         // code for else if
         // code for next else if
         // code for else
-        
-        
+
+
         for (int i = branches.size() - 1; i > 0; i--) {
             assemblyCommands.add("cond_" + conditionalLabel + "_" + i + ":");
-            
-            
-            
+
+
+
         }
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
         assemblyCommands.add("cond_" + conditionalLabel + "end:");
-        
-        
-        
+
+
+
     }
-    
+
     @Override
     public void visitDecrement(DecrementCommand command) {
         Storage storage = symbolTable.getVariableStorage(command.getVariableName(), "");
         assemblyCommands.add("dec " + storage);
     }
-    
+
     @Override
     public void visitFunctionCall(FunctionCallCommand command) {
         //TODO - visitFunctionCall
     }
-    
+
     @Override
     public void visitFunctionReturn(FunctionReturnCommand command) {
         //TODO - visitFunctionReturn
@@ -148,7 +153,7 @@ public class CodeGenerator implements CommandVisitor {
         Storage storage = symbolTable.getVariableStorage(command.getVariableName(), "");
         assemblyCommands.add("inc " + storage);
     }
-    
+
     @Override
     public void visitInput(InputCommand command) {
         //TODO - visitInput
@@ -157,8 +162,8 @@ public class CodeGenerator implements CommandVisitor {
     @Override
     public void visitSpeak(SpeakCommand command) {
         // No need to push and pop ebx and eax as this is the end of the program
-        
-        
+
+
         //TODO - I commented this out to be able to run the program
         //generateExpressionCode(Register.rbx, command.getExpression());
         // If the last command just does rbx=rbx remove it
@@ -168,7 +173,7 @@ public class CodeGenerator implements CommandVisitor {
         assemblyCommands.add("mov " + Register.rax + ", 1");
         assemblyCommands.add("int 0x80");
     }
-    
+
     @Override
     public void visitThrough(ThroughCommand command) {
         //TODO - visitThrough
@@ -193,13 +198,14 @@ public class CodeGenerator implements CommandVisitor {
     @Override
     public void visitVariableDeclaration(VariableDeclarationCommand command) {
     }
-    
+
     @Override
     public void visitWhileNot(WhileNotCommand command) {
-        //TODO - visitWhileNot
+        //TODO - visitWhileNotmemoryLocationVariable
     }
 
     private void generateExpressionCode(Storage destStorage, CharacterExpression exp) {
+        //assemblyCommands.add("mov " + Register.rax + ", " + destStorage);
         assemblyCommands.add("mov " + destStorage + ", " + (int) exp.getCharacter());
     }
 
@@ -212,44 +218,30 @@ public class CodeGenerator implements CommandVisitor {
             generateExpressionCode(leftStorage, exp.getLeftExpr());
             generateExpressionCode(rightStorage, exp.getRightExpr());
             generateBinOpCode(exp.getBinOp(), leftStorage, rightStorage);
-            assemblyCommands.add("mov " + destStorage + ", " + leftStorage);
+
+            assemblyCommands.add("mov " + Register.rax + ", " + leftStorage);
 
             freeStorage(leftStorage);
             freeStorage(rightStorage);
         } else {
             if (!exp.isImmediateValue()) {
                 // variable
-                assemblyCommands.add("mov " + destStorage + ", "
-                        + symbolTable.getVariableStorage(exp.getVariableName(), ""));
+                assemblyCommands.add("mov " + Register.rax + ", " + symbolTable.getVariableStorage(exp.getVariableName(), ""));
             } else {
                 // immediate value
-                assemblyCommands.add("mov " + destStorage + ", " + exp.getImmediateValue());
+                assemblyCommands.add("mov " + Register.rax + ", " + exp.getImmediateValue());
             }
 
             String unaryOperators = exp.getUnaryOperators();
             for (int i = 0; i < unaryOperators.length(); i++) {
                 if ('~' == unaryOperators.charAt(i)) {
-                    assemblyCommands.add("not " + destStorage);
+                    assemblyCommands.add("not " + Register.rax);
                 } else {
-                    if (Register.rax == destStorage) {
-                        assemblyCommands.add("push " + Register.rbx);
-                        assemblyCommands.add("mov " + Register.rbx + ", 0");
-                        assemblyCommands.add("sub " + Register.rbx + ", " + destStorage);
-                        assemblyCommands.add("mov " + destStorage + ", " + Register.rbx);
-                        assemblyCommands.add("pop " + Register.rbx);
-                    } else {
-                        assemblyCommands.add("push " + Register.rax);
-                        assemblyCommands.add("mov " + Register.rax + ", 0");
-                        assemblyCommands.add("sub " + Register.rax + ", " + destStorage);
-                        assemblyCommands.add("mov " + destStorage + ", " + Register.rax);
-                        assemblyCommands.add("pop " + Register.rax);
-                    }
-
-                    assemblyCommands.add("not " + destStorage);
-                    assemblyCommands.add("not " + destStorage);
+                    assemblyCommands.add("imul " + Register.rax + ", -1");
                 }
             }
         }
+        assemblyCommands.add("mov " + destStorage + ", " + Register.rax);
     }
 
     private void generateBinOpCode(char binOp, Storage destStorage, Storage moreStorage) {
@@ -290,12 +282,14 @@ public class CodeGenerator implements CommandVisitor {
             case '/':
                 assemblyCommands.add("mov rax, " + destStorage);
                 assemblyCommands.add("mov rbx, " + moreStorage);
+                assemblyCommands.add("mov  rdx, 0");
                 assemblyCommands.add("idiv rbx");
                 assemblyCommands.add("mov " + destStorage + ", rdx");
                 break;
             case '|':
                 assemblyCommands.add("mov rax, " + destStorage);
                 assemblyCommands.add("mov rbx, " + moreStorage);
+                assemblyCommands.add("mov  rdx, 0");
                 assemblyCommands.add("or  rax, rbx");
                 assemblyCommands.add("mov " + destStorage + ", rax");
                 //assemblyCommands.add("mov " + moreStorage + ", rbx");
@@ -311,56 +305,68 @@ public class CodeGenerator implements CommandVisitor {
         }
         //Need to check if moreStorage is being used in the symbol table
         //Use symboltable.usesStorage(moreStorage)
-        //freeStorage(moreStorage); //Not sure
+        if (symbolTable.usesStorage(moreStorage, scope)) {
+            freeStorage(moreStorage);
+        }
+        //Not sure
     }
 
-    private void generateBooleanExpressionCode(Storage destStorage, String binop, ArithmeticExpression left, ArithmeticExpression right){
+    private void generateBooleanExpressionCode(Storage destStorage, BooleanExpression exp) {
         assemblyCommands.add("");
+        switch (exp.getType()) {
+            case COMPARISON:
+                Storage leftStorage = allocateStorage();
+                Storage rightStorage = allocateStorage();
+
+                //Evaluate both sides of the comparison
+                generateExpressionCode(leftStorage, exp.getLeftAritExpr());
+                generateExpressionCode(rightStorage, exp.getRightAritExpr());
+
+                //Move the values into registers
+                assemblyCommands.add("mov rax, " + leftStorage);
+                assemblyCommands.add("mov rbx, " + rightStorage);
+
+                if (exp.getOp().equals("&&")) {
+                    assemblyCommands.add("and rax, rbx");
+                } else if (exp.getOp().equals("||")) {
+                    assemblyCommands.add("or rax, rbx");
+                }
+
+                assemblyCommands.add("mov " + destStorage + ", rax");
+
+                assemblyCommands.add("");
+                break;
+            case BINOP:
+                generateComparisonCode(destStorage, exp.getOp(), exp.getLeftAritExpr(), exp.getRightAritExpr());
+                break;
+            case FUNCTION:
+                //TODO
+                break;
+        }
+
+
+    }
+
+    private void generateComparisonCode(Storage destStorage, String binop, ArithmeticExpression left, ArithmeticExpression right) {
+        Storage leftStorage = allocateStorage();
+        Storage rightStorage = allocateStorage();
+
+        //Evaluate both sides of the comparison
+        generateExpressionCode(leftStorage, left);
+        generateExpressionCode(rightStorage, right);
+
+        //Move the values into registers
+        assemblyCommands.add("");
+        assemblyCommands.add("mov rax, " + leftStorage);
+        assemblyCommands.add("mov rbx, " + rightStorage);
+
+        nextComparisonNumber += 1;
+        String comparisonLabel = "test_" + nextComparisonNumber;
+
+        assemblyCommands.add("cmp rax, rbx");
+
 
         if (binop.equals("==")) {
-            generateComparisonCode(destStorage, binop, left, right);
-        }
-
-        Storage leftStorage = allocateStorage();
-        Storage rightStorage = allocateStorage();
-
-        //Evaluate both sides of the comparison
-        generateExpressionCode(leftStorage, left);
-        generateExpressionCode(rightStorage, right);
-
-        //Move the values into registers
-        assemblyCommands.add("mov rax, " + leftStorage);
-        assemblyCommands.add("mov rbx, " + rightStorage);
-
-        if (binop.equals("&&")) {
-            assemblyCommands.add("and rax, rbx");
-        } else if (binop.equals("||")) {
-            assemblyCommands.add("or rax, rbx");
-        }
-
-        assemblyCommands.add("mov " + destStorage + ", rax");
-
-        assemblyCommands.add("");
-    }
-    private void generateComparisonCode(Storage destStorage, String binop, ArithmeticExpression left, ArithmeticExpression right){
-        Storage leftStorage = allocateStorage();
-        Storage rightStorage = allocateStorage();
-
-        //Evaluate both sides of the comparison
-        generateExpressionCode(leftStorage, left);
-        generateExpressionCode(rightStorage, right);
-
-        //Move the values into registers
-        assemblyCommands.add("");
-        assemblyCommands.add("mov rax, " + leftStorage);
-        assemblyCommands.add("mov rbx, " + rightStorage);
-        
-        String comparisonLabel = "test_" + nextComparisonNumber;
-        nextComparisonNumber += 1;
-        assemblyCommands.add("cmp rax, rbx");
-        
-       
-        if(binop.equals("==")){
             assemblyCommands.add("je " + comparisonLabel);
         } else if (binop.equals("!=")) {
             assemblyCommands.add("jne " + comparisonLabel);
@@ -372,35 +378,38 @@ public class CodeGenerator implements CommandVisitor {
             assemblyCommands.add("jge " + comparisonLabel);
         } else if (binop.equals("<=")) {
             assemblyCommands.add("jle " + comparisonLabel);
+        } else if (binop.equals("&&")) {
+        } else if (binop.equals("||")) {
         }
+
         String endLabel = "endtest_" + nextComparisonNumber;
 
-        assemblyCommands.add("mov " + destStorage + ", 0");
+        assemblyCommands.add("mov " + Register.rax + ", 0");
+        assemblyCommands.add("mov " + destStorage + ", " + Register.rax);
         assemblyCommands.add("jmp " + endLabel);
         assemblyCommands.add(comparisonLabel + ":");
-        assemblyCommands.add("mov " + destStorage + ", 1");
+        assemblyCommands.add("mov " + Register.rax + ", 1");
+        assemblyCommands.add("mov " + destStorage + ", " + Register.rax);
         assemblyCommands.add(endLabel + ":");
         assemblyCommands.add("");
     }
 
-    private void generateConditionalCode(){
-
-    }
-    
-    private void generateFunctionCode(String name){
-            assemblyCommands.add("");
-            assemblyCommands.add(name + ":");
-            assemblyCommands.add("ret");
+    private void generateConditionalCode() {
     }
 
-    private void generateLookingGlassCode(){
+    private void generateFunctionCode(String name) {
+        assemblyCommands.add("");
+        assemblyCommands.add(name + ":");
+        assemblyCommands.add("ret");
+    }
 
+    private void generateLookingGlassCode() {
     }
 
     private Storage allocateStorage() {
         /*if (freeRegisters.size() > 0) {
-            Register register = freeRegisters.remove();
-            return register;
+        Register register = freeRegisters.remove();
+        return register;
         }*/
 
         if (!freeMemoryLocationVariables.isEmpty()) {
@@ -417,6 +426,9 @@ public class CodeGenerator implements CommandVisitor {
             nextFreeMemoryAddress += 1;
         } while (symbolTable.containsVariable(memoryLocationVariable, ""));
 
+        //Keep a list of all memory locations
+        memoryLocationVariables.add(memoryLocationVariable);
+
         return new MemoryLocation(memoryLocationVariable);
     }
 
@@ -431,8 +443,8 @@ public class CodeGenerator implements CommandVisitor {
     private void makeDataSegment() {
         assemblyCommands.add("");
         assemblyCommands.add("segment .data");
-        for(String x : freeMemoryLocationVariables) {
-            assemblyCommands.add(x +" dq" + 0);
+        for (String x : memoryLocationVariables) {
+            assemblyCommands.add(x + " dq " + 0);
         }
         assemblyCommands.add("octetbuffer dq 0");
     }
@@ -456,5 +468,4 @@ public class CodeGenerator implements CommandVisitor {
         assemblyCommands.add("pop " + Register.rax);
         assemblyCommands.add("ret");
     }
-
 }
