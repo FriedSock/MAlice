@@ -198,10 +198,17 @@ public class CodeGenerator implements CommandVisitor {
     @Override
     public void visitInput(InputCommand command) {
         ArithmeticExpression exp = command.getInputDestination();
+        String variableName = exp.getVariableName();
 
+        Storage storage = symbolTable.getVariableStorage(variableName, scope);
+        if (storage == Register.NONE) {
+            storage = allocateStorage();
+            symbolTable.setVariableStorage(variableName, storage, scope);
+        }
+        
         assemblyCommands.add("call read");
         assemblyCommands.add("call string_to_int");
-        assemblyCommands.add("mov " + symbolTable.getVariableStorage(exp.getVariableName(), scope) + ", rax");
+        assemblyCommands.add("mov " + storage + ", rax");
     }
 
     @Override
