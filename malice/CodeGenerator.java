@@ -286,12 +286,13 @@ public class CodeGenerator implements CommandVisitor {
 
         assemblyCommands.add("mov rax, " + destStorage);
         assemblyCommands.add("cmp rax, 1");
-        assemblyCommands.add("jne while_not_end_" + currentWhileNotNumber);
+        assemblyCommands.add("je while_not_end_" + currentWhileNotNumber);
         
         for (Command aCommand : branch.getCommands()) {
             aCommand.acceptVisitor(this);
         }
         
+        assemblyCommands.add("jmp while_not_" + currentWhileNotNumber);
         assemblyCommands.add("while_not_end_" + currentWhileNotNumber + ":");
     }
 
