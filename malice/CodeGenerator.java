@@ -229,6 +229,8 @@ public class CodeGenerator implements CommandVisitor {
 
     @Override
     public void visitInput(InputCommand command) {
+        //TODO - array piece - here exp is EITHER ID | ARRAY_PIECE
+        
         ArithmeticExpression exp = command.getInputDestination();
         String variableName = exp.getVariableName();
 
@@ -328,6 +330,9 @@ public class CodeGenerator implements CommandVisitor {
 
     @Override
     public void visitVariableAssignment(VariableAssignmentCommand command) {
+        //TODO - array piece - here you need array_piece. VariableAssignmentCommand should have
+        // ArithmeticExp instead of a String as a field for this
+        
         Storage storage = symbolTable.getVariableStorage(command.getVariableName(), scope);
         if (storage == Register.NONE) {
             storage = allocateStorage();
