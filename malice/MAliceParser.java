@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g 2011-12-16 00:10:05
+// $ANTLR 3.4 /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g 2011-12-16 00:15:04
 
 	package malice;
 
@@ -84,36 +84,36 @@ public class MAliceParser extends DebugParser {
 
 
 public static final String[] ruleNames = new String[] {
-    "invalidRule", "synpred18_MAlice", "synpred10_MAlice", "synpred1_MAlice", 
-    "program", "synpred12_MAlice", "synpred16_MAlice", "synpred22_MAlice", 
-    "synpred26_MAlice", "synpred14_MAlice", "synpred19_MAlice", "synpred63_MAlice", 
-    "synpred27_MAlice", "looking_glass", "synpred40_MAlice", "synpred54_MAlice", 
-    "synpred46_MAlice", "synpred36_MAlice", "variable_declaration", "synpred49_MAlice", 
-    "synpred6_MAlice", "synpred38_MAlice", "comment", "array_piece", "synpred7_MAlice", 
-    "synpred4_MAlice", "synpred53_MAlice", "synpred58_MAlice", "synpred41_MAlice", 
-    "command", "synpred8_MAlice", "input", "synpred55_MAlice", "synpred30_MAlice", 
-    "synpred34_MAlice", "statement", "synpred11_MAlice", "synpred43_MAlice", 
-    "procedure", "mexpr", "synpred50_MAlice", "synpred61_MAlice", "synpred20_MAlice", 
-    "boolean_expression", "synpred17_MAlice", "synpred21_MAlice", "variable_assignment", 
-    "conditional", "synpred5_MAlice", "synpred60_MAlice", "synpred23_MAlice", 
-    "synpred45_MAlice", "value", "synpred29_MAlice", "synpred33_MAlice", 
-    "synpred42_MAlice", "hexpr", "synpred24_MAlice", "function", "synpred9_MAlice", 
-    "synpred13_MAlice", "synpred51_MAlice", "synpred44_MAlice", "synpred32_MAlice", 
-    "function_call", "synpred39_MAlice", "array_declaration", "synpred64_MAlice", 
-    "synpred15_MAlice", "synpred57_MAlice", "synpred25_MAlice", "synpred52_MAlice", 
-    "expression_spoke", "synpred59_MAlice", "synpred31_MAlice", "synpred2_MAlice", 
-    "expression", "synpred28_MAlice", "function_return", "synpred56_MAlice", 
-    "synpred62_MAlice", "synpred48_MAlice", "synpred35_MAlice", "through", 
-    "synpred37_MAlice", "while_not", "comparison", "synpred3_MAlice", "synpred47_MAlice", 
-    "output"
+    "invalidRule", "expression_spoke", "synpred51_MAlice", "array_declaration", 
+    "synpred43_MAlice", "synpred8_MAlice", "synpred6_MAlice", "synpred4_MAlice", 
+    "synpred58_MAlice", "synpred39_MAlice", "command", "synpred29_MAlice", 
+    "synpred65_MAlice", "synpred25_MAlice", "comparison", "synpred3_MAlice", 
+    "synpred55_MAlice", "while_not", "synpred60_MAlice", "input", "expression", 
+    "synpred24_MAlice", "array_piece", "synpred59_MAlice", "synpred26_MAlice", 
+    "function", "synpred22_MAlice", "hexpr", "mexpr", "synpred61_MAlice", 
+    "synpred57_MAlice", "synpred56_MAlice", "value", "synpred5_MAlice", 
+    "synpred64_MAlice", "synpred35_MAlice", "synpred33_MAlice", "synpred49_MAlice", 
+    "conditional", "function_return", "synpred15_MAlice", "synpred7_MAlice", 
+    "synpred16_MAlice", "output", "synpred50_MAlice", "synpred47_MAlice", 
+    "synpred28_MAlice", "synpred30_MAlice", "synpred27_MAlice", "synpred9_MAlice", 
+    "synpred18_MAlice", "synpred19_MAlice", "synpred46_MAlice", "synpred10_MAlice", 
+    "synpred44_MAlice", "procedure", "synpred11_MAlice", "synpred42_MAlice", 
+    "synpred52_MAlice", "through", "synpred53_MAlice", "synpred63_MAlice", 
+    "synpred37_MAlice", "synpred17_MAlice", "synpred20_MAlice", "variable_declaration", 
+    "synpred1_MAlice", "boolean_expression", "synpred23_MAlice", "synpred32_MAlice", 
+    "function_call", "synpred62_MAlice", "synpred38_MAlice", "synpred45_MAlice", 
+    "synpred54_MAlice", "synpred31_MAlice", "synpred14_MAlice", "synpred34_MAlice", 
+    "synpred2_MAlice", "synpred12_MAlice", "synpred41_MAlice", "synpred13_MAlice", 
+    "synpred48_MAlice", "synpred36_MAlice", "synpred40_MAlice", "synpred21_MAlice", 
+    "looking_glass", "variable_assignment", "comment", "program", "statement"
 };
 
 public static final boolean[] decisionCanBacktrack = new boolean[] {
     false, // invalid decision
     false, false, true, true, false, false, true, false, false, false, false, 
         false, false, false, true, false, false, false, false, false, false, 
-        false, false, false, false, false, false, false, true, false, false, 
-        false
+        false, false, false, false, false, false, false, true, true, false, 
+        false, false, false
 };
 
  
@@ -4581,7 +4581,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "comparison"
-    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:71:1: comparison : ( expression ( '<' | '<=' | '==' | '>=' | '>' | '!=' ) expression | '(' boolean_expression ')' );
+    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:71:1: comparison : ( expression ( ( '<' | '<=' | '==' | '>=' | '>' | '!=' ) expression )? | '(' boolean_expression ')' );
     public final MAliceParser.comparison_return comparison() throws RecognitionException {
         MAliceParser.comparison_return retval = new MAliceParser.comparison_return();
         retval.start = input.LT(1);
@@ -4609,28 +4609,28 @@ public TreeAdaptor getTreeAdaptor() {
         dbg.location(71, 0);
 
         try {
-            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:71:11: ( expression ( '<' | '<=' | '==' | '>=' | '>' | '!=' ) expression | '(' boolean_expression ')' )
-            int alt29=2;
-            try { dbg.enterDecision(29, decisionCanBacktrack[29]);
+            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:71:11: ( expression ( ( '<' | '<=' | '==' | '>=' | '>' | '!=' ) expression )? | '(' boolean_expression ')' )
+            int alt30=2;
+            try { dbg.enterDecision(30, decisionCanBacktrack[30]);
 
-            int LA29_0 = input.LA(1);
+            int LA30_0 = input.LA(1);
 
-            if ( ((LA29_0 >= ID && LA29_0 <= INT)||LA29_0==40||LA29_0==55) ) {
-                alt29=1;
+            if ( ((LA30_0 >= ID && LA30_0 <= INT)||LA30_0==40||LA30_0==55) ) {
+                alt30=1;
             }
-            else if ( (LA29_0==36) ) {
-                int LA29_4 = input.LA(2);
+            else if ( (LA30_0==36) ) {
+                int LA30_4 = input.LA(2);
 
-                if ( (synpred64_MAlice()) ) {
-                    alt29=1;
+                if ( (synpred65_MAlice()) ) {
+                    alt30=1;
                 }
                 else if ( (true) ) {
-                    alt29=2;
+                    alt30=2;
                 }
                 else {
                     if (state.backtracking>0) {state.failed=true; return retval;}
                     NoViableAltException nvae =
-                        new NoViableAltException("", 29, 4, input);
+                        new NoViableAltException("", 30, 4, input);
 
                     dbg.recognitionException(nvae);
                     throw nvae;
@@ -4640,19 +4640,19 @@ public TreeAdaptor getTreeAdaptor() {
             else {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 29, 0, input);
+                    new NoViableAltException("", 30, 0, input);
 
                 dbg.recognitionException(nvae);
                 throw nvae;
 
             }
-            } finally {dbg.exitDecision(29);}
+            } finally {dbg.exitDecision(30);}
 
-            switch (alt29) {
+            switch (alt30) {
                 case 1 :
                     dbg.enterAlt(1);
 
-                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:71:14: expression ( '<' | '<=' | '==' | '>=' | '>' | '!=' ) expression
+                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:71:14: expression ( ( '<' | '<=' | '==' | '>=' | '>' | '!=' ) expression )?
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
@@ -4665,58 +4665,91 @@ public TreeAdaptor getTreeAdaptor() {
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) adaptor.addChild(root_0, expression121.getTree());
                     dbg.location(71,25);
-                    set122=(Token)input.LT(1);
+                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:71:25: ( ( '<' | '<=' | '==' | '>=' | '>' | '!=' ) expression )?
+                    int alt29=2;
+                    try { dbg.enterSubRule(29);
+                    try { dbg.enterDecision(29, decisionCanBacktrack[29]);
 
-                    if ( input.LA(1)==32||(input.LA(1) >= 42 && input.LA(1) <= 46) ) {
-                        input.consume();
-                        if ( state.backtracking==0 ) adaptor.addChild(root_0, 
-                        (CommonTree)adaptor.create(set122)
-                        );
-                        state.errorRecovery=false;
-                        state.failed=false;
+                    int LA29_0 = input.LA(1);
+
+                    if ( (LA29_0==32||LA29_0==44) ) {
+                        int LA29_1 = input.LA(2);
+
+                        if ( (synpred64_MAlice()) ) {
+                            alt29=1;
+                        }
                     }
-                    else {
-                        if (state.backtracking>0) {state.failed=true; return retval;}
-                        MismatchedSetException mse = new MismatchedSetException(null,input);
-                        dbg.recognitionException(mse);
-                        throw mse;
+                    else if ( ((LA29_0 >= 42 && LA29_0 <= 43)||(LA29_0 >= 45 && LA29_0 <= 46)) ) {
+                        alt29=1;
                     }
+                    } finally {dbg.exitDecision(29);}
 
-                    dbg.location(71,65);
-                    pushFollow(FOLLOW_expression_in_comparison628);
-                    expression123=expression();
+                    switch (alt29) {
+                        case 1 :
+                            dbg.enterAlt(1);
 
-                    state._fsp--;
-                    if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, expression123.getTree());
+                            // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:71:26: ( '<' | '<=' | '==' | '>=' | '>' | '!=' ) expression
+                            {
+                            dbg.location(71,26);
+                            set122=(Token)input.LT(1);
+
+                            if ( input.LA(1)==32||(input.LA(1) >= 42 && input.LA(1) <= 46) ) {
+                                input.consume();
+                                if ( state.backtracking==0 ) adaptor.addChild(root_0, 
+                                (CommonTree)adaptor.create(set122)
+                                );
+                                state.errorRecovery=false;
+                                state.failed=false;
+                            }
+                            else {
+                                if (state.backtracking>0) {state.failed=true; return retval;}
+                                MismatchedSetException mse = new MismatchedSetException(null,input);
+                                dbg.recognitionException(mse);
+                                throw mse;
+                            }
+
+                            dbg.location(71,66);
+                            pushFollow(FOLLOW_expression_in_comparison629);
+                            expression123=expression();
+
+                            state._fsp--;
+                            if (state.failed) return retval;
+                            if ( state.backtracking==0 ) adaptor.addChild(root_0, expression123.getTree());
+
+                            }
+                            break;
+
+                    }
+                    } finally {dbg.exitSubRule(29);}
+
 
                     }
                     break;
                 case 2 :
                     dbg.enterAlt(2);
 
-                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:71:78: '(' boolean_expression ')'
+                    // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:71:81: '(' boolean_expression ')'
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
 
-                    dbg.location(71,78);
-                    char_literal124=(Token)match(input,36,FOLLOW_36_in_comparison632); if (state.failed) return retval;
+                    dbg.location(71,81);
+                    char_literal124=(Token)match(input,36,FOLLOW_36_in_comparison635); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal124_tree = 
                     (CommonTree)adaptor.create(char_literal124)
                     ;
                     adaptor.addChild(root_0, char_literal124_tree);
                     }
-                    dbg.location(71,82);
-                    pushFollow(FOLLOW_boolean_expression_in_comparison634);
+                    dbg.location(71,85);
+                    pushFollow(FOLLOW_boolean_expression_in_comparison637);
                     boolean_expression125=boolean_expression();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) adaptor.addChild(root_0, boolean_expression125.getTree());
-                    dbg.location(71,101);
-                    char_literal126=(Token)match(input,37,FOLLOW_37_in_comparison636); if (state.failed) return retval;
+                    dbg.location(71,104);
+                    char_literal126=(Token)match(input,37,FOLLOW_37_in_comparison639); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     char_literal126_tree = 
                     (CommonTree)adaptor.create(char_literal126)
@@ -4747,7 +4780,7 @@ public TreeAdaptor getTreeAdaptor() {
         finally {
         	// do for sure before leaving
         }
-        dbg.location(71, 103);
+        dbg.location(71, 106);
 
         }
         finally {
@@ -4797,7 +4830,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
             dbg.location(74,11);
-            SENTENCE127=(Token)match(input,SENTENCE,FOLLOW_SENTENCE_in_comment645); if (state.failed) return retval;
+            SENTENCE127=(Token)match(input,SENTENCE,FOLLOW_SENTENCE_in_comment648); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             SENTENCE127_tree = 
             (CommonTree)adaptor.create(SENTENCE127)
@@ -4805,7 +4838,7 @@ public TreeAdaptor getTreeAdaptor() {
             adaptor.addChild(root_0, SENTENCE127_tree);
             }
             dbg.location(74,20);
-            THOUGHT_ALICE128=(Token)match(input,THOUGHT_ALICE,FOLLOW_THOUGHT_ALICE_in_comment647); if (state.failed) return retval;
+            THOUGHT_ALICE128=(Token)match(input,THOUGHT_ALICE,FOLLOW_THOUGHT_ALICE_in_comment650); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
             THOUGHT_ALICE128_tree = 
             (CommonTree)adaptor.create(THOUGHT_ALICE128)
@@ -5098,18 +5131,12 @@ public TreeAdaptor getTreeAdaptor() {
 
     // $ANTLR start synpred64_MAlice
     public final void synpred64_MAlice_fragment() throws RecognitionException {
-        // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:71:14: ( expression ( '<' | '<=' | '==' | '>=' | '>' | '!=' ) expression )
+        // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:71:26: ( ( '<' | '<=' | '==' | '>=' | '>' | '!=' ) expression )
         dbg.enterAlt(1);
 
-        // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:71:14: expression ( '<' | '<=' | '==' | '>=' | '>' | '!=' ) expression
+        // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:71:26: ( '<' | '<=' | '==' | '>=' | '>' | '!=' ) expression
         {
-        dbg.location(71,14);
-        pushFollow(FOLLOW_expression_in_synpred64_MAlice602);
-        expression();
-
-        state._fsp--;
-        if (state.failed) return ;
-        dbg.location(71,25);
+        dbg.location(71,26);
         if ( input.LA(1)==32||(input.LA(1) >= 42 && input.LA(1) <= 46) ) {
             input.consume();
             state.errorRecovery=false;
@@ -5122,8 +5149,8 @@ public TreeAdaptor getTreeAdaptor() {
             throw mse;
         }
 
-        dbg.location(71,65);
-        pushFollow(FOLLOW_expression_in_synpred64_MAlice628);
+        dbg.location(71,66);
+        pushFollow(FOLLOW_expression_in_synpred64_MAlice629);
         expression();
 
         state._fsp--;
@@ -5133,6 +5160,70 @@ public TreeAdaptor getTreeAdaptor() {
 
     }
     // $ANTLR end synpred64_MAlice
+
+    // $ANTLR start synpred65_MAlice
+    public final void synpred65_MAlice_fragment() throws RecognitionException {
+        // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:71:14: ( expression ( ( '<' | '<=' | '==' | '>=' | '>' | '!=' ) expression )? )
+        dbg.enterAlt(1);
+
+        // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:71:14: expression ( ( '<' | '<=' | '==' | '>=' | '>' | '!=' ) expression )?
+        {
+        dbg.location(71,14);
+        pushFollow(FOLLOW_expression_in_synpred65_MAlice602);
+        expression();
+
+        state._fsp--;
+        if (state.failed) return ;
+        dbg.location(71,25);
+        // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:71:25: ( ( '<' | '<=' | '==' | '>=' | '>' | '!=' ) expression )?
+        int alt34=2;
+        try { dbg.enterSubRule(34);
+        try { dbg.enterDecision(34, decisionCanBacktrack[34]);
+
+        int LA34_0 = input.LA(1);
+
+        if ( (LA34_0==32||(LA34_0 >= 42 && LA34_0 <= 46)) ) {
+            alt34=1;
+        }
+        } finally {dbg.exitDecision(34);}
+
+        switch (alt34) {
+            case 1 :
+                dbg.enterAlt(1);
+
+                // /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g:71:26: ( '<' | '<=' | '==' | '>=' | '>' | '!=' ) expression
+                {
+                dbg.location(71,26);
+                if ( input.LA(1)==32||(input.LA(1) >= 42 && input.LA(1) <= 46) ) {
+                    input.consume();
+                    state.errorRecovery=false;
+                    state.failed=false;
+                }
+                else {
+                    if (state.backtracking>0) {state.failed=true; return ;}
+                    MismatchedSetException mse = new MismatchedSetException(null,input);
+                    dbg.recognitionException(mse);
+                    throw mse;
+                }
+
+                dbg.location(71,66);
+                pushFollow(FOLLOW_expression_in_synpred65_MAlice629);
+                expression();
+
+                state._fsp--;
+                if (state.failed) return ;
+
+                }
+                break;
+
+        }
+        } finally {dbg.exitSubRule(34);}
+
+
+        }
+
+    }
+    // $ANTLR end synpred65_MAlice
 
     // Delegated rules
 
@@ -5344,6 +5435,22 @@ public TreeAdaptor getTreeAdaptor() {
         state.failed=false;
         return success;
     }
+    public final boolean synpred65_MAlice() {
+        state.backtracking++;
+        dbg.beginBacktrack(state.backtracking);
+        int start = input.mark();
+        try {
+            synpred65_MAlice_fragment(); // can never throw exception
+        } catch (RecognitionException re) {
+            System.err.println("impossible: "+re);
+        }
+        boolean success = !state.failed;
+        input.rewind(start);
+        dbg.endBacktrack(state.backtracking, success);
+        state.backtracking--;
+        state.failed=false;
+        return success;
+    }
     public final boolean synpred31_MAlice() {
         state.backtracking++;
         dbg.beginBacktrack(state.backtracking);
@@ -5483,14 +5590,14 @@ public TreeAdaptor getTreeAdaptor() {
     public static final BitSet FOLLOW_comparison_in_boolean_expression573 = new BitSet(new long[]{0x0040100500000002L});
     public static final BitSet FOLLOW_set_in_boolean_expression576 = new BitSet(new long[]{0x0080011000006000L});
     public static final BitSet FOLLOW_comparison_in_boolean_expression592 = new BitSet(new long[]{0x0040100500000002L});
-    public static final BitSet FOLLOW_expression_in_comparison602 = new BitSet(new long[]{0x00007C0100000000L});
-    public static final BitSet FOLLOW_set_in_comparison604 = new BitSet(new long[]{0x0080011000006000L});
-    public static final BitSet FOLLOW_expression_in_comparison628 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_36_in_comparison632 = new BitSet(new long[]{0x0080011000006000L});
-    public static final BitSet FOLLOW_boolean_expression_in_comparison634 = new BitSet(new long[]{0x0000002000000000L});
-    public static final BitSet FOLLOW_37_in_comparison636 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_SENTENCE_in_comment645 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_THOUGHT_ALICE_in_comment647 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_expression_in_comparison602 = new BitSet(new long[]{0x00007C0100000002L});
+    public static final BitSet FOLLOW_set_in_comparison605 = new BitSet(new long[]{0x0080011000006000L});
+    public static final BitSet FOLLOW_expression_in_comparison629 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_36_in_comparison635 = new BitSet(new long[]{0x0080011000006000L});
+    public static final BitSet FOLLOW_boolean_expression_in_comparison637 = new BitSet(new long[]{0x0000002000000000L});
+    public static final BitSet FOLLOW_37_in_comparison639 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_SENTENCE_in_comment648 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_THOUGHT_ALICE_in_comment650 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_CONNECTOR_in_synpred4_MAlice69 = new BitSet(new long[]{0x0080011040127490L});
     public static final BitSet FOLLOW_command_in_synpred4_MAlice71 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_expression_spoke_in_synpred5_MAlice83 = new BitSet(new long[]{0x0000000000000002L});
@@ -5505,8 +5612,10 @@ public TreeAdaptor getTreeAdaptor() {
     public static final BitSet FOLLOW_expression_in_synpred21_MAlice213 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_boolean_expression_in_synpred31_MAlice315 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_expression_in_synpred32_MAlice319 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_expression_in_synpred64_MAlice602 = new BitSet(new long[]{0x00007C0100000000L});
-    public static final BitSet FOLLOW_set_in_synpred64_MAlice604 = new BitSet(new long[]{0x0080011000006000L});
-    public static final BitSet FOLLOW_expression_in_synpred64_MAlice628 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_set_in_synpred64_MAlice605 = new BitSet(new long[]{0x0080011000006000L});
+    public static final BitSet FOLLOW_expression_in_synpred64_MAlice629 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_expression_in_synpred65_MAlice602 = new BitSet(new long[]{0x00007C0100000002L});
+    public static final BitSet FOLLOW_set_in_synpred65_MAlice605 = new BitSet(new long[]{0x0080011000006000L});
+    public static final BitSet FOLLOW_expression_in_synpred65_MAlice629 = new BitSet(new long[]{0x0000000000000002L});
 
 }

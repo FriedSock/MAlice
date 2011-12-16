@@ -526,9 +526,14 @@ public class Parser {
                 return parseBooleanExpression(tree.getChild(1));
             }
 
+            
             ArithmeticExpression leftAritExpr = parseArithmeticExpression(tree.getChild(0));
-            ArithmeticExpression rightAritExpr = parseArithmeticExpression(tree.getChild(2));
-            return new BooleanExpression(leftAritExpr, rightAritExpr, tree.getChild(1).getText());
+            if (tree.getChildCount() > 1) {
+                ArithmeticExpression rightAritExpr = parseArithmeticExpression(tree.getChild(2));
+                return new BooleanExpression(leftAritExpr, rightAritExpr, tree.getChild(1).getText());
+            } else {
+                return new BooleanExpression(leftAritExpr);
+            }
         }
         
         // If there is only one children rule it is not a binary operation

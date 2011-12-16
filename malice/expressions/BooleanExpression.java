@@ -8,6 +8,7 @@ public class BooleanExpression implements Expression {
     public enum Type {
         
         COMPARISON,
+        FUNCTION,
         BINOP
     }
     
@@ -22,6 +23,11 @@ public class BooleanExpression implements Expression {
         this.leftAritExpr = leftAritExpr;
         this.rightAritExpr = rightAritExpr;
         this.op = op;
+    }
+    
+    public BooleanExpression(ArithmeticExpression leftAritExpr) {
+        this.type = Type.FUNCTION;
+        this.leftAritExpr = leftAritExpr;
     }
     
     public BooleanExpression(BooleanExpression leftExpr,
@@ -39,7 +45,9 @@ public class BooleanExpression implements Expression {
         if (Type.COMPARISON == type) {
             usedVariables.addAll(leftAritExpr.getUsedVariables());
             usedVariables.addAll(rightAritExpr.getUsedVariables());
-        } else {
+        } else if (Type.FUNCTION == type) {
+            usedVariables.addAll(leftAritExpr.getUsedVariables());
+        }  else {
             usedVariables.addAll(leftExpr.getUsedVariables());
             usedVariables.addAll(rightExpr.getUsedVariables());
         }
@@ -51,6 +59,8 @@ public class BooleanExpression implements Expression {
     public boolean usesVariable(String aVariableName) {
         if (Type.COMPARISON == type) {
             return leftAritExpr.usesVariable(aVariableName) || rightAritExpr.usesVariable(aVariableName);
+        } else if (Type.FUNCTION == type) {
+            return leftAritExpr.usesVariable(aVariableName);
         } else {
             return leftExpr.usesVariable(aVariableName) || rightExpr.usesVariable(aVariableName);
         }
@@ -65,15 +75,10 @@ public class BooleanExpression implements Expression {
     public String toString() {
         if (Type.COMPARISON == type) {
             return leftAritExpr + " " + op + " " + rightAritExpr;
+        } else if (Type.FUNCTION == type) {
+            return leftAritExpr + "";
         } else {
             return "(" + leftExpr + " " + op + " " + rightExpr + ")";
         }
     }
 }
-
-/*
- * boolean_expression:	comparison (('==' | '!=' | '&&' | '||') comparison)*;
-
-comparison:		expression ('<' | '<=' | '==' | '>=' | '>' | '!=') expression | '(' boolean_expression ')';
- * 
- */
