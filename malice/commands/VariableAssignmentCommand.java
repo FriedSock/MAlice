@@ -11,20 +11,27 @@ public class VariableAssignmentCommand implements Command {
     private String variableName;
     private ArithmeticExpression pieceIndex;
     private Expression expression;
+    private boolean isArrayPiece;
 
     public VariableAssignmentCommand(String variableName, Expression expression) {
         this.variableName = variableName;
         this.expression = expression;
+        isArrayPiece = false;
     }
     
     public VariableAssignmentCommand(String variableName, ArithmeticExpression pieceIndex, Expression expression) {
         this.variableName = variableName;
         this.pieceIndex = pieceIndex;
         this.expression = expression;
+        isArrayPiece = true;
     }
     
     public String getVariableName() {
         return variableName;
+    }
+
+    public boolean isArrayPiece(){
+        return isArrayPiece;
     }
     
     public ArithmeticExpression getPieceIndex() {

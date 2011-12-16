@@ -118,7 +118,7 @@ public class CodeGenerator implements CommandVisitor {
             symbolTable.setVariableStorage(command.getVariableName(), storage, scope);
         }
         Storage expStorage = allocateStorage();
-        generateExpressionCode(expStorage,command.getSize());
+        generateExpressionCode(expStorage, command.getSize());
         assemblyCommands.add("mov rax, " + expStorage);
         assemblyCommands.add("push rax");
         assemblyCommands.add("call malloc");
@@ -230,7 +230,7 @@ public class CodeGenerator implements CommandVisitor {
     @Override
     public void visitInput(InputCommand command) {
         //TODO - array piece - here exp is EITHER ID | ARRAY_PIECE
-        
+
         ArithmeticExpression exp = command.getInputDestination();
         String variableName = exp.getVariableName();
 
@@ -332,16 +332,35 @@ public class CodeGenerator implements CommandVisitor {
     public void visitVariableAssignment(VariableAssignmentCommand command) {
         //TODO - array piece - here you need array_piece. VariableAssignmentCommand should have
         // ArithmeticExp instead of a String as a field for this
-        
+
+
         Storage storage = symbolTable.getVariableStorage(command.getVariableName(), scope);
         if (storage == Register.NONE) {
             storage = allocateStorage();
             symbolTable.setVariableStorage(command.getVariableName(), storage, scope);
         }
 
+        if(command.isArrayPiece()){
+            storage = allocateStorage();
+        }
+
         Expression exp = command.getExpression();
         if (exp.isArithmeticExpression()) {
             generateExpressionCode(storage, (ArithmeticExpression) exp);
+            if (command.isArrayPiece()) {
+                Storage arrayAddr = symbolTable.getVariableStorage(command.getVariableName(), scope);
+                Storage index = allocateStorage();
+                generateExpressionCode(index, command.getPieceIndex());
+                assemblyCommands.add("mov rax, " + storage);
+                assemblyCommands.add("mov rbx, " + arrayAddr);
+                assemblyCommands.add("mov rcx, " + index);
+                assemblyCommands.add("imul rcx, 8");
+                assemblyCommands.add("add rbx, rcx");
+                assemblyCommands.add("mov [rbx], rax");
+                freeStorage(storage);
+                freeStorage(arrayAddr);
+                freeStorage(index);
+            }
         } else if (exp instanceof StringExpression) {
             generateExpressionCode(storage, (StringExpression) exp);
         } else {
