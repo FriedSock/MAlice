@@ -44,7 +44,7 @@ public class MAlice {
          lexer = new MAliceLexer(fileStream);
         }
         else {
-         lexer = new MAliceLexer(new ANTLRStringStream("b was a number and b became 2. b spoke."));
+         lexer = new MAliceLexer(new ANTLRStringStream(""));
         }
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         ParseTreeBuilder builder = new ParseTreeBuilder("prog");

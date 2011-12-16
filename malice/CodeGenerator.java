@@ -91,7 +91,11 @@ public class CodeGenerator implements CommandVisitor {
         assemblyCommands.add("mov rax, 0");
         assemblyCommands.add("int 0x80");
 
-        //TODO - rooms
+        
+        for (RoomFunction room : rooms) {
+            
+        }
+        
         //TODO - looking glasses
 
         addPrint();
@@ -161,7 +165,9 @@ public class CodeGenerator implements CommandVisitor {
         
         if (FunctionReturnCommand.Type.EXPRESSION == command.getType()) {
             // number
-            generateExpressionCode(Register.rax, (ArithmeticExpression) command.getExpression());
+            Storage destStorage = allocateStorage();
+            generateExpressionCode(destStorage, (ArithmeticExpression) command.getExpression());
+            assemblyCommands.add("mov rax, " + destStorage);
         } else {
             // character
             
@@ -466,7 +472,6 @@ public class CodeGenerator implements CommandVisitor {
         scope = room.getName();
         
         List<Parameter> parameters = room.getParameters();
-        
         List<Storage> storages = new ArrayList<Storage>();
         
         assemblyCommands.add("room_" + room.getName() + ":");
@@ -477,12 +482,9 @@ public class CodeGenerator implements CommandVisitor {
             assemblyCommands.add("mov " + storage + ", rax");
         }
         
-        assemblyCommands.add("");
-        
         for (Command command : room.getCommands()) {
             command.acceptVisitor(this);
         }
-        
         
         assemblyCommands.add("ret");
     }
