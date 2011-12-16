@@ -154,7 +154,9 @@ public class CodeGenerator implements CommandVisitor {
     @Override
     public void visitDecrement(DecrementCommand command) {
         Storage storage = symbolTable.getVariableStorage(command.getVariableName(), "");
+        assemblyCommands.add("mov rax, " + storage);
         assemblyCommands.add("dec " + storage);
+        assemblyCommands.add("mov " + storage + ", rax");
     }
 
     @Override
@@ -188,7 +190,9 @@ public class CodeGenerator implements CommandVisitor {
     @Override
     public void visitIncrement(IncrementCommand command) {
         Storage storage = symbolTable.getVariableStorage(command.getVariableName(), scope);
+        assemblyCommands.add("mov rax, " + storage);
         assemblyCommands.add("inc " + storage);
+        assemblyCommands.add("mov " + storage + ", rax");
     }
 
     @Override
