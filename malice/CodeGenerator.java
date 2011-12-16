@@ -54,6 +54,7 @@ public class CodeGenerator implements CommandVisitor {
     private int nextConditionalLabel;
     private int nextStringName;
     private int nextBoolComparisonNumber;
+    private int nextWhileNotNumber;
     private Map<String, String> stringNames;
     private String scope;
 
@@ -74,6 +75,7 @@ public class CodeGenerator implements CommandVisitor {
         nextConditionalLabel = 0;
         nextStringName = 0;
         nextBoolComparisonNumber = 0;
+        nextWhileNotNumber = 0;
         stringNames = new HashMap<String, String>();
         scope = "";
     }
@@ -272,7 +274,25 @@ public class CodeGenerator implements CommandVisitor {
 
     @Override
     public void visitWhileNot(WhileNotCommand command) {
-        //TODO - visitWhileNotmemoryLocationVariable
+        ConditionalBranch branch = command.getBranch();
+        Storage destStorage = allocateStorage();
+        
+        int currentWhileNotNumber = nextWhileNotNumber;
+        nextWhileNotNumber++;
+        
+        assemblyCommands.add("while_not_" + currentWhileNotNumber + ":");
+        
+        generateBooleanExpressionCode(destStorage, branch.getCondition());
+
+        assemblyCommands.add("mov rax, " + destStorage);
+        assemblyCommands.add("cmp rax, 1");
+        assemblyCommands.add("jne while_not_end_" + currentWhileNotNumber);
+        
+        for (Command aCommand : branch.getCommands()) {
+            aCommand.acceptVisitor(this);
+        }
+        
+        assemblyCommands.add("while_not_end_" + currentWhileNotNumber + ":");
     }
 
     private void generateExpressionCode(Storage destStorage, CharacterExpression exp) {
@@ -404,6 +424,7 @@ public class CodeGenerator implements CommandVisitor {
 
                 //Move the values into registers
                 assemblyCommands.add("mov rax, " + leftStorage);
+                //TODO - short circuit
                 assemblyCommands.add("mov rbx, " + rightStorage);
 
                 if (exp.getOp().equals("&&")) {
@@ -569,7 +590,8 @@ public class CodeGenerator implements CommandVisitor {
             boolean newLine = false;
             if (sentence.endsWith("\n")) {
                 newLine = true;
-                sentence = sentence.substring(0, sentence.length() - 3);
+                sentence = sentence.substring(0, sentence.length() - 2);
+                System.out.println("NEWLINE");
             }
 
             assemblyCommands.add(entry.getKey() + " db \"" + sentence + "\"" + (newLine ? ", 0xA" : ""));
