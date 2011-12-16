@@ -44,7 +44,7 @@ public class MAlice {
          lexer = new MAliceLexer(fileStream);
         }
         else {
-         lexer = new MAliceLexer(new ANTLRStringStream("\"bla \\n\" spoke."));
+         lexer = new MAliceLexer(new ANTLRStringStream(" \"Hello World \\n\" said Alice."));
         }
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         ParseTreeBuilder builder = new ParseTreeBuilder("prog");
