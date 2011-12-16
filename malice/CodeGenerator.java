@@ -116,7 +116,7 @@ public class CodeGenerator implements CommandVisitor {
 
             assemblyCommands.add("mov rax, " + destStorage);
             assemblyCommands.add("cmp rax, 1");
-            assemblyCommands.add("je cond_" + conditionalLabel + "_" + i);   
+            assemblyCommands.add("je cond_" + conditionalLabel + "_" + i);
         }
         freeStorage(destStorage);
 
@@ -447,6 +447,12 @@ public class CodeGenerator implements CommandVisitor {
             assemblyCommands.add(x + " dq " + 0);
         }
         assemblyCommands.add("octetbuffer dq 0");
+        assemblyCommands.add("noofdigits dq 0");
+        assemblyCommands.add("originalvalue dq 0");
+        assemblyCommands.add("isnegative dq 0");
+        
+        assemblyCommands.add("segment .bss");
+        assemblyCommands.add("number resb 100");
     }
 
     private void addPrint() {
@@ -466,6 +472,258 @@ public class CodeGenerator implements CommandVisitor {
         assemblyCommands.add("pop " + Register.rdx);
         assemblyCommands.add("pop " + Register.rbx);
         assemblyCommands.add("pop " + Register.rax);
+        assemblyCommands.add("ret");
+
+
+        assemblyCommands.add("print:");
+        assemblyCommands.add("push rax");
+        assemblyCommands.add("push rbx ;Preserve registers");
+        assemblyCommands.add("push rdx");
+        assemblyCommands.add("mov [octetbuffer], rcx ;rcx contains the printable value, put in buffer");
+        assemblyCommands.add("mov rcx, octetbuffer ;give rcx the address of the buffer");
+        assemblyCommands.add("mov rbx, 1 ;set to STOUT");
+        assemblyCommands.add("mov rdx, 1 ;set length to 1");
+        assemblyCommands.add("mov rax, 4 ;set interrupt to sys_write");
+        assemblyCommands.add("int 0x80 ;interrupt the OS");
+        assemblyCommands.add("pop rdx");
+        assemblyCommands.add("pop rbx ;Restore registers");
+        assemblyCommands.add("pop rax");
+        assemblyCommands.add("ret");
+
+        assemblyCommands.add("");
+        assemblyCommands.add("read: ;reads in 1 character from stdin");
+        assemblyCommands.add("push rax");
+        assemblyCommands.add("push rbx");
+        assemblyCommands.add("push rdx");
+        assemblyCommands.add("mov rax, 3");
+        assemblyCommands.add("mov rbx, 0");
+        assemblyCommands.add("mov rcx, number");
+        assemblyCommands.add("mov rdx, 100");
+        assemblyCommands.add("int 0x80");
+        assemblyCommands.add("pop rdx");
+        assemblyCommands.add("pop rbx");
+        assemblyCommands.add("pop rax");
+        assemblyCommands.add("ret");
+
+        assemblyCommands.add("");
+        assemblyCommands.add("print_loop: ;prints the contents of the buffer");
+        assemblyCommands.add("mov rax, 0");
+        assemblyCommands.add("begin:");
+        assemblyCommands.add("cmp rax, 100");
+        assemblyCommands.add("jg end");
+        assemblyCommands.add("mov rbx, number");
+        assemblyCommands.add("mov rcx, [rbx + rax]");
+
+        assemblyCommands.add("");
+        assemblyCommands.add("cmp rcx, 0");
+        assemblyCommands.add("je end");
+        assemblyCommands.add("call print");
+        assemblyCommands.add("add rax, 1");
+        assemblyCommands.add("jmp begin");
+        assemblyCommands.add("end:");
+        assemblyCommands.add("ret");
+
+        assemblyCommands.add("");
+        assemblyCommands.add("int_to_string:");
+        assemblyCommands.add("push rax");
+        assemblyCommands.add("push rbx");
+        assemblyCommands.add("push rcx");
+        assemblyCommands.add("push rdx");
+        assemblyCommands.add("ret");
+
+        assemblyCommands.add("");
+        assemblyCommands.add("power: ;rax to the power of rbx");
+        assemblyCommands.add("push rbx");
+        assemblyCommands.add("push rcx");
+        assemblyCommands.add("push rdx");
+        assemblyCommands.add("cmp rbx, 0");
+        assemblyCommands.add("jne not0");
+        assemblyCommands.add("mov rax, 1");
+        assemblyCommands.add("jmp endfor");
+        assemblyCommands.add("not0: ");
+        assemblyCommands.add("mov rdx, rax");
+        assemblyCommands.add("mov rcx, 1 ;loop counter");
+        assemblyCommands.add("for:");
+        assemblyCommands.add("add rcx, 1 ;increment loop counter");
+        assemblyCommands.add("cmp rcx, rbx ;compare loop counter and rbx");
+        assemblyCommands.add("jg endfor ;exit loop if the counter is more than rbx");
+        assemblyCommands.add("imul rax, rdx");
+        assemblyCommands.add("jmp for");
+        assemblyCommands.add("endfor:");
+        assemblyCommands.add("pop rdx");
+        assemblyCommands.add("pop rcx");
+        assemblyCommands.add("pop rbx");
+        assemblyCommands.add("ret");
+
+        assemblyCommands.add("");
+        assemblyCommands.add("number_of_digits: ;puts the number of digits of the number in rax in rax");
+        assemblyCommands.add("push rcx");
+        assemblyCommands.add("push rbx");
+        assemblyCommands.add("mov rcx, rax ;rcx contains the value");
+        assemblyCommands.add("mov rbx, 1 ;loop counter");
+        assemblyCommands.add("for2:");
+        assemblyCommands.add("mov rax, 10");
+        assemblyCommands.add("call power");
+        assemblyCommands.add("cmp rcx, rax");
+        assemblyCommands.add("jle endfor2");
+        assemblyCommands.add("add rbx, 1");
+        assemblyCommands.add("jmp for2");
+        assemblyCommands.add("endfor2:");
+        assemblyCommands.add("mov rax, rbx");
+        assemblyCommands.add("pop rbx");
+        assemblyCommands.add("pop rcx");
+        assemblyCommands.add("ret");
+
+        assemblyCommands.add("");
+        assemblyCommands.add("print_int: ;Prints a number in rax");
+        assemblyCommands.add("push rax");
+        assemblyCommands.add("push rbx");
+        assemblyCommands.add("push rcx");
+        assemblyCommands.add("push rdx");
+        assemblyCommands.add("push rsi");
+        assemblyCommands.add("push rbp");
+
+        assemblyCommands.add("");
+        assemblyCommands.add("mov rbp, 0");
+        assemblyCommands.add("mov [isnegative], rbp");
+        assemblyCommands.add("cmp rax, 0");
+        assemblyCommands.add("jge continue");
+        assemblyCommands.add("imul rax, -1");
+
+        assemblyCommands.add("");
+        assemblyCommands.add("mov rcx, '-'");
+        assemblyCommands.add("call print");
+
+        assemblyCommands.add("");
+        assemblyCommands.add("continue:");
+        assemblyCommands.add("mov rdx, rax");
+        assemblyCommands.add("mov [originalvalue], rax");
+        assemblyCommands.add("call number_of_digits");
+        assemblyCommands.add("mov rcx, rax");
+        assemblyCommands.add("mov [noofdigits], rax");
+
+        assemblyCommands.add("");
+        assemblyCommands.add("mov rbp, 0 ;loop counter");
+        assemblyCommands.add("loop:");
+        assemblyCommands.add("mov rbx, [noofdigits]");
+        assemblyCommands.add("sub rbx, rbp ");
+        assemblyCommands.add("dec rbx ;rbx = (no of chars - loop counter - 1)");
+
+        assemblyCommands.add("");
+        assemblyCommands.add("mov rax, 10");
+        assemblyCommands.add("call power ;rax = 10^(no of chars - loop counter -1)");
+
+        assemblyCommands.add("");
+        assemblyCommands.add("mov rsi, [originalvalue] ;rsi contains the value");
+        assemblyCommands.add("mov rbx, rax ;rbx = 10^(no of chars - loop counter - 1)");
+        assemblyCommands.add("mov rax, rsi");
+
+        assemblyCommands.add("");
+        assemblyCommands.add("mov rdx, 0 ");
+        assemblyCommands.add("idiv rbx ;rbx contains the number with the left trimmed");
+        assemblyCommands.add("mov rsi, rax ;rsi now contains the thing above");
+
+        assemblyCommands.add("");
+        assemblyCommands.add("cmp rbp, 0");
+        assemblyCommands.add("je firsttime");
+
+        assemblyCommands.add("");
+        assemblyCommands.add("mov rax, 10");
+
+        assemblyCommands.add("");
+        assemblyCommands.add("mov rbx, rax");
+        assemblyCommands.add("mov rax, rsi ;rdx now contains the digit");
+        assemblyCommands.add("mov rdx, 0");
+        assemblyCommands.add("idiv rbx");
+        assemblyCommands.add("mov rsi, rdx");
+
+        assemblyCommands.add("");
+        assemblyCommands.add("firsttime:");
+        assemblyCommands.add("mov rcx, rsi");
+        assemblyCommands.add("add rcx, 48");
+        assemblyCommands.add("call print");
+
+        assemblyCommands.add("");
+        assemblyCommands.add("add rbp, 1");
+        assemblyCommands.add("cmp rbp, [noofdigits]");
+        assemblyCommands.add("jl loop");
+        assemblyCommands.add("endbigloop:");
+
+        assemblyCommands.add("");
+        assemblyCommands.add("pop rbp");
+        assemblyCommands.add("pop rsi ");
+        assemblyCommands.add("pop rdx ;restore registers");
+        assemblyCommands.add("pop rcx");
+        assemblyCommands.add("pop rbx");
+        assemblyCommands.add("pop rax");
+        assemblyCommands.add("ret");
+
+        assemblyCommands.add("");
+        assemblyCommands.add("string_to_int: ;put the buffer address in rax and it shall be replaced with the value");
+        assemblyCommands.add("push rbx");
+        assemblyCommands.add("push rcx");
+        assemblyCommands.add("push rsi ;preserve registers");
+        assemblyCommands.add("push rdx");
+        assemblyCommands.add("push rbp");
+
+        assemblyCommands.add("");
+        assemblyCommands.add("mov rsi, number ;buffer address");
+        assemblyCommands.add("mov rax, 0 ;return value");
+        assemblyCommands.add("mov rbx, 0 ;loop counter");
+
+        assemblyCommands.add("");
+        assemblyCommands.add("mov rdx, 0");
+        assemblyCommands.add("mov dl, byte[rsi]");
+        assemblyCommands.add("cmp rdx, '-' ");
+        assemblyCommands.add("je neg ;check to see if its negative");
+        assemblyCommands.add("jmp stringloop");
+
+        assemblyCommands.add("");
+        assemblyCommands.add("neg:");
+        assemblyCommands.add("mov rbp, 1");
+        assemblyCommands.add("mov [isnegative], rbp ;set isnegative to true");
+
+        assemblyCommands.add("");
+        assemblyCommands.add("stringloop:");
+        assemblyCommands.add("cmp rbx, 100");
+        assemblyCommands.add("jg endstringloop");
+
+        assemblyCommands.add("");
+        assemblyCommands.add("mov rdx, 0");
+        assemblyCommands.add("mov dl, byte [rsi+rbx]");
+
+        assemblyCommands.add("");
+        assemblyCommands.add("cmp rdx, 58 ");
+        assemblyCommands.add("jge notnumber");
+        assemblyCommands.add("cmp rdx, 47");
+        assemblyCommands.add("jle notnumber");
+        assemblyCommands.add("jmp justright");
+        assemblyCommands.add("notnumber:");
+        assemblyCommands.add("add rbx, 1");
+        assemblyCommands.add("jmp stringloop");
+
+        assemblyCommands.add("");
+        assemblyCommands.add("justright:");
+        assemblyCommands.add("sub rdx, 48 ;convert char to int");
+        assemblyCommands.add("imul rax, 10 ;times the current return by 10");
+        assemblyCommands.add("add rax, rdx ;add the next digit onto the end");
+        assemblyCommands.add("add rbx, 1 ;increment loop counter");
+        assemblyCommands.add("jmp stringloop");
+        assemblyCommands.add("endstringloop:");
+
+        assemblyCommands.add("");
+        assemblyCommands.add("mov rbp, [isnegative]");
+        assemblyCommands.add("cmp rbp, 0");
+        assemblyCommands.add("je return");
+        assemblyCommands.add("imul rax, -1 ;make number negative");
+
+        assemblyCommands.add("");
+        assemblyCommands.add("return:");
+        assemblyCommands.add("pop rbp");
+        assemblyCommands.add("pop rdx");
+        assemblyCommands.add("pop rsi");
+        assemblyCommands.add("pop rcx");
+        assemblyCommands.add("pop rbx");
         assemblyCommands.add("ret");
     }
 }
