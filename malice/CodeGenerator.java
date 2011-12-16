@@ -104,8 +104,6 @@ public class CodeGenerator implements CommandVisitor {
             generateLookingGlassCode(lookingGlass);
         }
 
-        //TODO - looking glasses
-
         addPrint();
         makeDataSegment();
 
@@ -167,6 +165,7 @@ public class CodeGenerator implements CommandVisitor {
     public void visitFunctionCall(FunctionCallCommand command) {
 
         //Preserve all the initialized variables
+        assemblyCommands.add("push rsi");
         List<Storage> initializedStorage = getInitializedStorage();
         for (Storage s : initializedStorage) {
             assemblyCommands.add("mov rbx, " + s);
@@ -186,6 +185,7 @@ public class CodeGenerator implements CommandVisitor {
         assemblyCommands.add("call room_" + command.getFunctionName());
 
         //Restore memory used by the room
+        assemblyCommands.add("pop rsi");
         List<String> pop = new ArrayList<String>();
         for (Storage s : initializedStorage) {
             pop.add(0, "mov " + s + ", rbx");
@@ -285,6 +285,15 @@ public class CodeGenerator implements CommandVisitor {
 
     @Override
     public void visitThrough(ThroughCommand command) {
+        //Preserve all the initialized variables
+        List<Storage> initializedStorage = getInitializedStorage();
+        for (Storage s : initializedStorage) {
+            assemblyCommands.add("mov rbx, " + s);
+            assemblyCommands.add("push rbx");
+        }
+        assemblyCommands.add("push rsi");
+
+
         Storage storage = symbolTable.getVariableStorage(command.getVariableName(), scope);
         if (storage == Register.NONE) {
             storage = allocateStorage();
@@ -293,8 +302,16 @@ public class CodeGenerator implements CommandVisitor {
         assemblyCommands.add("mov rax, " + storage.toString());
         assemblyCommands.add("push rax");
         assemblyCommands.add("call lookingglass_" + command.getLookingGlassName());
-        assemblyCommands.add("pop rax");
         assemblyCommands.add("mov " + storage.toString() + ", rax");
+
+        //Restore memory used by the looking glass
+        assemblyCommands.add("pop rsi");
+        List<String> pop = new ArrayList<String>();
+        for (Storage s : initializedStorage) {
+            pop.add(0, "mov " + s + ", rbx");
+            pop.add(0, "pop rbx");
+        }
+        assemblyCommands.addAll(pop);
     }
 
     @Override
@@ -401,6 +418,7 @@ public class CodeGenerator implements CommandVisitor {
                 pop.add(0, "pop rbx");
             }
             assemblyCommands.addAll(pop);
+
         } else {
             if (!exp.isImmediateValue()) {
                 // variable
@@ -501,16 +519,20 @@ public class CodeGenerator implements CommandVisitor {
                 generateBooleanExpressionCode(rightStorage, exp.getRightExpr());
 
                 //Move the values into registers
-                assemblyCommands.add("mov rax, " + leftStorage);
                 //TODO - short circuit
+                assemblyCommands.add("mov rax, " + leftStorage);
                 assemblyCommands.add("mov rbx, " + rightStorage);
+
 
                 if (exp.getOp().equals("&&")) {
                     assemblyCommands.add("and rax, rbx");
+                    assemblyCommands.add("shortcircuit_" + nextBoolComparisonNumber);
                     assemblyCommands.add("mov " + destStorage + ", rax");
+                    nextBoolComparisonNumber++;
                 } else if (exp.getOp().equals("||")) {
                     assemblyCommands.add("or rax, rbx");
                     assemblyCommands.add("mov " + destStorage + ", rax");
+                    nextBoolComparisonNumber++;
                 } else if (exp.getOp().equals("==")) {
                     assemblyCommands.add("cmp rax, rbx");
                     assemblyCommands.add("je cmp_pos_" + nextBoolComparisonNumber);
@@ -648,7 +670,6 @@ public class CodeGenerator implements CommandVisitor {
 
         assemblyCommands.add("");
         assemblyCommands.add("mov rax, " + symbolTable.getVariableStorage("it", scope).toString());
-        assemblyCommands.add("push rax");
         assemblyCommands.add("push rsi");
         assemblyCommands.add("ret");
 
@@ -659,7 +680,7 @@ public class CodeGenerator implements CommandVisitor {
         List<Storage> pushStorage = new ArrayList<Storage>();
         Set<String> allStorage = symbolTable.getScopeSymbolTable(scope).keySet();
 
-        //Get the storage of all the variables used so far
+        //Get the storage of all the variables used so far in the scope
         for (String id : allStorage) {
             if (symbolTable.isInitialisedVariable(id, scope)) {
                 pushStorage.add(symbolTable.getVariableStorage(id, scope));

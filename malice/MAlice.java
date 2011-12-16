@@ -44,7 +44,7 @@ public class MAlice {
          lexer = new MAliceLexer(fileStream);
         }
         else {
-         lexer = new MAliceLexer(new ANTLRStringStream("i was a number. i became 1. i became recursiveAdd(i). i spoke. The room recursiveAdd(number n) contained a number perhaps(n == 4) so Alice found n. or n ate, Alice found recursiveAdd(n). Alice was unsure."));
+         lexer = new MAliceLexer(new ANTLRStringStream("i had 5 number, i's 2 piece became 2."));
         }
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         ParseTreeBuilder builder = new ParseTreeBuilder("prog");

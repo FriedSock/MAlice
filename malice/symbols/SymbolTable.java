@@ -87,7 +87,7 @@ public class SymbolTable {
         scopeSymbolTable.get(variableName).initialise();
     }
 
-    //TODO - Check if this works
+    //TODO - Check if this works (Don't think we ever use it)
     public boolean usesStorage(Storage storage, String scope) {
         Map<String, Symbol> scopeSymbolTable = getGlobalScopeSymbolTable();
         for (Symbol s : scopeSymbolTable.values()){
