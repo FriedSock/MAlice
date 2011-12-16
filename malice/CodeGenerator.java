@@ -88,12 +88,12 @@ public class CodeGenerator implements CommandVisitor {
             command.acceptVisitor(this);
         }
 
-        assemblyCommands.add("mov rax, 0");
+        assemblyCommands.add("mov rax, 1");
         assemblyCommands.add("int 0x80");
 
         
         for (RoomFunction room : rooms) {
-            
+            generateRoomCode(room);
         }
         
         //TODO - looking glasses
