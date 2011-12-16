@@ -197,7 +197,11 @@ public class CodeGenerator implements CommandVisitor {
 
     @Override
     public void visitInput(InputCommand command) {
-        //TODO - visitInput
+        ArithmeticExpression exp = command.getInputDestination();
+
+        assemblyCommands.add("call read");
+        assemblyCommands.add("call string_to_int");
+        assemblyCommands.add("mov " + symbolTable.getVariableStorage(exp.getVariableName(), scope) + ", rax");
     }
 
     @Override
