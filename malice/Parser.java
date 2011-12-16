@@ -57,12 +57,15 @@ public class Parser {
     private List<RoomFunction> rooms;
     private List<LookingGlassFunction> lookingGlasses;
     private SymbolTable symbolTable;
+    // parsing utilities
+    private String scope;
 
     public Parser() {
         commands = new ArrayList<Command>();
         rooms = new ArrayList<RoomFunction>();
         lookingGlasses = new ArrayList<LookingGlassFunction>();
         symbolTable = new SymbolTable();
+        scope = ""; // global scope
     }
 
     public List<Command> getCommands() {
@@ -184,7 +187,7 @@ public class Parser {
         
         Set<String> variablesUsed = expression.getUsedVariables();
         for (String variableUsed : variablesUsed) {
-            if (!symbolTable.containsVariable(variableUsed)) {
+            if (!"it".equals(variableUsed) && !symbolTable.containsVariable(variableUsed, scope)) {
                 throw new VariableNotDeclaredException(variableUsed);
             }
         }
@@ -195,20 +198,20 @@ public class Parser {
     private Command parseArrayDeclaration(Tree tree) {
         String variableName = tree.getChild(0).getText();
         Type variableType = Type.valueOf(tree.getChild(3).getText());
-        ArithmeticExpression size = parseArithmeticExpression(tree.getChild(1));
+        ArithmeticExpression size = parseArithmeticExpression(tree.getChild(2));
 
-        if (symbolTable.containsVariable(variableName)) {
+        if (symbolTable.containsVariable(variableName, scope)) {
             throw new VariableAlreadyDeclaredException(variableName);
         }
 
-        symbolTable.addVariable(variableName, Type.array);
-
+        symbolTable.addVariable(variableName, Type.array, scope);
+        
         Set<String> variablesUsed = size.getUsedVariables();
         for (String variableUsed : variablesUsed) {
-            if (!symbolTable.containsVariable(variableUsed)) {
+            if (!"it".equals(variableUsed) && !symbolTable.containsVariable(variableUsed, scope)) {
                 throw new VariableNotDeclaredException(variableUsed);
             }
-            if (Type.number != symbolTable.getVariableType(variableUsed)) {
+            if (!"it".equals(variableUsed) && Type.number != symbolTable.getVariableType(variableUsed, scope)) {
                 throw new IncompatibleTypeException(variableUsed
                         + " is not a number and therefore cannot be in an arithmetic expression");
             }
@@ -221,28 +224,34 @@ public class Parser {
         String variableName = tree.getChild(0).getText();
         Type variableType = Type.valueOf(tree.getChild(2).getText());
 
-        if (symbolTable.containsVariable(variableName)) {
+        if (symbolTable.containsVariableStrictlyInScope(variableName, scope)) {
             throw new VariableAlreadyDeclaredException(variableName);
         }
 
-        symbolTable.addVariable(variableName, variableType);
+        symbolTable.addVariable(variableName, variableType, scope);
 
         return new VariableDeclarationCommand(variableName, variableType);
     }
 
     private Command parseVariableAssignment(Tree tree) {
         String variableName = tree.getChild(0).getText();
+        ArithmeticExpression pieceIndex = null;
 
-        if (!"it".equals(variableName) && !symbolTable.containsVariable(variableName)) {
+        if ("array_piece".equals(variableName)) {
+            variableName = tree.getChild(0).getChild(0).getText();
+            pieceIndex = parseArithmeticExpression(tree.getChild(0).getChild(2));
+        }
+        
+        if (!"it".equals(variableName) && !symbolTable.containsVariable(variableName, scope)) {
             throw new VariableNotDeclaredException(variableName);
         }
 
-        String expressionText = tree.getChild(2).getChild(0).getText();
+        String expressionText = tree.getChild(2).getText();
         Expression expression = null;
 
         Type variableType = null;
         if (!"it".equals(variableName)) {
-            variableType = symbolTable.getVariableType(variableName);
+            variableType = symbolTable.getVariableType(variableName, scope);
         }
         if ('\'' == expressionText.charAt(0)) {
             // character expression
@@ -260,7 +269,7 @@ public class Parser {
             expression = new StringExpression(expressionText.substring(1, expressionText.length() - 2));
         } else {
             // arithmetic expression
-            if (variableType != null && Type.number != variableType) {
+            if (variableType != null && variableType != Type.array && Type.number != variableType) {
                 throw new IncompatibleTypeException(variableName, variableType);
             }
 
@@ -271,33 +280,35 @@ public class Parser {
                 if ("it".equals(variableUsed)) {
                     continue;
                 }
-                if (!symbolTable.containsVariable(variableUsed)) {
+                if (!symbolTable.containsVariable(variableUsed, scope)) {
                     throw new VariableNotDeclaredException(variableUsed);
                 }
-                if (Type.number != symbolTable.getVariableType(variableUsed)) {
+                if (Type.number != symbolTable.getVariableType(variableUsed, scope)
+                        && Type.array != symbolTable.getVariableType(variableUsed, scope)) {
                     throw new IncompatibleTypeException(variableUsed
                             + " is not a number and therefore cannot be in an arithmetic expression");
                 }
-                if (!symbolTable.isInitialisedVariable(variableUsed) && !variableName.equals(variableUsed)) {
+                if (!symbolTable.isInitialisedVariable(variableUsed, scope) && !variableName.equals(variableUsed)
+                        && Type.array != symbolTable.getVariableType(variableUsed, scope)) {
                     throw new VariableNotInitialisedException(variableUsed);
                 }
             }
         }
 
         if (variableType != null) {
-            symbolTable.initialiseVariable(variableName);
+            symbolTable.initialiseVariable(variableName, scope);
         }
 
-        return new VariableAssignmentCommand(variableName, expression);
+        return new VariableAssignmentCommand(variableName, pieceIndex, expression);
     }
 
     private Command parseProcedure(Tree tree) {
         String variableName = tree.getChild(0).getText();
 
-        if (!"it".equals(variableName) && !symbolTable.containsVariable(variableName)) {
+        if (!"it".equals(variableName) && !symbolTable.containsVariable(variableName, scope)) {
             throw new VariableNotDeclaredException(variableName);
         }
-        if (!"it".equals(variableName) && !symbolTable.isInitialisedVariable(variableName)) {
+        if (!"it".equals(variableName) && !symbolTable.isInitialisedVariable(variableName, scope)) {
             throw new VariableNotInitialisedException(variableName);
         }
 
@@ -349,13 +360,13 @@ public class Parser {
     
     private Command parseConditional(Tree tree) {
         BooleanExpression condition = parseBooleanExpression(tree.getChild(1));
+        
         List<Command> conditionalCommands = parseStatement(tree.getChild(3));
         
         List<ConditionalBranch> branches = new ArrayList<ConditionalBranch>();
         branches.add(new ConditionalBranch(condition, conditionalCommands));
         
-        
-        boolean hasElseBranch = tree.getChildCount() % 2 == 1;
+        boolean hasElseBranch = (tree.getChildCount() - 5) % 4 == 2;
         int topIndex = hasElseBranch ? tree.getChildCount() - 4 : tree.getChildCount() - 2;
 
         condition = null;
@@ -384,6 +395,11 @@ public class Parser {
             }
         };
         t.addChild(tree.getChild(1));
+        
+        String variableName = tree.getChild(1).getText();
+        if (symbolTable.containsVariable(variableName, scope)) {
+            symbolTable.initialiseVariable(variableName, scope);
+        }
         
         ArithmeticExpression inputDestination = parseArithmeticExpression(t);
         return new InputCommand(inputDestination);
@@ -536,34 +552,44 @@ public class Parser {
 
     private void parseFunction(Tree tree) {
         String functionName = tree.getChild(1).getText();
+        scope = functionName;
+        
         List<Parameter> parameters = new ArrayList<Parameter>();
-        List<Command> functionCommands = parseStatement(tree.getChild(tree.getChildCount() - 1));
-        Type returnType = Type.valueOf(tree.getChild(tree.getChildCount() - 2).getText());
         
         boolean wantsType = true;
-        Parameter parameter = new Parameter();
+        Parameter param = new Parameter();
         for (int i = 3; i <= tree.getChildCount() - 4; i++) {
             String word = tree.getChild(i).getText();
             if (')' == word.charAt(0) || ',' == word.charAt(0)) {
-                parameters.add(parameter);
-                parameter = new Parameter();
+                parameters.add(param);
+                param = new Parameter();
             } else if ("spider".equals(word)) {
-                parameter.setPassByReference(true);
+                param.setPassByReference(true);
             } else {
                 if (wantsType) {
-                    parameter.setType(Type.valueOf(word));
+                    param.setType(Type.valueOf(word));
                 } else {
-                    parameter.setName(word);
+                    param.setName(word);
                 }
                 wantsType = !wantsType;
             }
         }
+        
+        for (Parameter parameter : parameters) {
+            symbolTable.addVariable(parameter.getName(), parameter.getType(), scope);
+            symbolTable.initialiseVariable(parameter.getName(), scope);
+        }
+        
+        List<Command> functionCommands = parseStatement(tree.getChild(tree.getChildCount() - 1));
+        Type returnType = Type.valueOf(tree.getChild(tree.getChildCount() - 2).getText());
         
         rooms.add(new RoomFunction(functionName, parameters, functionCommands, returnType));
     }
 
     private void parseLookingGlass(Tree tree) {
         String functionName = tree.getChild(1).getText();
+        scope = functionName;
+        
         Type inputType = Type.valueOf(tree.getChild(tree.getChildCount() - 2).getText());
         List<Command> functionCommands = parseStatement(tree.getChild(tree.getChildCount() - 1));
         

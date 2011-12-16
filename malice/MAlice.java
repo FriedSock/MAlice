@@ -14,26 +14,38 @@ import org.antlr.runtime.debug.ParseTreeBuilder;
 public class MAlice {
 
     public static void main(String[] args) {
-        /*if (args.length == 0) {
+        String maliceFileName;
+        MAliceLexer lexer;
+                
+        boolean DEBUG = false;
+        if (!DEBUG) {
+        if (args.length == 0) {
             die("Please provide a file name of an Alice file as an argument to this program");
         }
 
-        String maliceFileName = args[0];
+        maliceFileName = args[0];
         if (!new File(maliceFileName).exists()) {
             die("Malice input file not found: " + maliceFileName);
-        }*/
-        String maliceFileName = "";
+        }
+        }
+        else {
+        maliceFileName = "";
+        }
 
+        if (!DEBUG) {
         System.out.println("Parsing Alice file");
-        //ANTLRFileStream fileStream = null;
-        /*try {
+        ANTLRFileStream fileStream = null;
+        try {
             fileStream = new ANTLRFileStream(maliceFileName);
         } catch (IOException ex) {
             die("Build", ex);
-        }*/
+        }
 
-        MAliceLexer lexer = new MAliceLexer(new ANTLRStringStream("The Looking-Glass addAnswer changed a number it became it + fun(1,2+2). it drank."));
-        //MAliceLexer lexer = new MAliceLexer(fileStream);
+         lexer = new MAliceLexer(fileStream);
+        }
+        else {
+         lexer = new MAliceLexer(new ANTLRStringStream("The room primeFactors(number n) contained a number perhaps (isPrime(n)) so n became -n. Alice was unsure which."));
+        }
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         ParseTreeBuilder builder = new ParseTreeBuilder("prog");
         MAliceParser maliceParser = new MAliceParser(tokenStream, builder);
@@ -50,13 +62,13 @@ public class MAlice {
             die("Build", ex);
         }
 
-        System.out.println("Generating assembly code");
+        /*System.out.println("Generating assembly code");
         CodeGenerator codeGenerator = new CodeGenerator(parser.getCommands(), parser.getSymbolTable());
         List<String> assembly = codeGenerator.generateCode();
         
         for (String asm : assembly) {
             System.out.println(asm);
-        }
+        }*/
         
         /*String baseFileName = maliceFileName.replaceAll(".alice$", "");
         String assemblyFileName = baseFileName + ".asm";

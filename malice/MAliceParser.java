@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g 2011-12-15 10:58:07
+// $ANTLR 3.4 /Users/reshnesh/Documents/Prog/IC-Java/MAlice/MAlice.g 2011-12-16 00:10:05
 
 	package malice;
 
@@ -84,28 +84,28 @@ public class MAliceParser extends DebugParser {
 
 
 public static final String[] ruleNames = new String[] {
-    "invalidRule", "synpred1_MAlice", "synpred62_MAlice", "synpred60_MAlice", 
-    "synpred48_MAlice", "synpred26_MAlice", "program", "synpred16_MAlice", 
-    "comparison", "function_call", "synpred43_MAlice", "synpred57_MAlice", 
-    "value", "synpred14_MAlice", "synpred47_MAlice", "through", "function_return", 
-    "synpred63_MAlice", "synpred5_MAlice", "synpred30_MAlice", "conditional", 
-    "variable_assignment", "synpred18_MAlice", "procedure", "synpred35_MAlice", 
-    "synpred50_MAlice", "synpred2_MAlice", "synpred11_MAlice", "input", 
-    "synpred58_MAlice", "synpred3_MAlice", "synpred31_MAlice", "expression", 
-    "function", "synpred39_MAlice", "synpred38_MAlice", "array_piece", "statement", 
-    "synpred40_MAlice", "synpred6_MAlice", "synpred17_MAlice", "mexpr", 
-    "synpred61_MAlice", "synpred51_MAlice", "synpred53_MAlice", "expression_spoke", 
-    "synpred49_MAlice", "synpred45_MAlice", "synpred15_MAlice", "synpred19_MAlice", 
-    "synpred9_MAlice", "boolean_expression", "synpred59_MAlice", "synpred46_MAlice", 
-    "synpred7_MAlice", "variable_declaration", "synpred13_MAlice", "synpred44_MAlice", 
-    "synpred29_MAlice", "synpred42_MAlice", "synpred34_MAlice", "synpred52_MAlice", 
-    "synpred24_MAlice", "synpred41_MAlice", "synpred56_MAlice", "synpred37_MAlice", 
-    "synpred36_MAlice", "synpred33_MAlice", "synpred27_MAlice", "synpred64_MAlice", 
-    "synpred20_MAlice", "comment", "array_declaration", "while_not", "synpred32_MAlice", 
-    "synpred55_MAlice", "command", "output", "synpred8_MAlice", "synpred23_MAlice", 
-    "synpred54_MAlice", "synpred10_MAlice", "synpred12_MAlice", "looking_glass", 
-    "hexpr", "synpred4_MAlice", "synpred28_MAlice", "synpred25_MAlice", 
-    "synpred21_MAlice", "synpred22_MAlice"
+    "invalidRule", "synpred18_MAlice", "synpred10_MAlice", "synpred1_MAlice", 
+    "program", "synpred12_MAlice", "synpred16_MAlice", "synpred22_MAlice", 
+    "synpred26_MAlice", "synpred14_MAlice", "synpred19_MAlice", "synpred63_MAlice", 
+    "synpred27_MAlice", "looking_glass", "synpred40_MAlice", "synpred54_MAlice", 
+    "synpred46_MAlice", "synpred36_MAlice", "variable_declaration", "synpred49_MAlice", 
+    "synpred6_MAlice", "synpred38_MAlice", "comment", "array_piece", "synpred7_MAlice", 
+    "synpred4_MAlice", "synpred53_MAlice", "synpred58_MAlice", "synpred41_MAlice", 
+    "command", "synpred8_MAlice", "input", "synpred55_MAlice", "synpred30_MAlice", 
+    "synpred34_MAlice", "statement", "synpred11_MAlice", "synpred43_MAlice", 
+    "procedure", "mexpr", "synpred50_MAlice", "synpred61_MAlice", "synpred20_MAlice", 
+    "boolean_expression", "synpred17_MAlice", "synpred21_MAlice", "variable_assignment", 
+    "conditional", "synpred5_MAlice", "synpred60_MAlice", "synpred23_MAlice", 
+    "synpred45_MAlice", "value", "synpred29_MAlice", "synpred33_MAlice", 
+    "synpred42_MAlice", "hexpr", "synpred24_MAlice", "function", "synpred9_MAlice", 
+    "synpred13_MAlice", "synpred51_MAlice", "synpred44_MAlice", "synpred32_MAlice", 
+    "function_call", "synpred39_MAlice", "array_declaration", "synpred64_MAlice", 
+    "synpred15_MAlice", "synpred57_MAlice", "synpred25_MAlice", "synpred52_MAlice", 
+    "expression_spoke", "synpred59_MAlice", "synpred31_MAlice", "synpred2_MAlice", 
+    "expression", "synpred28_MAlice", "function_return", "synpred56_MAlice", 
+    "synpred62_MAlice", "synpred48_MAlice", "synpred35_MAlice", "through", 
+    "synpred37_MAlice", "while_not", "comparison", "synpred3_MAlice", "synpred47_MAlice", 
+    "output"
 };
 
 public static final boolean[] decisionCanBacktrack = new boolean[] {

@@ -86,7 +86,7 @@ public class CodeGenerator implements CommandVisitor {
             // free storage used by variables which is not needed in later commands
             for (Map.Entry<String, Command> entry : variablesUsedLastInCommand.entrySet()) {
                 if (command == entry.getValue()) {
-                    Storage storage = symbolTable.getVariableStorage(entry.getKey());
+                    Storage storage = symbolTable.getVariableStorage(entry.getKey(), "");
                     freeStorage(storage);
                 }
             }
@@ -113,7 +113,7 @@ public class CodeGenerator implements CommandVisitor {
     
     @Override
     public void visitDecrement(DecrementCommand command) {
-        Storage storage = symbolTable.getVariableStorage(command.getVariableName());
+        Storage storage = symbolTable.getVariableStorage(command.getVariableName(), "");
         assemblyCommands.add("dec " + storage);
     }
     
@@ -129,7 +129,7 @@ public class CodeGenerator implements CommandVisitor {
 
     @Override
     public void visitIncrement(IncrementCommand command) {
-        Storage storage = symbolTable.getVariableStorage(command.getVariableName());
+        Storage storage = symbolTable.getVariableStorage(command.getVariableName(), "");
         assemblyCommands.add("inc " + storage);
     }
     
@@ -160,10 +160,10 @@ public class CodeGenerator implements CommandVisitor {
 
     @Override
     public void visitVariableAssignment(VariableAssignmentCommand command) {
-        Storage storage = symbolTable.getVariableStorage(command.getVariableName());
+        Storage storage = symbolTable.getVariableStorage(command.getVariableName(), "");
         if (storage == Register.NONE) {
             storage = allocateStorage();
-            symbolTable.setVariableStorage(command.getVariableName(), storage);
+            symbolTable.setVariableStorage(command.getVariableName(), storage, "");
         }
 
         Expression exp = command.getExpression();
@@ -204,7 +204,7 @@ public class CodeGenerator implements CommandVisitor {
             if (!exp.isImmediateValue()) {
                 // variable
                 assemblyCommands.add("mov " + destStorage + ", "
-                        + symbolTable.getVariableStorage(exp.getVariableName()));
+                        + symbolTable.getVariableStorage(exp.getVariableName(), ""));
             } else {
                 // immediate value
                 assemblyCommands.add("mov " + destStorage + ", " + exp.getImmediateValue());
@@ -399,7 +399,7 @@ public class CodeGenerator implements CommandVisitor {
         do {
             memoryLocationVariable = "mem_" + nextFreeMemoryAddress;
             nextFreeMemoryAddress += 1;
-        } while (symbolTable.containsVariable(memoryLocationVariable));
+        } while (symbolTable.containsVariable(memoryLocationVariable, ""));
 
         return new MemoryLocation(memoryLocationVariable);
     }
@@ -408,7 +408,7 @@ public class CodeGenerator implements CommandVisitor {
         if (storage.isRegister()) {
             freeRegisters.add((Register) storage);
         } else {
-            freeMemoryLocationVariables.add(((MemoryLocation) storage).getVariableName());
+            freeMemoryLocationVariables.add(((MemoryLocation) storage).getLocationName());
         }
     }
 

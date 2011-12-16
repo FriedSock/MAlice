@@ -29,6 +29,22 @@ public class Register implements Storage {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Register)) {
+            return false;
+        }
+        Register other = (Register) o;
+        return name.equals(other.name);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 79 * hash + (this.name != null ? this.name.hashCode() : 0);
+        return hash;
+    }
+    
+    @Override
     public String toString() {
         return name;
     }

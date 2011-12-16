@@ -3,11 +3,13 @@ package malice.commands;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import malice.expressions.ArithmeticExpression;
 import malice.expressions.Expression;
 
 public class VariableAssignmentCommand implements Command {
 
     private String variableName;
+    private ArithmeticExpression pieceIndex;
     private Expression expression;
 
     public VariableAssignmentCommand(String variableName, Expression expression) {
@@ -15,8 +17,18 @@ public class VariableAssignmentCommand implements Command {
         this.expression = expression;
     }
     
+    public VariableAssignmentCommand(String variableName, ArithmeticExpression pieceIndex, Expression expression) {
+        this.variableName = variableName;
+        this.pieceIndex = pieceIndex;
+        this.expression = expression;
+    }
+    
     public String getVariableName() {
         return variableName;
+    }
+    
+    public ArithmeticExpression getPieceIndex() {
+        return pieceIndex;
     }
     
     public Expression getExpression() {

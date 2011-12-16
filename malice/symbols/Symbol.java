@@ -19,11 +19,11 @@ public class Symbol {
     public Storage getStorage() {
         return storage;
     }
-
+    
     public void setStorage(Storage storage) {
         this.storage = storage;
     }
-
+    
     public boolean isInitialised() {
         return initialised;
     }
