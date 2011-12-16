@@ -87,7 +87,7 @@ public class CodeGenerator implements CommandVisitor {
             command.acceptVisitor(this);
         }
 
-        assemblyCommands.add("mov rax 0");
+        assemblyCommands.add("mov rax, 0");
         assemblyCommands.add("int 0x80");
 
         //TODO - rooms
@@ -171,10 +171,6 @@ public class CodeGenerator implements CommandVisitor {
 
     @Override
     public void visitSpeak(SpeakCommand command) {
-        // No need to push and pop ebx and eax as this is the end of the program
-
-
-
         Storage destStorage = allocateStorage();
         Expression exp = command.getExpression();
 
@@ -190,7 +186,7 @@ public class CodeGenerator implements CommandVisitor {
                 return;
             }
 
-            generateExpressionCode(destStorage, (ArithmeticExpression) exp);
+            generateExpressionCode(destStorage, arithmeticExpression);
             assemblyCommands.add("mov rax, " + destStorage);
             assemblyCommands.add("call print_int");
         } else if (exp instanceof StringExpression) {
@@ -203,16 +199,23 @@ public class CodeGenerator implements CommandVisitor {
             assemblyCommands.add("int 0x80");
 
             nextStringName++;
-        }
-        
+        } else if (exp instanceof CharacterExpression) {
+            stringNames.put("msg_" + nextStringName, ((CharacterExpression) exp).getCharacter() + "");
 
+            assemblyCommands.add("mov eax, 4");
+            assemblyCommands.add("mov ebx, 1");
+            assemblyCommands.add("mov ecx, " + "msg_" + nextStringName);
+            assemblyCommands.add("mov edx, 1");
+            assemblyCommands.add("int 0x80");
 
-        // If the last command just does rbx=rbx remove it
-        /*if (("mov " + Register.rbx + ", " + Register.rbx).equals(assemblyCommands.get(assemblyCommands.size() - 1))) {
-        assemblyCommands.remove(assemblyCommands.size() - 1);
+            nextStringName++;
+        } else if (exp instanceof BooleanExpression) {
+            BooleanExpression boolExp = (BooleanExpression) exp;
+            generateBooleanExpressionCode(destStorage, boolExp);
+            
+            assemblyCommands.add("mov rax, " + destStorage);
+            assemblyCommands.add("call print_int");
         }
-        assemblyCommands.add("mov " + Register.rax + ", 1");
-        assemblyCommands.add("int 0x80");*/
     }
 
     @Override
@@ -507,7 +510,7 @@ public class CodeGenerator implements CommandVisitor {
             boolean newLine = false;
             if ('\n' == sentence.charAt(sentence.length() - 1)) {
                 newLine = true;
-                sentence.substring(0, sentence.length() - 2);
+                sentence = sentence.substring(0, sentence.length() - 2);
             }
 
             assemblyCommands.add(entry.getKey() + " db \"" + sentence + "\"" + (newLine ? ", 0xA" : ""));
@@ -522,21 +525,6 @@ public class CodeGenerator implements CommandVisitor {
         //Shouldn't need to preserve registers, but just to be safe.
         assemblyCommands.add("");
         assemblyCommands.add("");
-        assemblyCommands.add("print:");
-        assemblyCommands.add("push " + Register.rax);
-        assemblyCommands.add("push " + Register.rbx);
-        assemblyCommands.add("push " + Register.rdx);
-        assemblyCommands.add("mov [octetbuffer], rcx");
-        assemblyCommands.add("lea rcx, [octetbuffer]");
-        assemblyCommands.add("mov rbx, 1");
-        assemblyCommands.add("mov rdx, 1");
-        assemblyCommands.add("mov rax, 4");
-        assemblyCommands.add("int 0x80");
-        assemblyCommands.add("pop " + Register.rdx);
-        assemblyCommands.add("pop " + Register.rbx);
-        assemblyCommands.add("pop " + Register.rax);
-        assemblyCommands.add("ret");
-
 
         assemblyCommands.add("print:");
         assemblyCommands.add("push rax");
