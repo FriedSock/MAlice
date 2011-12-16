@@ -53,6 +53,7 @@ public class CodeGenerator implements CommandVisitor {
     private int nextComparisonNumber;
     private int nextConditionalLabel;
     private int nextStringName;
+    private int nextBoolComparisonNumber;
     private Map<String, String> stringNames;
     private String scope;
 
@@ -72,6 +73,7 @@ public class CodeGenerator implements CommandVisitor {
         nextComparisonNumber = 0;
         nextConditionalLabel = 0;
         nextStringName = 0;
+        nextBoolComparisonNumber = 0;
         stringNames = new HashMap<String, String>();
         scope = "";
     }
@@ -155,14 +157,19 @@ public class CodeGenerator implements CommandVisitor {
 
     @Override
     public void visitFunctionCall(FunctionCallCommand command) {
-        //TODO - visitFunctionCall
+        Storage destStorage = allocateStorage();
+        for (ArithmeticExpression parameter : command.getParameters()) {
+            generateExpressionCode(destStorage, parameter);
+            assemblyCommands.add("mov rax, " + destStorage);
+            assemblyCommands.add("push rax");
+        }
+        freeStorage(destStorage);
+        
+        assemblyCommands.add("call " + command.getFunctionName());
     }
 
     @Override
     public void visitFunctionReturn(FunctionReturnCommand command) {
-        
-        assemblyCommands.add("");
-        
         if (FunctionReturnCommand.Type.EXPRESSION == command.getType()) {
             // number
             Storage destStorage = allocateStorage();
@@ -170,10 +177,9 @@ public class CodeGenerator implements CommandVisitor {
             assemblyCommands.add("mov rax, " + destStorage);
         } else {
             // character
-            
+            //TODO - return character
         }
-        
-        //assemblyCommands.add("");
+
         assemblyCommands.add("ret");
     }
 
@@ -388,13 +394,13 @@ public class CodeGenerator implements CommandVisitor {
     private void generateBooleanExpressionCode(Storage destStorage, BooleanExpression exp) {
         assemblyCommands.add("");
         switch (exp.getType()) {
-            case COMPARISON:
+            case BINOP:
                 Storage leftStorage = allocateStorage();
                 Storage rightStorage = allocateStorage();
 
                 //Evaluate both sides of the comparison
-                generateExpressionCode(leftStorage, exp.getLeftAritExpr());
-                generateExpressionCode(rightStorage, exp.getRightAritExpr());
+                generateBooleanExpressionCode(leftStorage, exp.getLeftExpr());
+                generateBooleanExpressionCode(rightStorage, exp.getRightExpr());
 
                 //Move the values into registers
                 assemblyCommands.add("mov rax, " + leftStorage);
@@ -402,15 +408,37 @@ public class CodeGenerator implements CommandVisitor {
 
                 if (exp.getOp().equals("&&")) {
                     assemblyCommands.add("and rax, rbx");
+                    assemblyCommands.add("mov " + destStorage + ", rax");
                 } else if (exp.getOp().equals("||")) {
                     assemblyCommands.add("or rax, rbx");
+                    assemblyCommands.add("mov " + destStorage + ", rax");
+                } else if (exp.getOp().equals("==")) {
+                    assemblyCommands.add("cmp rax, rbx");
+                    assemblyCommands.add("je cmp_pos_" + nextBoolComparisonNumber);
+                    assemblyCommands.add("mov rax, 0");
+                    assemblyCommands.add("jmp cmp_end_" + nextBoolComparisonNumber);
+                    assemblyCommands.add("cmp_pos_" + nextBoolComparisonNumber + ":");
+                    assemblyCommands.add("mov rax, 1");
+                    assemblyCommands.add("cmp_end_" + nextBoolComparisonNumber + ":");
+                    assemblyCommands.add("mov " + destStorage + ", rax");
+                    nextBoolComparisonNumber++;
+                } else if (exp.getOp().equals("!=")) {
+                    assemblyCommands.add("cmp rax, rbx");
+                    assemblyCommands.add("jne cmp_pos_" + nextBoolComparisonNumber);
+                    assemblyCommands.add("mov rax, 0");
+                    assemblyCommands.add("jmp cmp_end_" + nextBoolComparisonNumber);
+                    assemblyCommands.add("cmp_pos_" + nextBoolComparisonNumber + ":");
+                    assemblyCommands.add("mov rax, 1");
+                    assemblyCommands.add("cmp_end_" + nextBoolComparisonNumber + ":");
+                    assemblyCommands.add("mov " + destStorage + ", rax");
+                    nextBoolComparisonNumber++;
                 }
 
                 assemblyCommands.add("mov " + destStorage + ", rax");
 
                 assemblyCommands.add("");
                 break;
-            case BINOP:
+            case COMPARISON:
                 generateComparisonCode(destStorage, exp.getOp(), exp.getLeftAritExpr(), exp.getRightAritExpr());
                 break;
             case FUNCTION:
@@ -452,8 +480,6 @@ public class CodeGenerator implements CommandVisitor {
             assemblyCommands.add("jge " + comparisonLabel);
         } else if (binop.equals("<=")) {
             assemblyCommands.add("jle " + comparisonLabel);
-        } else if (binop.equals("&&")) {
-        } else if (binop.equals("||")) {
         }
 
         String endLabel = "endtest_" + nextComparisonNumber;
@@ -476,7 +502,11 @@ public class CodeGenerator implements CommandVisitor {
         
         assemblyCommands.add("room_" + room.getName() + ":");
         for (int i = parameters.size() - 1; i >= 0; i--) {
-            Storage storage = allocateStorage();
+            Storage storage = symbolTable.getVariableStorage(parameters.get(i).getName(), scope);
+            if (storage == Register.NONE) {
+                storage = allocateStorage();
+                symbolTable.setVariableStorage(parameters.get(i).getName(), storage, scope);
+            }
             storages.add(0, storage);
             assemblyCommands.add("pop rax");
             assemblyCommands.add("mov " + storage + ", rax");
@@ -485,8 +515,6 @@ public class CodeGenerator implements CommandVisitor {
         for (Command command : room.getCommands()) {
             command.acceptVisitor(this);
         }
-        
-        assemblyCommands.add("ret");
     }
 
     private void generateLookingGlassCode() {

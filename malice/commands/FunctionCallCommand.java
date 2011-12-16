@@ -13,7 +13,6 @@ public class FunctionCallCommand implements Command {
     public FunctionCallCommand(String functionName, List<ArithmeticExpression> parameters){
         this.functionName = functionName;
         this.parameters = parameters;
-        
     }
 
     public String getFunctionName() {
