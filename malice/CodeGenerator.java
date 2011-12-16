@@ -112,8 +112,17 @@ public class CodeGenerator implements CommandVisitor {
 
     @Override
     public void visitArrayDeclaration(ArrayDeclarationCommand command) {
-        //TODO - visitArrayDeclaration
-        //TODO - need to allocate memory and stuff
+        Storage storage = symbolTable.getVariableStorage(command.getVariableName(), scope);
+        if (storage == Register.NONE) {
+            storage = allocateStorage();
+            symbolTable.setVariableStorage(command.getVariableName(), storage, scope);
+        }
+        Storage expStorage = allocateStorage();
+        generateExpressionCode(expStorage,command.getSize());
+        assemblyCommands.add("mov rax, " + expStorage);
+        assemblyCommands.add("push rax");
+        assemblyCommands.add("call malloc");
+        assemblyCommands.add("mov " + storage + ", rax");
     }
 
     @Override
